@@ -1,0 +1,88 @@
+# Infrastructure as Code for Render.com
+# Defines both database and web service for MOA e-commerce platform
+
+databases:
+  - name: MOA
+    databaseName: moa_8mpy
+    user: postgre
+    plan: free
+    region: oregon
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "18"
+
+services:
+  # Backend API
+  - type: web
+    name: moa-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DB_HOST
+        fromDatabase:
+          name: MOA
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: MOA
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: MOA
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: MOA
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: MOA
+          property: database
+      - key: DB_SSL
+        value: true
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: JWT_ADMIN_EXPIRES_IN
+        value: 1d
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DUAL_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        value: https://tu-app.vercel.app
+      - key: CORS_ORIGINS
+        value: https://tu-app.vercel.app
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        value: noreply@moa.cl
+      - key: DB_POOL_MAX
+        value: 10
+      - key: DB_POOL_IDLE_TIMEOUT_MS
+        value: 60000
+      - key: DB_POOL_CONNECTION_TIMEOUT_MS
+        value: 8000
+      - key: PASSWORD_RESET_CLEANUP_ENABLED
+        value: true
+      - key: PASSWORD_RESET_CLEANUP_INTERVAL_MINUTES
+        value: 60
+      - key: PASSWORD_RESET_CLEANUP_LOGS
+        value: false

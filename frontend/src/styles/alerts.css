@@ -1,0 +1,20 @@
+.swal-popup { border-radius: var(--radius-xl); padding: 1.75rem; }
+.swal-title { font-family: var(--font-display, inherit); color: var(--color-primary2); font-size: 1.15rem; }
+.swal-html { color: var(--color-text-secondary); font-size: .9rem; }
+.swal-p { margin: 0; line-height: 1.4; }
+.swal-footer { color: var(--color-text-muted); }
+.swal-btn { border: none; cursor: pointer; font-weight: 600; line-height: 1; padding: .65rem 1.1rem; font-size: .85rem; border-radius: var(--radius-md); transition: background .18s, color .18s, box-shadow .18s; display: inline-flex; align-items: center; gap: .5rem; }
+.swal-btn-pill { border-radius: 9999px; font-weight: 400; padding: .75rem 1.5rem; }
+.swal-btn-confirm { background: var(--color-primary1); color: #fff; }
+.swal-btn-confirm:hover { background: var(--color-primary2); }
+.swal-btn-cancel { background: var(--color-primary4); color: var(--color-primary1); }
+.swal-btn-cancel:hover { background: var(--color-primary3); }
+.swal-close-btn { color: var(--color-text-muted); transition: color .2s; }
+.swal-close-btn:hover { color: var(--color-text-strong); }
+
+/* Global error specific styling */
+.swal-global-error { margin-top:.5rem; display:flex; flex-direction:column; gap:.4rem; }
+.swal-global-error p { margin:0; font-size:.85rem; color: var(--color-text-secondary); }
+.swal-global-hint { font-size:.75rem; color: var(--color-text-muted); }
+.swal-popup.swal2-modal { box-shadow: 0 8px 28px -6px rgba(0,0,0,.25); border:1px solid var(--color-primary4); }
+.swal-popup.swal2-modal[data-icon='error'] { border-color: var(--color-primary2); }

@@ -1,0 +1,15 @@
+/* Estilos personalizados para el área de administración */
+
+/* Botones ghost en admin usan color primary-1 */
+[data-admin-context] .btn[data-appearance="ghost"][data-intent="neutral"],
+.admin-page .btn[data-appearance="ghost"][data-intent="neutral"] {
+  --btn-foreground: var(--color-primary1);
+  --btn-surface-hover: color-mix(in srgb, var(--color-primary1) 10%, transparent);
+  --btn-surface-active: color-mix(in srgb, var(--color-primary1) 18%, transparent);
+}
+
+/* IconButton ghost también usa primary-1 en admin */
+[data-admin-context] .btn[data-appearance="ghost"][data-intent="neutral"] .btn-icon,
+.admin-page .btn[data-appearance="ghost"][data-intent="neutral"] .btn-icon {
+  color: var(--color-primary1);
+}

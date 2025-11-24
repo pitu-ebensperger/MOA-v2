@@ -1,0 +1,179 @@
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { ShoppingCart, LogOut, LayoutDashboard, User, Repeat } from "lucide-react";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/auth-context.js';
+import { isDesignBypassUser } from '@/context/auth-context.js';
+import { useCartContext } from '@/context/cart-context.js';
+import { API_PATHS } from '@/config/api-paths.js';
+
+const NAV_ITEMS = [
+  { label: 'Inicio', href: API_PATHS.home.landing },
+  { label: 'Productos', href: API_PATHS.products.products },
+  { label: 'Categorías', href: API_PATHS.products.categories },
+  { label: 'Contacto', href: API_PATHS.support.contact },
+];
+
+export function Navbar({ onNavigate }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, isAdmin, logout, user } = useAuth();
+  const { cartItems } = useCartContext();
+  const [forceClientMode, setForceClientMode] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('forceClientMode');
+      setForceClientMode(stored === '1');
+    } catch (e) { // eslint-disable-line no-unused-vars
+      // Ignorar errores al leer localStorage
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY >= 90);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const toggleMode = () => {
+    const next = !forceClientMode;
+    setForceClientMode(next);
+    try { localStorage.setItem('forceClientMode', next ? '1' : '0'); } catch (e) { // eslint-disable-line no-unused-vars
+      // Ignorar errores al guardar
+    }
+  };
+
+  const isActive = (href) => location.pathname === href;
+
+  const handleLogout = () => {
+    logout();
+    navigate(API_PATHS.home.landing);
+  };
+
+  const designBypass = user && isDesignBypassUser(user);
+
+  return (
+    <div className={`nav-container shadow-md fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link
+          to={API_PATHS.home.landing}
+          className="brand cursor-pointer transition-transform hover:scale-105"
+          onClick={() => onNavigate?.('home')}
+        >
+          MOA
+        </Link>
+        {(designBypass || (isAdmin && forceClientMode)) && (
+          <div
+            className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium tracking-wide shadow-sm border backdrop-blur-sm bg-(--color-primary1)/12 border-(--color-primary1)/30 text-(--color-primary1) animate-fade-in"
+            title={designBypass ? 'Bypass de diseño activo' : 'Vista cliente forzada'}
+          >
+            {designBypass && <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-(--color-primary1) animate-pulse" /> Diseño
+            </span>}
+            {designBypass && isAdmin && forceClientMode && <span className="opacity-40">·</span>}
+            {isAdmin && forceClientMode && <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-(--color-secondary1)" /> Modo Cliente
+            </span>}
+          </div>
+        )}
+        <nav className="hidden md:flex items-center gap-8">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={`nav-items ${isActive(item.href) ? 'text-(--color-secondary1) underline underline-offset-4' : ''}`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex items-center gap-3">
+          {!isAuthenticated && (
+            <>
+              <Link to={API_PATHS.auth.register} className="nav-items nav-btn">Registrarme</Link>
+              <Link to={API_PATHS.auth.login} className="nav-items nav-btn nav-btn-primary">Iniciar sesión</Link>
+              <button
+                type="button"
+                aria-label="Carrito (requiere login)"
+                className="nav-icon-bg relative"
+                onClick={() => navigate(API_PATHS.auth.login, { state: { authRequired: true } })}
+              >
+                <ShoppingCart className="nav-icon" />
+              </button>
+            </>
+          )}
+          {isAuthenticated && (
+            <>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={toggleMode}
+                  className={`nav-btn flex items-center gap-2 ${forceClientMode ? 'bg-(--color-neutral3)' : 'nav-btn-secondary'}`}
+                  title={forceClientMode ? 'Ver modo Admin' : 'Ver modo Cliente'}
+                >
+                  <Repeat className="h-4 w-4" /> {forceClientMode ? 'Modo Cliente' : 'Modo Admin'}
+                </button>
+              )}
+              {isAdmin && !forceClientMode ? (
+                <>
+                  <Link
+                    to={API_PATHS.admin.dashboard}
+                    className="nav-btn nav-btn-primary flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="nav-icon-bg text-red-600"
+                    aria-label="Cerrar sesión"
+                  >
+                    <LogOut className="nav-icon" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Ver carrito"
+                    className="nav-icon-bg relative"
+                    onClick={() => navigate('/cart')}
+                  >
+                    <ShoppingCart className="nav-icon" />
+                    {cartItems.length > 0 && (
+                      <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-(--color-primary1) shadow-sm" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Ver perfil"
+                    className="nav-icon-bg"
+                    onClick={() => navigate('/profile')}
+                  >
+                    <User className="nav-icon" />
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="nav-icon-bg text-red-600"
+                    aria-label="Cerrar sesión"
+                  >
+                    <LogOut className="nav-icon" />
+                  </button>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Navbar.propTypes = {
+  onNavigate: PropTypes.func,
+};

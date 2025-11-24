@@ -1,0 +1,373 @@
+/* ============================================================================
+   MOA - Sistema Unificado de Alertas, Modales y Mensajes
+   ============================================================================ */
+
+/* Animaciones -------------------------------------------------------------------------- */
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-out {
+  from {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-slide-out-right {
+  animation: slide-out-right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-scale-out {
+  animation: scale-out 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Estilos base para mensajes -------------------------------------------------------------------------- */
+
+/* Garantiza consistencia visual entre Alert, Toast, Modal, y ConfirmDialog */
+
+.moa-message-base {
+  font-family: var(--font-sans);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+}
+
+.moa-message-title {
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: inherit;
+}
+
+.moa-message-description {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  opacity: 0.9;
+  color: inherit;
+}
+
+/* Variantes de color consistentes -------------------------------------------------------------------------- */
+
+.moa-variant-success {
+  background: color-mix(in srgb, var(--color-success) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+  color: var(--color-success);
+}
+
+.moa-variant-error {
+  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
+  color: var(--color-error);
+}
+
+.moa-variant-warning {
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+  color: var(--color-warning);
+}
+
+.moa-variant-info {
+  background: color-mix(in srgb, var(--color-secondary2) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-secondary2) 30%, transparent);
+  color: var(--color-secondary2);
+}
+
+/* Overlay consistente -------------------------------------------------------------------------- */
+
+.moa-overlay {
+  background: var(--overlay-dark);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal y Dialog base -------------------------------------------------------------------------- */
+
+.moa-modal-base {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    0 25px 50px -12px rgba(68, 49, 20, 0.25),
+    0 0 0 1px rgba(68, 49, 20, 0.05);
+}
+
+.moa-modal-header {
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.5rem;
+}
+
+.moa-modal-body {
+  padding: 1.5rem;
+}
+
+.moa-modal-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+/* Toast específicos -------------------------------------------------------------------------- */
+
+.moa-toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: var(--z-tooltip);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.moa-toast {
+  pointer-events: auto;
+  min-width: 320px;
+  max-width: 28rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 
+    0 10px 15px -3px rgba(16, 14, 8, 0.1),
+    0 4px 6px -2px rgba(16, 14, 8, 0.05),
+    0 0 0 1px rgba(68, 49, 20, 0.05);
+  font-weight: var(--weight-medium);
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+}
+
+/* Actualización de SweetAlert2 para consistencia -------------------------------------------------------------------------- */
+
+.swal2-popup {
+  font-family: var(--font-sans) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: 
+    0 25px 50px -12px rgba(68, 49, 20, 0.25) !important,
+    0 0 0 1px rgba(68, 49, 20, 0.05) !important;
+  padding: 2rem !important;
+}
+
+.swal2-title {
+  font-size: 1.25rem !important;
+  font-weight: var(--weight-semibold) !important;
+  color: var(--color-text) !important;
+  line-height: 1.4 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.swal2-html-container {
+  font-size: var(--text-sm) !important;
+  color: var(--color-text-secondary) !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+.swal2-actions {
+  gap: 0.75rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.swal2-confirm,
+.swal2-cancel,
+.swal2-deny {
+  border-radius: var(--radius-md) !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: var(--weight-medium) !important;
+  font-size: var(--text-sm) !important;
+  transition: all var(--transition-fast) !important;
+  border: none !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.swal2-confirm {
+  background: var(--color-primary1) !important;
+  color: white !important;
+}
+
+.swal2-confirm:hover {
+  background: var(--color-primary2) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.swal2-cancel {
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.swal2-cancel:hover {
+  background: var(--color-neutral3) !important;
+  border-color: var(--color-primary1) !important;
+  color: var(--color-text) !important;
+}
+
+.swal2-deny {
+  background: var(--color-error) !important;
+  color: white !important;
+}
+
+.swal2-deny:hover {
+  background: color-mix(in srgb, var(--color-error) 90%, black) !important;
+  transform: translateY(-1px) !important;
+}
+
+.swal2-icon {
+  border: none !important;
+  margin: 0 auto 1rem !important;
+}
+
+.swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background-color: var(--color-success) !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: var(--color-success) !important;
+}
+
+.swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+  background-color: var(--color-error) !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: var(--color-warning) !important;
+  color: var(--color-warning) !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: var(--color-secondary2) !important;
+  color: var(--color-secondary2) !important;
+}
+
+.swal2-icon.swal2-question {
+  border-color: var(--color-primary1) !important;
+  color: var(--color-primary1) !important;
+}
+
+.swal2-backdrop-show {
+  background: var(--overlay-dark) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.swal2-close {
+  color: var(--color-text-muted) !important;
+  font-size: 1.5rem !important;
+  transition: color var(--transition-fast) !important;
+}
+
+.swal2-close:hover {
+  color: var(--color-text) !important;
+}
+
+/* Toasts de SweetAlert2 -------------------------------------------------------------------------- */
+
+.swal2-toast {
+  border-radius: var(--radius-lg) !important;
+  padding: 1rem 1.25rem !important;
+  font-size: var(--text-sm) !important;
+  font-weight: var(--weight-medium) !important;
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Responsive -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .moa-modal-base {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    max-width: none;
+  }
+
+  .moa-toast {
+    min-width: 280px;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .moa-toast-container {
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .moa-modal-footer {
+    flex-direction: column;
+  }
+
+  .moa-modal-footer > * {
+    width: 100%;
+  }
+}
+
+/* Utilidades -------------------------------------------------------------------------- */
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus visible para accesibilidad */
+.moa-focusable:focus-visible {
+  outline: 2px solid var(--color-primary1);
+  outline-offset: 2px;
+}

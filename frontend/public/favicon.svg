@@ -1,0 +1,5 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>MOA</title>
+  <circle cx="256" cy="256" r="210" fill="#DDBF9C" stroke="#B98B65" stroke-width="14" />
+  <text x="50%" y="56%" text-anchor="middle" fill="#54341D" font-family="Georgia, 'Times New Roman', serif" font-size="240" font-weight="600" dominant-baseline="middle">M</text>
+</svg>

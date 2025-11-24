@@ -1,0 +1,29 @@
+{
+  "name": "moa-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run -w frontend dev",
+    "dev:all": "concurrently -k -n FRONT,BACK -c blue,green \"npm run -w frontend dev\" \"npm run -w backend dev\"",
+    "build": "npm run -w frontend build && rm -rf dist && cp -R frontend/dist dist",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "lint": "npm run -w frontend lint",
+    "preview": "npm run -w frontend preview",
+    "snapshot": "npm run -ws snapshot",
+    "f:dev": "npm run -w frontend dev",
+    "f:lint": "npm run -w frontend lint",
+    "b:dev": "npm run -w backend dev || echo \"(backend vacío)\"",
+    
+    "test:watch": "npm test -- --watch",
+    "test:coverage": "npm test -- --coverage"
+  },
+  "devDependencies": {
+    "call-bound": "^1.0.4",
+    "gh-pages": "^5.0.0"
+  }
+}

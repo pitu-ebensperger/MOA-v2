@@ -1,0 +1,73 @@
+//.gitignore (raíz)
+# Dependencies
+node_modules/
+**/node_modules/
+package-lock.json
+**/package-lock.json
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/.env.production
+.env copy
+
+# Build outputs
+dist/
+frontend/dist/
+frontend/.vite/
+backend/.vite/
+.vite
+
+# Logs
+*.log
+npm-debug.log*
+backend/backend.log
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+**/.vscode/
+
+# Development files
+scripts/dev/
+frontend/dev-pages/
+**/styleguide/
+src/modules/styleguide/
+
+# Temporary
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Snapshots (dev tool)
+snapshots/*.json
+snapshots/*.txt
+
+# Development docs (archivos draft solamente)
+docs/development/archives/
+docs/drafts/
+*.draft.md
+
+# Ignore generated/misc docs and GitHub workflow/config directory
+docs/misDOCS/
+.github/
+
+# Copilot temp
+.copilot-temp
+.qodo/
+
+
+
+
+

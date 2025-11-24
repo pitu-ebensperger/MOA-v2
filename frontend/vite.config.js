@@ -62,7 +62,6 @@ export default defineConfig(({ mode }) => {
         '@utils': path.resolve(__dirname, './src/utils'),
         '@config': path.resolve(__dirname, './src/config'),
         '@icons': path.resolve(__dirname, './src/utils/icons'),
-        'aria-hidden': path.resolve(__dirname, './src/shims/aria-hidden.js'),
       },
     },
     build: {

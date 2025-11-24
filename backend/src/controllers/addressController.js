@@ -6,7 +6,7 @@ import {
   getRegionCodeByName,
   getComunasByRegion,
   normalizeRegionName 
-} from "../../../shared/constants/locations.js";
+} from "../../shared/constants/locations.js";
 
 // Helper para obtener usuario_id del request
 const getRequestUserId = (req) => req.user?.usuario_id ?? req.user?.id;

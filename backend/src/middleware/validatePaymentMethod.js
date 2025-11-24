@@ -2,7 +2,7 @@
  * Middleware para validar método de pago
  */
 
-import { METODOS_PAGO_VALIDOS } from '../../../shared/constants/payment-methods.js';
+import { METODOS_PAGO_VALIDOS } from '../../shared/constants/payment-methods.js';
 
 /**
  * Valida que el método de pago sea uno de los permitidos

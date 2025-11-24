@@ -2,7 +2,7 @@ import orderAdminModel from "../models/orderAdminModel.js";
 import {
   SHIPPING_COMPANY_LABELS,
   normalizeShippingCompany,
-} from "../../../shared/constants/shipping-companies.js";
+} from "../../shared/constants/shipping-companies.js";
 
 const CSV_COLUMNS = [
   { label: "Orden ID", key: "orden_id" },

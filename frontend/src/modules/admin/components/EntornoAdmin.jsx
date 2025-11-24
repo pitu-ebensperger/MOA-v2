@@ -117,18 +117,15 @@ export default function EntornoAdmin({ children }) {
                   const Icon = item.icon;
                   const isDashboard = item.to === API_PATHS.admin.dashboard;
                   const isActive = isDashboard ? currentPath === item.to : currentPath.startsWith(item.to);
-                  const buttonNode = (
-                    <Button
+                  const linkNode = (
+                    <Link
                       key={item.to}
-                      appearance="ghost"
-                      size="sm"
-                      as={Link}
                       to={item.to}
-                      className={`sidebar-link rounded-lg ${isExpanded ? "w-full pl-3 pr-2 py-2.5" : "w-full px-2.5 py-2.5"} text-xs font-medium transition-colors duration-200 ${isActive ? "bg-neutral-100 text-primary border-r-4 border-primary" : "text-neutral-700 hover:text-primary hover:bg-neutral-50"}`}
+                      className={`sidebar-link rounded-lg flex items-center ${isExpanded ? "w-full pl-3 pr-2 py-2.5" : "w-full px-2.5 py-2.5 justify-center"} text-xs font-medium transition-colors duration-200 ${isActive ? "bg-neutral-100 text-primary border-r-4 border-primary" : "text-neutral-700 hover:text-primary hover:bg-neutral-50"}`}
                       aria-label={!isExpanded ? item.label : undefined}
                     >
                       {isExpanded ? (
-                        <span className="btn-label flex items-center gap-2 w-[103px]">
+                        <span className="flex items-center gap-2">
                           {Icon && (
                             <span className="flex items-center justify-center w-5 shrink-0">
                               <Icon className="h-5 w-5 stroke-[1.5] text-primary" aria-hidden />
@@ -143,14 +140,14 @@ export default function EntornoAdmin({ children }) {
                           </span>
                         )
                       )}
-                    </Button>
+                    </Link>
                   );
 
                   return isExpanded ? (
-                    buttonNode
+                    linkNode
                   ) : (
                     <TooltipNeutral key={item.to} label={item.label} position="right">
-                      {buttonNode}
+                      {linkNode}
                     </TooltipNeutral>
                   );
                 })}
@@ -159,34 +156,28 @@ export default function EntornoAdmin({ children }) {
 
             <div className="border-t border-neutral-200 px-2.5 py-4 flex flex-col gap-3">
               {isExpanded ? (
-                <Button
-                  appearance="ghost"
-                  size="sm"
-                  as={Link}
+                <Link
                   to={API_PATHS.home.landing}
-                  className="sidebar-link rounded-lg w-full pl-3 pr-2 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
+                  className="sidebar-link rounded-lg flex items-center w-full pl-3 pr-2 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
                 >
-                  <span className="btn-label flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <span className="flex items-center justify-center w-5 shrink-0">
                       <Store className="h-5 w-5 stroke-[1.5] text-primary" aria-hidden />
                     </span>
                     <span className="text-xs text-left">Visitar tienda</span>
                   </span>
-                </Button>
+                </Link>
               ) : (
                 <TooltipNeutral label="Visitar tienda" position="right">
-                  <Button
-                    appearance="ghost"
-                    size="sm"
-                    as={Link}
+                  <Link
                     to={API_PATHS.home.landing}
-                    className="sidebar-link rounded-lg w-full px-2.5 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
+                    className="sidebar-link rounded-lg flex items-center justify-center w-full px-2.5 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
                     aria-label="Visitar tienda"
                   >
                     <span className="flex items-center justify-center w-5">
                       <Store className="h-5 w-5 stroke-[1.5] text-primary" aria-hidden />
                     </span>
-                  </Button>
+                  </Link>
                 </TooltipNeutral>
               )}
 

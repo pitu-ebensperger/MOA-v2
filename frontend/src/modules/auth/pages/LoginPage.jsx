@@ -30,6 +30,10 @@ export default function LoginPage() {
 
   // Detectar estados SOLO UNA VEZ al montar y limpiar inmediatamente
   useEffect(() => {
+    // Capturar los estados inmediatamente para evitar que cambien
+    const hasState = location.state && Object.keys(location.state).length > 0;
+    if (!hasState) return; // No hay nada que procesar
+    
     const sessionExpired = location.state?.expired;
     const authRequired = location.state?.authRequired;
     const registered = location.state?.registered;
@@ -39,13 +43,16 @@ export default function LoginPage() {
     if (sessionExpired) {
       setShowExpiredModal(true);
       setExpiredFromPath(fromPath || '');
-      // DEBUG: Log para capturar cuándo se dispara
       console.log('🔍 [LoginPage] Modal de sesión expirada disparado', { fromPath });
     }
     
     if (authRequired) {
       setShowAuthRequiredBanner(true);
       const timer = setTimeout(() => setShowAuthRequiredBanner(false), 8000);
+      // Limpiar state después de procesarlo
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
       return () => clearTimeout(timer);
     }
     
@@ -54,18 +61,21 @@ export default function LoginPage() {
       setWelcomeUserName(userName || '');
       // Auto-cerrar después de 5 segundos
       const timer = setTimeout(() => setShowWelcomeModal(false), 5000);
-      
-      // LIMPIAR location.state INMEDIATAMENTE usando React Router
-      navigate(location.pathname, { replace: true, state: {} });
-      
+      // Limpiar state después de procesarlo
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
       return () => clearTimeout(timer);
     }
     
-    // Si hubo cualquier estado, limpiar después de procesarlo
+    // Si hubo cualquier estado pero no se procesó arriba, limpiarlo
     if (sessionExpired || authRequired || registered) {
-      navigate(location.pathname, { replace: true, state: {} });
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
     }
-  }, []); // ← Solo al montar, NUNCA más
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ← Solo al montar, ignorar cambios de location
 
   // Body scroll lock cuando hay modales abiertos
   useEffect(() => {
@@ -127,17 +137,21 @@ export default function LoginPage() {
     setErrors({});
     setServerError('');
 
+    // Limpiar espacios en blanco de los inputs
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+
     // Validaciones de formato
     const nextErrors = {};
     
     // Validar email
-    const emailValidation = validateEmail(email);
+    const emailValidation = validateEmail(cleanEmail);
     if (!emailValidation.valid) {
       nextErrors.email = emailValidation.error;
     }
     
     // Validar password
-    const passwordValidation = validatePassword(password, { minLength: 6 });
+    const passwordValidation = validatePassword(cleanPassword, { minLength: 6 });
     if (!passwordValidation.valid) {
       nextErrors.password = passwordValidation.error;
     }
@@ -150,7 +164,8 @@ export default function LoginPage() {
     try {
       setSubmitting(true);
       setServerError('');
-      const profile = await login({ email, password }); // AuthContext guarda token+user
+      console.log('[LoginPage] Intentando login con:', { email: cleanEmail, passwordLength: cleanPassword.length });
+      const profile = await login({ email: cleanEmail, password: cleanPassword }); // AuthContext guarda token+user
       redirect({ adminOverride: isAdminRole(profile) });                        // redirige por rol
     } catch (err) {
       console.error('[LoginPage] Error en login:', err);

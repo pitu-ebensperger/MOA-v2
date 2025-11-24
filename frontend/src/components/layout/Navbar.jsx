@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { ShoppingCart, LogOut, LayoutDashboard, User, Repeat } from "lucide-react";
+import { ShoppingCart, LogOut, LayoutDashboard, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/auth-context.js';
 import { isDesignBypassUser } from '@/context/auth-context.js';
@@ -40,14 +40,6 @@ export function Navbar({ onNavigate }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const toggleMode = () => {
-    const next = !forceClientMode;
-    setForceClientMode(next);
-    try { localStorage.setItem('forceClientMode', next ? '1' : '0'); } catch (e) { // eslint-disable-line no-unused-vars
-      // Ignorar errores al guardar
-    }
-  };
 
   const isActive = (href) => location.pathname === href;
 
@@ -110,16 +102,6 @@ export function Navbar({ onNavigate }) {
           )}
           {isAuthenticated && (
             <>
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={toggleMode}
-                  className={`nav-btn flex items-center gap-2 ${forceClientMode ? 'bg-(--color-neutral3)' : 'nav-btn-secondary'}`}
-                  title={forceClientMode ? 'Ver modo Admin' : 'Ver modo Cliente'}
-                >
-                  <Repeat className="h-4 w-4" /> {forceClientMode ? 'Modo Cliente' : 'Modo Admin'}
-                </button>
-              )}
               {isAdmin && !forceClientMode ? (
                 <>
                   <Link

@@ -12,18 +12,19 @@
     "build": "npm run -w frontend build && rm -rf dist && cp -R frontend/dist dist",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "deploy:vercel": "npx vercel --prod",
     "lint": "npm run -w frontend lint",
     "preview": "npm run -w frontend preview",
     "snapshot": "npm run -ws snapshot",
     "f:dev": "npm run -w frontend dev",
     "f:lint": "npm run -w frontend lint",
     "b:dev": "npm run -w backend dev || echo \"(backend vacío)\"",
-    
     "test:watch": "npm test -- --watch",
     "test:coverage": "npm test -- --coverage"
   },
   "devDependencies": {
     "call-bound": "^1.0.4",
-    "gh-pages": "^5.0.0"
+    "gh-pages": "^5.0.0",
+    "vercel": "^48.10.11"
   }
 }

@@ -221,11 +221,21 @@ export const AuthProvider = ({ children }) => {
   }, [status, user, token]);
 
   // Si hay token pero no user, intenta cargar perfil (validación de sesión silenciosa)
+  const hasAttemptedProfileLoad = useRef(false);
+  
   useEffect(() => {
     // Si ya hay user o no hay token, no hacer nada
     if (!token || user) {
+      hasAttemptedProfileLoad.current = false;
       return undefined;
     }
+    
+    // Evitar intentos múltiples de carga de perfil
+    if (hasAttemptedProfileLoad.current) {
+      return undefined;
+    }
+    
+    hasAttemptedProfileLoad.current = true;
     
     // Si hay token pero no user, intentar validar en background (sin bloquear UI)
     let cancelled = false;
@@ -273,15 +283,34 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       pendingLoginRef.current = true;
       try {
-        const { token: nextToken, user: profile } = await authApi.login(credentials);
+        console.log('[AuthContext] Iniciando login...');
+        const response = await authApi.login(credentials);
+        console.log('[AuthContext] Respuesta recibida:', { 
+          hasToken: !!response?.token, 
+          hasUser: !!response?.user,
+          userId: response?.user?.id || response?.user?.usuario_id 
+        });
+        
+        const { token: nextToken, user: profile } = response;
+        
+        if (!nextToken || !profile) {
+          throw new Error('Respuesta inválida del servidor');
+        }
+        
         // Guardar primero el perfil y luego el token para evitar que el
         // useLayoutEffect inicial interprete un token huérfano y lo borre.
         syncUser(profile);
         syncToken(nextToken);
         setStatus(STATUS.AUTH);
+        console.log('[AuthContext] Login exitoso');
         return profile;
       } catch (err) {
-        debugError('[AuthContext] Error en login:', err);
+        console.error('[AuthContext] Error en login:', err);
+        console.error('[AuthContext] Error details:', {
+          status: err?.status,
+          message: err?.message,
+          data: err?.data
+        });
         setError(err);
         setStatus(STATUS.IDLE);
         throw err;

@@ -10,6 +10,11 @@ export const cartApi = {
       const response = await apiClient.private.get('/cart')
       return response?.data || response
     } catch (error) {
+      // Si es 401, el usuario no está autenticado - retornar carrito vacío
+      if (error?.status === 401) {
+        console.warn('[cartApi.get] Usuario no autenticado, retornando carrito vacío');
+        return { items: [], total: 0 };
+      }
       console.error('[cartApi.get] Error obteniendo carrito:', error);
       throw error
     }

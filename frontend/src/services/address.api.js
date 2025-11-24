@@ -5,8 +5,16 @@ import { apiClient } from '@/services/api-client'
  * @returns {Promise<Array>} - Array de direcciones
  */
 export const getAddresses = async () => {
-  const response = await apiClient.get('/api/direcciones');
-  return response.data;
+  try {
+    const response = await apiClient.get('/api/direcciones');
+    return response?.data ?? response ?? [];
+  } catch (error) {
+    // Si es 401, el usuario no está autenticado - retornar array vacío
+    if (error?.status === 401) {
+      return [];
+    }
+    throw error;
+  }
 };
 
 /**

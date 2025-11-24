@@ -60,20 +60,6 @@ export function Navbar({ onNavigate }) {
         >
           MOA
         </Link>
-        {(designBypass || (isAdmin && forceClientMode)) && (
-          <div
-            className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium tracking-wide shadow-sm border backdrop-blur-sm bg-(--color-primary1)/12 border-(--color-primary1)/30 text-(--color-primary1) animate-fade-in"
-            title={designBypass ? 'Bypass de diseño activo' : 'Vista cliente forzada'}
-          >
-            {designBypass && <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-(--color-primary1) animate-pulse" /> Diseño
-            </span>}
-            {designBypass && isAdmin && forceClientMode && <span className="opacity-40">·</span>}
-            {isAdmin && forceClientMode && <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-(--color-secondary1)" /> Modo Cliente
-            </span>}
-          </div>
-        )}
         <nav className="hidden md:flex items-center gap-8">
           {NAV_ITEMS.map((item) => (
             <Link

@@ -11,7 +11,7 @@ package-lock.json
 .env.*.local
 **/.env
 **/.env.local
-**/.env.production
+# **/.env.production  # Permitimos .env.production para Vercel
 .env copy
 
 # Build outputs

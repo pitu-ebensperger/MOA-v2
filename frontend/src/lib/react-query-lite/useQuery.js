@@ -75,7 +75,7 @@ export const useQuery = (options) => {
   const runFetch = useCallback(
     (force = false) => {
       if (!enabled) {
-        return Promise.resolve(result.data);
+        return Promise.resolve(previousDataRef.current);
       }
       return queryClient.fetchQuery(
         queryKey,
@@ -90,7 +90,7 @@ export const useQuery = (options) => {
         { force },
       );
     },
-    [enabled, fetchOptions, queryClient, queryFn, queryKey, result.data],
+    [enabled, fetchOptions, queryClient, queryFn, queryKey],
   );
 
   useEffect(() => {

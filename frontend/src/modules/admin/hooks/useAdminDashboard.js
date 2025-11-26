@@ -96,6 +96,11 @@ export function useAdminDashboard() {
     const customerRegistrations = unwrap(customerRegistrationsQuery.data, []);
     const recentOrders = recentOrdersQuery.data?.items || [];
 
+    const previousAverageOrderValue =
+      (salesData.previousMonth?.orders || 0) > 0
+        ? Math.round((salesData.previousMonth?.revenue || 0) / (salesData.previousMonth?.orders || 1))
+        : 0;
+
     return {
       // Overview metrics
       metrics: {
@@ -127,7 +132,10 @@ export function useAdminDashboard() {
         weeklyRevenue: salesData.weeklyRevenue || [],
         monthlyRevenue: salesData.monthlyRevenue || [],
         averageOrderValue: salesData.averageOrderValue || 0,
+        previousAverageOrderValue,
         totalTransactions: salesData.totalTransactions || 0,
+        currentMonth: salesData.currentMonth || {},
+        previousMonth: salesData.previousMonth || {},
       },
 
       conversion: {

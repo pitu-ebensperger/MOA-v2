@@ -211,3 +211,5 @@ export const CartPage = () => {
     </main>
   );
 };
+
+export default CartPage;

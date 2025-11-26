@@ -1,5 +1,5 @@
 //path/frontend/src/modules/admin/utils/productsColumns.jsx
-import { AlertTriangle, Eye, Edit3, Copy, Trash2, Filter, Check } from "lucide-react";
+import { AlertTriangle, Eye, Edit3, Trash2, Filter, Check } from "lucide-react";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { LOW_STOCK_THRESHOLD } from "@/config/constants.js"
@@ -17,7 +17,6 @@ import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx"
 export function buildProductColumns({
   onView,
   onEdit,
-  onDuplicate,
   onDelete,
   categoryMap,
   statusFilterValue,
@@ -213,14 +212,6 @@ export function buildProductColumns({
                     label: "Editar producto",
                     icon: Edit3,
                     onAction: () => onEdit(product),
-                  });
-                }
-                if (onDuplicate) {
-                  actions.push({
-                    key: "duplicate",
-                    label: "Duplicar",
-                    icon: Copy,
-                    onAction: () => onDuplicate(product),
                   });
                 }
                 if (onDelete) {

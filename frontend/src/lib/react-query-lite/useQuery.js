@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { hashQueryKey } from "@shared/lib/react-query-lite/key-utils.js";
 import { useQueryClient } from "./useQueryClient.js";
 
 const buildResult = (state, previousData, keepPreviousData) => {
@@ -46,6 +47,15 @@ export const useQuery = (options) => {
   }
 
   const queryClient = useQueryClient();
+  const serializedQueryKey = useMemo(
+    () => hashQueryKey(queryKey),
+    [queryKey],
+  );
+  const stableQueryKeyRef = useRef({ key: queryKey, hash: serializedQueryKey });
+  if (stableQueryKeyRef.current.hash !== serializedQueryKey) {
+    stableQueryKeyRef.current = { key: queryKey, hash: serializedQueryKey };
+  }
+  const stableQueryKey = stableQueryKeyRef.current.key;
   const defaultKeepPrevious =
     keepPreviousData ??
     queryClient.getDefaultQueryOptions().keepPreviousData ??
@@ -55,7 +65,7 @@ export const useQuery = (options) => {
   callbacksRef.current = { onSuccess, onError, onSettled };
 
   const [result, setResult] = useState(() => {
-    const initial = queryClient.getQueryState(queryKey);
+    const initial = queryClient.getQueryState(stableQueryKey);
     return buildResult(initial, undefined, defaultKeepPrevious);
   });
 
@@ -78,7 +88,7 @@ export const useQuery = (options) => {
         return Promise.resolve(previousDataRef.current);
       }
       return queryClient.fetchQuery(
-        queryKey,
+        stableQueryKey,
         queryFn,
         {
           ...fetchOptions,
@@ -90,11 +100,11 @@ export const useQuery = (options) => {
         { force },
       );
     },
-    [enabled, fetchOptions, queryClient, queryFn, queryKey],
+    [enabled, fetchOptions, queryClient, queryFn, stableQueryKey],
   );
 
   useEffect(() => {
-    const unsubscribe = queryClient.subscribe(queryKey, (state) => {
+    const unsubscribe = queryClient.subscribe(stableQueryKey, (state) => {
       setResult(
         buildResult(state, previousDataRef.current, defaultKeepPrevious),
       );
@@ -103,14 +113,14 @@ export const useQuery = (options) => {
       }
     });
     return unsubscribe;
-  }, [defaultKeepPrevious, queryClient, queryKey]);
+  }, [defaultKeepPrevious, queryClient, serializedQueryKey, stableQueryKey]);
 
   useEffect(() => {
     if (!enabled) return;
-    if (queryClient.shouldFetch(queryKey, { staleTime })) {
+    if (queryClient.shouldFetch(stableQueryKey, { staleTime })) {
       runFetch();
     }
-  }, [enabled, queryClient, queryKey, runFetch, staleTime]);
+  }, [enabled, queryClient, runFetch, serializedQueryKey, stableQueryKey, staleTime]);
 
   useEffect(() => {
     if (!enabled || !refetchInterval) return undefined;

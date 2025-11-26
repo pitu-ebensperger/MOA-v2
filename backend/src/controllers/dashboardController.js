@@ -58,7 +58,7 @@ export const getPaymentMethodStats = async (req, res) => {
         COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio,
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje_uso
       FROM ordenes 
-      WHERE estado_orden = 'confirmed'
+      WHERE estado_orden = 'confirmado'
         AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
       GROUP BY metodo_pago
       ORDER BY ingresos_totales DESC
@@ -97,7 +97,7 @@ export const getShippingMethodStats = async (req, res) => {
         COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio,
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje_uso
       FROM ordenes 
-      WHERE estado_orden = 'confirmed'
+      WHERE estado_orden = 'confirmado'
         AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
       GROUP BY metodo_despacho
       ORDER BY cantidad_ordenes DESC
@@ -136,7 +136,7 @@ export const getDashboardKPIs = async (req, res) => {
           COALESCE(SUM(total_cents), 0)::BIGINT as ingresos_totales,
           COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio
         FROM ordenes
-        WHERE estado_orden = 'confirmed'
+        WHERE estado_orden = 'confirmado'
           AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
       ),
       previous_period AS (
@@ -146,7 +146,7 @@ export const getDashboardKPIs = async (req, res) => {
           COALESCE(SUM(total_cents), 0)::BIGINT as ingresos_totales_prev,
           COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio_prev
         FROM ordenes
-        WHERE estado_orden = 'confirmed'
+        WHERE estado_orden = 'confirmado'
           AND creado_en >= NOW() - INTERVAL '${parseInt(periodo) * 2} days'
           AND creado_en < NOW() - INTERVAL '${parseInt(periodo)} days'
       )
@@ -215,7 +215,7 @@ export const getTopProducts = async (req, res) => {
       JOIN productos p ON oi.producto_id = p.producto_id
       LEFT JOIN categorias c ON p.categoria_id = c.categoria_id
       JOIN ordenes o ON oi.orden_id = o.orden_id
-      WHERE o.estado_orden = 'confirmed'
+      WHERE o.estado_orden = 'confirmado'
         AND o.creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
       GROUP BY p.producto_id, p.nombre, p.img_url, p.precio_cents, c.nombre
       ORDER BY unidades_vendidas DESC
@@ -252,7 +252,7 @@ export const getSalesEvolution = async (req, res) => {
         COUNT(*)::INT as num_ordenes,
         COALESCE(SUM(total_cents), 0)::BIGINT as ingresos
       FROM ordenes
-      WHERE estado_orden = 'confirmed'
+      WHERE estado_orden = 'confirmado'
         AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
       GROUP BY DATE(creado_en)
       ORDER BY fecha ASC
@@ -286,7 +286,7 @@ export const getOrdersByStatus = async (req, res) => {
         COUNT(*)::INT as cantidad,
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje
       FROM ordenes
-      WHERE estado_orden = 'confirmed'
+      WHERE estado_orden = 'confirmado'
       GROUP BY estado_envio
       ORDER BY cantidad DESC
     `;

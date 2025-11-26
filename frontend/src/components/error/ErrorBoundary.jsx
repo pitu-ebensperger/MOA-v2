@@ -3,6 +3,37 @@ import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react";
 import { alerts } from '@/utils/alerts.js';
 import { observability } from '@/services/observability.js';
 
+// Serialización defensiva: evita que React DevTools (override de console.error)
+// intente convertir a primitivo objetos Proxy / complejos que disparan
+// "Cannot convert object to primitive value".
+const safeSerializeError = (err) => {
+  if (!err) return null;
+  if (err instanceof Error) {
+    return {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+      cause: err.cause && typeof err.cause === 'object' ? safeSerializeError(err.cause) : err.cause || null,
+    };
+  }
+  if (typeof err === 'object') {
+    try {
+      return JSON.parse(JSON.stringify(err));
+    } catch (_) {
+      try {
+        return { stringified: String(err) };
+      } catch (_) {
+        return { stringified: '[Unserializable Error Object]' };
+      }
+    }
+  }
+  try {
+    return { value: String(err) };
+  } catch (_) {
+    return { value: '[Unserializable]' };
+  }
+};
+
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -30,11 +61,12 @@ class ErrorBoundary extends Component {
     });
 
     // Log del error para debugging - MÁS VISIBLE
+    const safe = safeSerializeError(error);
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.error('🔴 ErrorBoundary caught an error:');
-    console.error('Error:', error);
-    console.error('Message:', error?.message);
-    console.error('Stack:', error?.stack);
+    console.error('🔴 ErrorBoundary caught an error (sanitized):');
+    console.error('Error (safe):', safe);
+    console.error('Message:', safe?.message || error?.message);
+    console.error('Stack:', safe?.stack || error?.stack);
     console.error('Component Stack:', errorInfo?.componentStack);
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 

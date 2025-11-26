@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { 
   Server, 
   RefreshCw, 
@@ -11,12 +12,12 @@ import {
 } from "lucide-react";
 import { alerts } from '@/utils/alerts.js';
 
-export const ServerErrorPage = ({ 
-  errorCode = 500, 
+export const ServerErrorPage = ({
+  errorCode = 500,
   errorMessage = 'Error interno del servidor',
   showRetry = true,
   customTitle = null,
-  customDescription = null 
+  customDescription = null,
 }) => {
   const navigate = useNavigate();
   const [retryCount, setRetryCount] = useState(0);
@@ -28,12 +29,12 @@ export const ServerErrorPage = ({
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -115,7 +116,7 @@ export const ServerErrorPage = ({
       if (response.ok) {
         alerts.toast.success('Conexión restablecida');
         // Recargar la página o navegar de vuelta
-        window.location.reload();
+        globalThis.location.reload();
       } else {
         throw new Error('Server still unavailable');
       }
@@ -148,7 +149,7 @@ export const ServerErrorPage = ({
     const errorDetails = `
 Error Code: ${errorCode}
 Error Message: ${errorMessage}
-URL: ${window.location.href}
+URL: ${globalThis.location.href}
 User Agent: ${navigator.userAgent}
 Timestamp: ${new Date().toISOString()}
 Online Status: ${isOnline ? 'Online' : 'Offline'}
@@ -249,7 +250,7 @@ Retry Count: ${retryCount}
         {retryCount >= 3 && (
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
               <div className="text-left">
                 <h4 className="font-medium text-amber-800 text-sm">
                   Problema persistente detectado
@@ -276,3 +277,14 @@ Retry Count: ${retryCount}
     </div>
   );
 };
+
+export default ServerErrorPage;
+
+ServerErrorPage.propTypes = {
+  errorCode: PropTypes.number,
+  errorMessage: PropTypes.string,
+  showRetry: PropTypes.bool,
+  customTitle: PropTypes.string,
+  customDescription: PropTypes.string,
+};
+

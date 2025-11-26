@@ -31,7 +31,6 @@ import { BarChart } from "@/components/charts/BarChart.jsx";
 import { AreaChart } from "@/components/charts/AreaChart.jsx";
 import { PieChart } from "@/components/charts/PieChart.jsx";
 import { AnimatedKPICard } from "@/components/charts/AnimatedKPICard.jsx";
-import { SparklineChart } from "@/components/charts/SparklineChart.jsx";
 import { ProgressRing } from "@/components/charts/ProgressRing.jsx";
 import { ComparisonCard } from "@/components/charts/ComparisonCard.jsx";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
@@ -163,6 +162,14 @@ export default function AdminDashboardPage() {
   // const orderDistribution = useMemo(() => dashboardData?.orderDistribution || [], [dashboardData]);
   const recentOrders = useMemo(() => dashboardData?.recentOrders || [], [dashboardData]);
   const customerRegistrations = useMemo(() => dashboardData?.customerRegistrations || [], [dashboardData]);
+  const topProductsRevenueTotal = useMemo(
+    () => topProducts.reduce((sum, product) => sum + (product.revenue || 0), 0),
+    [topProducts]
+  );
+  const topProductsSalesMax = useMemo(
+    () => topProducts.reduce((max, product) => Math.max(max, product.sales || 0), 0),
+    [topProducts]
+  );
 
   // Prepare chart data
   const revenueChartData = useMemo(() => {
@@ -214,26 +221,26 @@ export default function AdminDashboardPage() {
         actions={
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-              <TabsList className="inline-flex w-full flex-wrap gap-2 sm:w-auto">
-                <TabsTrigger value="overview">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Overview
+              <TabsList className="inline-flex w-full flex-nowrap gap-1 overflow-x-auto sm:w-auto sm:flex-wrap sm:gap-2 sm:overflow-visible">
+                <TabsTrigger value="overview" aria-label="Overview">
+                  <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="text-sm">Overview</span>
                 </TabsTrigger>
-                <TabsTrigger value="analytics">
-                  <Activity className="mr-2 h-4 w-4" />
-                  Analytics
+                <TabsTrigger value="analytics" aria-label="Analytics">
+                  <Activity className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="text-sm">Analytics</span>
                 </TabsTrigger>
-                <TabsTrigger value="products">
-                  <Package className="mr-2 h-4 w-4" />
-                  Productos
+                <TabsTrigger value="products" aria-label="Productos">
+                  <Package className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="text-sm">Productos</span>
                 </TabsTrigger>
-                <TabsTrigger value="customers">
-                  <Users className="mr-2 h-4 w-4" />
-                  Clientes
+                <TabsTrigger value="customers" aria-label="Clientes">
+                  <Users className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="text-sm">Clientes</span>
                 </TabsTrigger>
-                <TabsTrigger value="operations">
-                  <Truck className="mr-2 h-4 w-4" />
-                  Operaciones
+                <TabsTrigger value="operations" aria-label="Operaciones">
+                  <Truck className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="text-sm">Operaciones</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -368,7 +375,7 @@ export default function AdminDashboardPage() {
                 <ComparisonCard
                   title="Pedidos"
                   currentValue={sales.totalTransactions || 0}
-                  previousValue={Math.floor((sales.totalTransactions || 0) * 0.85)}
+                  previousValue={metrics.previousMonthOrders || 0}
                   color="var(--color-primary1)"
                   delay={0.1}
                 />
@@ -376,7 +383,7 @@ export default function AdminDashboardPage() {
                 <ComparisonCard
                   title="Promedio por pedido"
                   currentValue={sales.averageOrderValue || 0}
-                  previousValue={Math.floor((sales.averageOrderValue || 0) * 0.92)}
+                  previousValue={sales.previousAverageOrderValue || 0}
                   formatter={formatCurrencyCLP}
                   color="var(--color-secondary1)"
                   delay={0.2}
@@ -407,41 +414,58 @@ export default function AdminDashboardPage() {
 
                 <ChartCard title="Productos destacados" subtitle="Top performance" loading={isLoading}>
                   <div className="space-y-4">
-                    {topProducts.slice(0, 2).map((product, index) => (
-                      <Motion.div
-                        key={product.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="rounded-2xl border border-(--color-border) bg-white p-4"
-                      >
-                        <div className="mb-3 flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
-                            <p className="mt-1 text-xs text-(--text-muted)">{product.sales} ventas</p>
+                    {topProducts.slice(0, 2).map((product, index) => {
+                      const revenueShare = topProductsRevenueTotal > 0
+                        ? ((product.revenue || 0) / topProductsRevenueTotal) * 100
+                        : 0;
+
+                      return (
+                        <Motion.div
+                          key={product.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="rounded-2xl border border-(--color-border) bg-white p-4"
+                        >
+                          <div className="mb-3 flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
+                              <p className="mt-1 text-xs text-(--text-muted)">{product.sales} ventas</p>
+                            </div>
+                            {index === 0 ? (
+                              <div className="rounded-full bg-(--color-success)/10 px-3 py-1">
+                                <p className="text-xs font-semibold text-(--color-success)">Más vendido</p>
+                              </div>
+                            ) : (
+                              <div className="rounded-full bg-(--color-primary1)/10 px-3 py-1">
+                                <p className="text-xs font-semibold text-(--color-primary1)">{product.conversionRate}% conv.</p>
+                              </div>
+                            )}
                           </div>
-                          {index === 0 ? (
-                            <div className="rounded-full bg-(--color-success)/10 px-3 py-1">
-                              <p className="text-xs font-semibold text-(--color-success)">Más vendido</p>
+                          <div className="space-y-3">
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-(--text-muted)">
+                              <span>{formatCurrencyCLP(product.price || 0)}</span>
+                              <span>{(product.views || 0).toLocaleString("es-CL")} vistas</span>
+                              <span>{product.conversionRate}% conv.</span>
                             </div>
-                          ) : (
-                            <div className="rounded-full bg-(--color-primary1)/10 px-3 py-1">
-                              <p className="text-xs font-semibold text-(--color-primary1)">{product.conversionRate}% conv.</p>
+                            <div className="flex items-end justify-between gap-3">
+                              <span className="text-xl font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
+                              <span className="text-xs font-semibold text-(--text-muted)">
+                                {revenueShare.toFixed(1)}% de ingresos top
+                              </span>
                             </div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <SparklineChart
-                            data={[...new Array(7)].map(() => Math.random() * 100 + 50)}
-                            width={80}
-                            height={40}
-                            color="var(--color-primary1)"
-                            fillColor="var(--color-primary1)"
-                          />
-                          <span className="text-xl font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
-                        </div>
-                      </Motion.div>
-                    ))}
+                            <div className="h-2 rounded-full bg-(--color-neutral3)">
+                              <Motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${Math.min(100, revenueShare)}%` }}
+                                transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+                                className="h-full rounded-full bg-gradient-to-r from-(--color-primary1) to-(--color-secondary1)"
+                              />
+                            </div>
+                          </div>
+                        </Motion.div>
+                      );
+                    })}
                   </div>
                 </ChartCard>
               </div>
@@ -618,33 +642,57 @@ export default function AdminDashboardPage() {
               {/* Top Products with Sparklines */}
               <ChartCard title="Productos Destacados" loading={isLoading}>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {topProducts.slice(0, 6).map((product, index) => (
-                    <Motion.div
-                      key={product.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="group rounded-2xl border border-(--color-border) bg-(--color-neutral2) p-4 transition-all hover:shadow-(--shadow-md)"
-                    >
-                      <div className="mb-3 flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
-                          <p className="mt-1 text-xs text-(--text-muted)">{product.sales} ventas</p>
+                  {topProducts.slice(0, 6).map((product, index) => {
+                    const salesShare = topProductsSalesMax > 0
+                      ? ((product.sales || 0) / topProductsSalesMax) * 100
+                      : 0;
+                    const revenueShare = topProductsRevenueTotal > 0
+                      ? ((product.revenue || 0) / topProductsRevenueTotal) * 100
+                      : 0;
+
+                    return (
+                      <Motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group rounded-2xl border border-(--color-border) bg-(--color-neutral2) p-4 transition-all hover:shadow-(--shadow-md)"
+                      >
+                        <div className="mb-3 flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
+                            <p className="mt-1 text-xs text-(--text-muted)">
+                              {product.sales} ventas
+                              {product.sku ? ` · SKU ${product.sku}` : ""}
+                            </p>
+                          </div>
+                          <div className="rounded-full bg-(--color-primary1)/10 px-3 py-1 text-xs font-semibold text-(--color-primary1)">
+                            {revenueShare.toFixed(1)}% ingresos
+                          </div>
                         </div>
-                        <SparklineChart
-                          data={[...new Array(7)].map(() => Math.random() * 100 + 50)}
-                          width={60}
-                          height={30}
-                          color="var(--color-primary1)"
-                          fillColor="var(--color-primary1)"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
-                        <span className="text-xs text-(--color-success)">{product.conversionRate}% conv.</span>
-                      </div>
-                    </Motion.div>
-                  ))}
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex items-center justify-between text-xs text-(--text-muted)">
+                              <span>Ventas relativas</span>
+                              <span>{Math.round(salesShare)}%</span>
+                            </div>
+                            <div className="mt-1 h-2 overflow-hidden rounded-full bg-(--color-neutral3)">
+                              <Motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${Math.min(100, salesShare)}%` }}
+                                transition={{ duration: 0.6, delay: 0.1 + index * 0.05 }}
+                                className="h-full rounded-full bg-gradient-to-r from-(--color-primary1) to-(--color-secondary1)"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-lg font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
+                            <span className="text-xs text-(--color-success)">{product.conversionRate}% conv.</span>
+                          </div>
+                        </div>
+                      </Motion.div>
+                    );
+                  })}
                 </div>
               </ChartCard>
             </Motion.div>

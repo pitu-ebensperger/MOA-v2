@@ -3,4 +3,4 @@ export {
   SHIPPING_COMPANY_LABELS,
   normalizeShippingCompany,
   isValidShippingCompany,
-} from "../../../../shared/constants/empresas-envio.js";
+} from "../../../shared/constants/empresas-envio.js";

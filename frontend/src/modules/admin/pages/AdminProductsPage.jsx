@@ -2,7 +2,6 @@ import React, { useState, useMemo, useCallback, useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom";
 import { Plus, Package, X, AlertCircle, Download, FileText, ChevronDown } from "lucide-react";
 import ProductDrawer from "@/modules/admin/components/ProductDrawer.jsx"
-import ProductDetailDrawer from "@/modules/admin/components/ProductDetailDrawer.jsx"
 
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx"
 import { Button } from "@/components/ui/Button.jsx"
@@ -115,17 +114,6 @@ export default function AdminProductsPage() {
     setSelectedProductView(product);
   }, []);
 
-  const handleDuplicateProduct = useCallback((product) => {
-    // Crear copia sin ID para modal de creación
-    const duplicated = {
-      ...product,
-      id: undefined,
-      name: `${product.name} (copia)`,
-      sku: `${product.sku}-copy`,
-    };
-    setSelectedProductEdit(duplicated);
-  }, []);
-
   const handleDeleteProduct = useCallback(async (product) => {
     const confirmed = await confirm.delete(
       `¿Eliminar "${product.name}"?`,
@@ -146,7 +134,6 @@ export default function AdminProductsPage() {
     categoryMap,
     onView: handleViewProduct,
     onEdit: setSelectedProductEdit,
-    onDuplicate: handleDuplicateProduct,
     onDelete: handleDeleteProduct,
     statusFilterValue: status,
     statusFilterOptions,
@@ -157,7 +144,6 @@ export default function AdminProductsPage() {
   }), [
     categoryMap,
     handleViewProduct,
-    handleDuplicateProduct,
     handleDeleteProduct,
     status,
     statusFilterOptions,
@@ -400,11 +386,13 @@ export default function AdminProductsPage() {
       />
 
       {/* Drawer: Ver detalle producto (read-only) */}
-      <ProductDetailDrawer
+      <ProductDrawer
         open={!!selectedProductView}
-        product={selectedProductView}
+        initial={selectedProductView}
+        categories={categories ?? []}
+        mode="view"
         onClose={() => setSelectedProductView(null)}
-        onEdit={(product) => {
+        onEditRequest={(product) => {
           setSelectedProductView(null);
           setSelectedProductEdit(product);
         }}

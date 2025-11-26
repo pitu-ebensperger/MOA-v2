@@ -111,6 +111,30 @@ export const App = () => {
 
   // Global error handlers
   useEffect(() => {
+    // Some error objects (e.g. Vite dynamic import failures or 3rd party proxies)
+    // can throw again when the DevTools extension tries to coerce them to string.
+    // We defensively serialize to plain data before logging to avoid triggering
+    // "Cannot convert object to primitive value" inside react-devtools' installHook.
+    const safeSerialize = (err) => {
+      if (!err) return null;
+      if (err instanceof Error) {
+        return {
+          name: err.name,
+          message: err.message,
+          stack: err.stack,
+        };
+      }
+      try {
+        // Attempt structured clone via JSON.
+        return JSON.parse(JSON.stringify(err));
+      } catch (_) {
+        try {
+          return String(err);
+        } catch (_) {
+          return '[Unserializable Error]';
+        }
+      }
+    };
     // Captura errores síncronos no manejados (window.onerror)
     const handleError = (event) => {
       console.error('[Global Error Handler]', {
@@ -118,7 +142,7 @@ export const App = () => {
         filename: event.filename,
         lineno: event.lineno,
         colno: event.colno,
-        error: event.error,
+        error: safeSerialize(event.error),
       });
 
       // Enviar a servicio de logging en producción
@@ -137,8 +161,9 @@ export const App = () => {
     // Captura promesas rechazadas sin .catch() (unhandledrejection)
     const handleUnhandledRejection = (event) => {
       console.error('[Unhandled Promise Rejection]', {
-        reason: event.reason,
-        promise: event.promise,
+        reason: safeSerialize(event.reason),
+        // Do not attempt to log the raw promise (devtools will coerce it); just note its presence.
+        promise: '[Promise]',
       });
 
       // Enviar a servicio de logging en producción

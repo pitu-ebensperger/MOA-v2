@@ -924,6 +924,8 @@ export const CheckoutPage = ({
   );
 };
 
+export default CheckoutPage;
+
 CheckoutPage.propTypes = {
   cartItems: PropTypes.arrayOf(cartItemShape),
   total: PropTypes.number,

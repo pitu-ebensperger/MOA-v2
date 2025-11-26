@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button.jsx";
 import { Input, Textarea } from "@/components/ui/Input.jsx";
 import { Select } from "@/components/ui/Select.jsx";
 import { ProductShape, CategoryShape } from "@/utils/propTypes.js";
-import { Save, Trash2, X } from "lucide-react";
+import { Edit, Save, Trash2, X } from "lucide-react";
 
 const STATUS_VALUES = ["activo", "sin_stock", "borrador"];
 
@@ -75,7 +75,20 @@ export function ProductDrawer({
   onDelete,
   initial,
   categories = [],
+  mode,
+  onEditRequest,
+  title,
 }) {
+  const resolvedMode = mode ?? (initial ? "edit" : "create");
+  const isViewMode = resolvedMode === "view";
+  const headerTitle =
+    title ??
+    (isViewMode
+      ? "Detalle del producto"
+      : initial
+        ? "Editar producto"
+        : "Nuevo producto");
+
   const {
     register,
     handleSubmit,
@@ -119,6 +132,8 @@ export function ProductDrawer({
   );
 
   const handleFormSubmit = async (data) => {
+    if (isViewMode || !onSubmit) return;
+
     const {
       dimHeight,
       dimWidth,
@@ -144,7 +159,7 @@ export function ProductDrawer({
       dimensions,
     };
 
-    await onSubmit?.(payload);
+    await onSubmit(payload);
   };
 
   const previewImage = imgUrl?.trim();
@@ -154,9 +169,7 @@ export function ProductDrawer({
       <DialogContent variant="drawer" placement="right" className="max-w-2xl rounded-tl-3xl rounded-bl-3xl">
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex h-full flex-col gap-5 p-6">
           <DialogHeader>
-            <h2 className="text-lg font-semibold text-(--text-strong)">
-              {initial ? "Editar producto" : "Nuevo producto"}
-            </h2>
+            <h2 className="text-lg font-semibold text-(--text-strong)">{headerTitle}</h2>
           </DialogHeader>
 
           <div className="flex-1 space-y-4 overflow-y-auto pr-1 hide-scrollbar">
@@ -168,6 +181,7 @@ export function ProductDrawer({
                 error={errors.name?.message}
                 placeholder="Ej. Mesa Escandinava"
                 fullWidth
+                disabled={isViewMode}
               />
               <div className="grid grid-cols-2 gap-3">
                 <Input
@@ -176,12 +190,14 @@ export function ProductDrawer({
                   error={errors.sku?.message}
                   placeholder="MOA-001"
                   fullWidth
+                  disabled={isViewMode}
                 />
                 <Select
                   label="Estado"
                   {...register("status")}
                   options={STATUS_OPTIONS}
                   fullWidth
+                  disabled={isViewMode}
                 />
               </div>
             </div>
@@ -197,6 +213,7 @@ export function ProductDrawer({
                   {...register("price")}
                   error={errors.price?.message}
                   placeholder="150000"
+                  disabled={isViewMode}
                 />
                 <Input
                   label="Stock"
@@ -206,6 +223,7 @@ export function ProductDrawer({
                   {...register("stock")}
                   error={errors.stock?.message}
                   placeholder="10"
+                  disabled={isViewMode}
                 />
               </div>
             </div>
@@ -217,6 +235,7 @@ export function ProductDrawer({
                 {...register("fk_category_id")}
                 options={categoryOptions}
                 fullWidth
+                disabled={isViewMode}
               />
             </div>
 
@@ -227,6 +246,7 @@ export function ProductDrawer({
                 {...register("imgUrl")}
                 placeholder="https://..."
                 fullWidth
+                disabled={isViewMode}
               />
               {previewImage && (
                 <div className="rounded-2xl border border-neutral-200 bg-(--color-neutral1) px-3 py-2">
@@ -251,10 +271,11 @@ export function ProductDrawer({
                 {...register("description")}
                 placeholder="Describe brevemente este producto"
                 fullWidth
+                disabled={isViewMode}
               />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Color" {...register("color")} placeholder="Beige" />
-                <Input label="Material" {...register("material")} placeholder="Madera de roble" />
+                <Input label="Color" {...register("color")} placeholder="Beige" disabled={isViewMode} />
+                <Input label="Material" {...register("material")} placeholder="Madera de roble" disabled={isViewMode} />
               </div>
             </div>
 
@@ -268,6 +289,7 @@ export function ProductDrawer({
                   min="0"
                   placeholder="75"
                   {...register("dimHeight")}
+                  disabled={isViewMode}
                 />
                 <Input
                   label="Ancho"
@@ -276,6 +298,7 @@ export function ProductDrawer({
                   min="0"
                   placeholder="120"
                   {...register("dimWidth")}
+                  disabled={isViewMode}
                 />
                 <Input
                   label="Largo"
@@ -284,6 +307,7 @@ export function ProductDrawer({
                   min="0"
                   placeholder="80"
                   {...register("dimLength")}
+                  disabled={isViewMode}
                 />
                 <Select
                   label="Unidad"
@@ -292,6 +316,7 @@ export function ProductDrawer({
                   options={DIMENSION_UNIT_OPTIONS}
                   placeholder="cm"
                   fullWidth
+                  disabled={isViewMode}
                 />
               </div>
             </div>
@@ -299,7 +324,7 @@ export function ProductDrawer({
 
           <DialogFooter className="pt-4">
             <div className="flex w-full justify-end gap-2">
-              {initial && (
+              {initial && onDelete && !isViewMode && (
                 <Button
                   type="button"
                   appearance="ghost"
@@ -321,19 +346,35 @@ export function ProductDrawer({
                 onClick={onClose}
                 className="text-(--text-strong) rounded-full"
               >
-                Cancelar
+                {isViewMode ? "Cerrar" : "Cancelar"}
               </Button>
-              <Button
-                type="submit"
-                appearance="solid"
-                intent="primary"
-                size="xs"
-                leadingIcon={<Save className="h-3.5 w-3.5" />}
-                disabled={isSubmitting}
-                className="rounded-full"
-              >
-                {isSubmitting ? "Guardando..." : initial ? "Actualizar producto" : "Guardar producto"}
-              </Button>
+              {!isViewMode ? (
+                <Button
+                  type="submit"
+                  appearance="solid"
+                  intent="primary"
+                  size="xs"
+                  leadingIcon={<Save className="h-3.5 w-3.5" />}
+                  disabled={isSubmitting}
+                  className="rounded-full"
+                >
+                  {isSubmitting ? "Guardando..." : initial ? "Actualizar producto" : "Guardar producto"}
+                </Button>
+              ) : (
+                onEditRequest && initial && (
+                  <Button
+                    type="button"
+                    appearance="solid"
+                    intent="primary"
+                    size="xs"
+                    leadingIcon={<Edit className="h-3.5 w-3.5" />}
+                    onClick={() => onEditRequest?.(initial)}
+                    className="rounded-full"
+                  >
+                    Editar
+                  </Button>
+                )
+              )}
             </div>
           </DialogFooter>
         </form>
@@ -345,10 +386,13 @@ export function ProductDrawer({
 ProductDrawer.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
   onDelete: PropTypes.func,
   initial: ProductShape,
   categories: PropTypes.arrayOf(CategoryShape),
+  mode: PropTypes.oneOf(["create", "edit", "view"]),
+  onEditRequest: PropTypes.func,
+  title: PropTypes.string,
 };
 
 export default ProductDrawer;

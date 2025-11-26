@@ -47,6 +47,8 @@ export default function AdminCategoriesPage() {
   const [formError, setFormError] = useState("");
   const [pageAlert, setPageAlert] = useState(null);
 
+  const isEditing = Boolean(activeCategory);
+
   const columns = useMemo(() => buildCategoryColumns(), []);
   const categoriesPageSize = DEFAULT_PAGE_SIZE;
   const categoriesList = useMemo(() => categories ?? [], [categories]);
@@ -155,6 +157,11 @@ export default function AdminCategoriesPage() {
   });
 
   const isSaving = createCategoryMutation.isLoading || updateCategoryMutation.isLoading;
+  const submitButtonLabel = isSaving
+    ? "Guardando..."
+    : isEditing
+      ? "Guardar cambios"
+      : "Guardar categoría";
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -277,14 +284,14 @@ export default function AdminCategoriesPage() {
 
       <Dialog open={isDrawerOpen} onOpenChange={(open) => !open && handleCloseDrawer()}>
         <DialogContent variant="drawer" placement="right" className="max-w-md rounded-tl-3xl rounded-bl-3xl">
-          <form onSubmit={handleSubmit} className="flex h-full flex-col gap-5 p-6">
+          <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col gap-5 overflow-hidden p-6">
             <DialogHeader>
               <h2 className="text-lg font-semibold text-(--text-strong)">
-                {activeCategory ? "Editar categoría" : "Nueva categoría"}
+                {isEditing ? "Editar categoría" : "Nueva categoría"}
               </h2>
             </DialogHeader>
 
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-1 hide-scrollbar">
               {formError && (
                 <div className="rounded-2xl border border-(--color-error) bg-(--color-error)/10 px-4 py-2 text-xs font-medium text-(--color-error)">
                   {formError}
@@ -340,7 +347,7 @@ export default function AdminCategoriesPage() {
               )}
             </div>
 
-            <DialogFooter className="pt-4">
+            <DialogFooter className="mt-0 shrink-0 border-(--color-border) pt-4">
               <div className="flex w-full justify-end gap-3">
                 <Button
                   type="button"
@@ -359,7 +366,7 @@ export default function AdminCategoriesPage() {
                   disabled={isSaving}
                   leadingIcon={<Check className="h-4 w-4" />}
                 >
-                  {isSaving ? "Guardando..." : activeCategory ? "Actualizar categoría" : "Guardar categoría"}
+                  {submitButtonLabel}
                 </Button>
               </div>
             </DialogFooter>

@@ -115,28 +115,48 @@ export const categoriesModel = {
   },
 
   async delete(id) {
-    // Verificar si hay productos asociados
-    const checkQuery = `
-      SELECT COUNT(*)::int as count 
-      FROM productos 
-      WHERE categoria_id = $1;
-    `;
-    const { rows: checkRows } = await pool.query(checkQuery, [id]);
+    const client = await pool.connect();
 
-    if (checkRows[0].count > 0) {
-      throw new Error(
-        `No se puede eliminar la categoría porque tiene ${checkRows[0].count} producto(s) asociado(s)`
-      );
+    try {
+      await client.query('BEGIN');
+
+      const activeProductsQuery = `
+        SELECT COUNT(*)::int as count 
+        FROM productos 
+        WHERE categoria_id = $1
+          AND LOWER(COALESCE(status, 'activo')) != 'inactivo';
+      `;
+      const { rows: activeRows } = await client.query(activeProductsQuery, [id]);
+
+      if (activeRows[0].count > 0) {
+        throw new Error(
+          `No se puede eliminar la categoría porque tiene ${activeRows[0].count} producto(s) activo(s) asociado(s)`
+        );
+      }
+
+      const detachInactiveProductsQuery = `
+        UPDATE productos
+        SET categoria_id = NULL
+        WHERE categoria_id = $1
+          AND LOWER(COALESCE(status, 'activo')) = 'inactivo';
+      `;
+      await client.query(detachInactiveProductsQuery, [id]);
+
+      const deleteCategoryQuery = `
+        DELETE FROM categorias
+        WHERE categoria_id = $1
+        RETURNING categoria_id;
+      `;
+
+      const { rows } = await client.query(deleteCategoryQuery, [id]);
+      await client.query('COMMIT');
+      return rows.length > 0;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
-
-    const query = `
-      DELETE FROM categorias
-      WHERE categoria_id = $1
-      RETURNING categoria_id;
-    `;
-
-    const { rows } = await pool.query(query, [id]);
-    return rows.length > 0;
   },
 
   async slugExists(slug, excludeId = null) {

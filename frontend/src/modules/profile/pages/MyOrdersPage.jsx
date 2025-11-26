@@ -44,3 +44,5 @@ export const MyOrdersPage = () => {
     </div>
   );
 };
+
+export default MyOrdersPage;

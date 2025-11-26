@@ -204,3 +204,5 @@ export const WishlistPage = () => {
     </main>
   );
 };
+
+export default WishlistPage;

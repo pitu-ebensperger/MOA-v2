@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite';
-import { useAuth } from '@/context/auth-context.js';
+import { useAuth } from '@/context/AuthContext.jsx';
 import { cartApi } from '@/services/cart.api.js';
 import { productsApi } from '@/services/products.api.js';
 

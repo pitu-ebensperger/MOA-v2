@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePersistentState } from "@/hooks/usePersistentState.js";
-import { useAuth } from "@/context/auth-context.js";
+import { useAuth } from "@/context/AuthContext.jsx";
 import { wishlistApi } from "@/services/wishlist.api.js";
 import { toast } from "@/components/ui";
 

@@ -1,9 +1,3 @@
-/**
- * Constantes compartidas para estados de órdenes
- * Usadas en frontend y backend para garantizar consistencia
- */
-
-// Estados de la orden (workflow principal)
 export const ESTADOS_ORDEN = {
   BORRADOR: 'borrador',
   CONFIRMADO: 'confirmado',
@@ -147,24 +141,7 @@ export const METODOS_DESPACHO_OPTIONS = [
   }
 ];
 
-// Empresas de envío
-export const EMPRESAS_ENVIO = {
-  CHILEXPRESS: 'chilexpress',
-  BLUE_EXPRESS: 'blue_express',
-  STARKEN: 'starken',
-  CORREOS_CHILE: 'correos_chile',
-  POR_ASIGNAR: 'por_asignar'
-};
-
-export const EMPRESAS_ENVIO_VALIDAS = Object.values(EMPRESAS_ENVIO);
-
-export const EMPRESAS_ENVIO_OPTIONS = [
-  { value: EMPRESAS_ENVIO.CHILEXPRESS, label: 'Chilexpress' },
-  { value: EMPRESAS_ENVIO.BLUE_EXPRESS, label: 'Blue Express' },
-  { value: EMPRESAS_ENVIO.STARKEN, label: 'Starken' },
-  { value: EMPRESAS_ENVIO.CORREOS_CHILE, label: 'Correos de Chile' },
-  { value: EMPRESAS_ENVIO.POR_ASIGNAR, label: 'Por asignar' }
-];
+// Nota: Empresas de envío movidas a empresas-envio.js para evitar duplicación
 
 //Validaciones
 export function isValidEstadoOrden(estado) {
@@ -183,9 +160,7 @@ export function isValidMetodoDespacho(metodo) {
   return METODOS_DESPACHO_VALIDOS.includes(metodo);
 }
 
-export function isValidEmpresaEnvio(empresa) {
-  return EMPRESAS_ENVIO_VALIDAS.includes(empresa);
-}
+// isValidEmpresaEnvio -> Ver empresas-envio.js
 
 //Labels
 export function getEstadoOrdenLabel(estado) {
@@ -208,7 +183,4 @@ export function getMetodoDespachoLabel(metodo) {
   return option?.label || metodo;
 }
 
-export function getEmpresaEnvioLabel(empresa) {
-  const option = EMPRESAS_ENVIO_OPTIONS.find(o => o.value === empresa);
-  return option?.label || empresa;
-}
+// getEmpresaEnvioLabel -> Ver empresas-envio.js

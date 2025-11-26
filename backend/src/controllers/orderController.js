@@ -4,7 +4,7 @@ import { getCartItems } from "../models/cartModel.js";
 import { sendOrderConfirmationEmail } from "../services/emailService.js";
 import { pool } from "../../database/config.js";
 import { handleError } from "../utils/error.utils.js";
-import { METODOS_PAGO_VALIDOS } from "../../shared/constants/payment-methods.js";
+import { METODOS_PAGO_VALIDOS } from "../../../shared/constants/metodos-pago.js";
 
 const getRequestUserId = (req) => req.user?.usuario_id ?? req.user?.id;
 

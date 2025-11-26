@@ -4,20 +4,6 @@ import { getUserByIdModel } from "../models/usersModel.js";
 import "dotenv/config";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const DEMO_USER_EMAILS = new Set(["demo@moa.cl", "demo@moal.cl"]);
-
-// Design bypass: emails que actúan como admin para acelerar diseño UI
-// Variable de entorno: DESIGN_BYPASS_EMAILS (lista separada por comas)
-let DESIGN_BYPASS_SET = new Set();
-if (process.env.DESIGN_BYPASS_EMAILS) {
-  DESIGN_BYPASS_SET = new Set(
-    process.env.DESIGN_BYPASS_EMAILS
-      .split(',')
-      .map(e => e.trim().toLowerCase())
-      .filter(Boolean)
-  );
-}
-
 /**
  * Middleware para verificar que el usuario es administrador
  * Requiere token válido y rol de administrador
@@ -73,10 +59,8 @@ export const verifyAdmin = async (req, res, next) => {
     // Verificar que el usuario tiene rol de administrador
     const roleCode = user.rol_code?.toUpperCase();
     const isAdminUser = roleCode === 'ADMIN';
-    const normalizedEmail = user.email?.toLowerCase();
-    const isDemoUser = normalizedEmail && (DEMO_USER_EMAILS.has(normalizedEmail) || DESIGN_BYPASS_SET.has(normalizedEmail));
 
-    if (!isAdminUser && !isDemoUser) {
+    if (!isAdminUser) {
       throw new ForbiddenError("Acceso denegado. Se requieren privilegios de administrador");
     }
 
@@ -86,7 +70,7 @@ export const verifyAdmin = async (req, res, next) => {
       usuario_id: user.id,
       email: user.email,
       nombre: user.nombre,
-      role_code: isDemoUser ? "ADMIN" : user.rol_code,
+      role_code: user.rol_code,
       public_id: user.publicId
     };
 
@@ -122,9 +106,7 @@ export const optionalAdminVerify = async (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await getUserByIdModel(decoded.id);
     
-    const normalizedEmail = user?.email?.toLowerCase();
-    const isDemoUser = normalizedEmail && (DEMO_USER_EMAILS.has(normalizedEmail) || DESIGN_BYPASS_SET.has(normalizedEmail));
-    if (user && (user.rol_code?.toUpperCase() === 'ADMIN' || isDemoUser)) {
+    if (user && user.rol_code?.toUpperCase() === 'ADMIN') {
       req.user = {
         id: user.id,
         usuario_id: user.id,

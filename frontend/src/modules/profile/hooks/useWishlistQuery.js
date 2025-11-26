@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite';
 import { wishlistApi } from '@/services/wishlist.api.js';
 import { toast } from '@/components/ui';
-import { useAuth } from '@/context/auth-context.js';
+import { useAuth } from '@/context/AuthContext.jsx';
 
 const WISHLIST_QUERY_KEY = ['wishlist'];
 

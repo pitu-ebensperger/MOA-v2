@@ -5,7 +5,7 @@ import ProductCard from "@/modules/products/components/ProductCard.jsx";
 import { useProducts } from "@/modules/products/hooks/useProducts.js";
 import { productsApi } from "@/services/products.api.js";
 import { useWishlistQuery, useToggleWishlist, useClearWishlist } from "@/modules/profile/hooks/useWishlistQuery.js";
-import { useCartContext } from "@/context/cart-context.js";
+import { useCartContext } from "@/context/CartContext.jsx";
 import { Button } from "@/components/shadcn/ui/button.jsx";
 import { EmptyPlaceholder, EmptyPlaceholderDescription, EmptyPlaceholderIcon, EmptyPlaceholderTitle } from "@/components/shadcn/ui/empty-state.jsx";
 import { Skeleton } from "@/components/ui/Skeleton.jsx";

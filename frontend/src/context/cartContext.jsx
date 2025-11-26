@@ -1,5 +1,18 @@
+import { createStrictContext } from "@/context/createStrictContext.js"
 import { useCart } from "@/modules/cart/hooks/useCart"
-import { CartContext } from "@/context/cart-context.js"
+
+// ============================================
+// CONTEXTO Y HOOK
+// ============================================
+
+export const [CartContext, useCartContext] = createStrictContext("Cart", {
+  displayName: "CartContext",
+  errorMessage: "useCartContext debe usarse dentro de CartProvider",
+});
+
+// ============================================
+// PROVIDER
+// ============================================
 
 export const CartProvider = ({ children }) => {
   const cartState = useCart();
@@ -9,7 +22,3 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
-
-// Re-export hook para mantener compatibilidad con imports existentes
-// Nota: para usar el hook importa desde "./cart-context.js"
-// export { useCartContext } from "./cart-context.js";

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAuth } from "@/context/auth-context.js";
+import { useAuth } from "@/context/AuthContext.jsx";
 import { API_PATHS } from "@/config/api-paths.js";
-import { alerts } from '@/utils/alerts/index.js';
+import { alerts } from '@/utils/alerts.js';
 import {
   useCartQuery,
   useAddToCart,

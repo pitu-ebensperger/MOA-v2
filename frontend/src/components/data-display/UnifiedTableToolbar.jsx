@@ -1,22 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { cn } from "@/utils/classNames.js";
-import {
-  Search,
-  ListFilter,
-  LayoutGrid,
-  Rows3,
-  Download,
-  RefreshCw,
-  Plus,
-  Columns3,
-  X,
-  SlidersHorizontal,
-  ChevronDown,
-  FileDown,
-  FileSpreadsheet,
-  FileJson,
-} from "lucide-react";
+import { Search, LayoutGrid, Rows3, Download, RefreshCw, Plus, Columns3, X, SlidersHorizontal, ChevronDown, FileDown, FileJson } from "lucide-react";
 import { Button, IconButton } from "@/components/ui/Button.jsx";
 import { SelectGhost } from "@/components/ui/Select.jsx";
 import {
@@ -87,7 +72,6 @@ import {
  * />
  */
 export function UnifiedTableToolbar({
-  // Table instance (from TanStack Table)
   table,
 
   // Search
@@ -110,7 +94,7 @@ export function UnifiedTableToolbar({
   // Export
   exportMenu = false,
   onExport,
-  exportFormats = ["csv", "json", "xlsx"],
+  exportFormats = ["csv", "json"],
   exportLabel = "Exportar",
 
   // Density
@@ -185,7 +169,6 @@ export function UnifiedTableToolbar({
   const exportIcons = {
     csv: <FileDown size={14} />,
     json: <FileJson size={14} />,
-    xlsx: <FileSpreadsheet size={14} />,
   };
 
   // Density icons
@@ -489,12 +472,6 @@ export function UnifiedTableToolbar({
                   <span className="ml-2">JSON</span>
                 </DropdownMenuItem>
               )}
-              {exportFormats.includes("xlsx") && (
-                <DropdownMenuItem onSelect={() => onExport?.("xlsx")}>
-                  {exportIcons.xlsx}
-                  <span className="ml-2">Excel (XLSX)</span>
-                </DropdownMenuItem>
-              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -565,7 +542,7 @@ UnifiedTableToolbar.propTypes = {
   // Export
   exportMenu: PropTypes.bool,
   onExport: PropTypes.func,
-  exportFormats: PropTypes.arrayOf(PropTypes.oneOf(["csv", "json", "xlsx"])),
+  exportFormats: PropTypes.arrayOf(PropTypes.oneOf(["csv", "json"])),
   exportLabel: PropTypes.string,
 
   // Density

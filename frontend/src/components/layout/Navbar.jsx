@@ -2,9 +2,8 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { ShoppingCart, LogOut, LayoutDashboard, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/auth-context.js';
-import { isDesignBypassUser } from '@/context/auth-context.js';
-import { useCartContext } from '@/context/cart-context.js';
+import { useAuth } from '@/context/AuthContext.jsx';
+import { useCartContext } from '@/context/CartContext.jsx';
 import { API_PATHS } from '@/config/api-paths.js';
 
 const NAV_ITEMS = [
@@ -17,19 +16,9 @@ const NAV_ITEMS = [
 export function Navbar({ onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, isAdmin, logout, user } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const { cartItems } = useCartContext();
-  const [forceClientMode, setForceClientMode] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('forceClientMode');
-      setForceClientMode(stored === '1');
-    } catch (e) { // eslint-disable-line no-unused-vars
-      // Ignorar errores al leer localStorage
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,8 +36,6 @@ export function Navbar({ onNavigate }) {
     logout();
     navigate(API_PATHS.home.landing);
   };
-
-  const designBypass = user && isDesignBypassUser(user);
 
   return (
     <div className={`nav-container shadow-md fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md ${isScrolled ? 'scrolled' : ''}`}>
@@ -88,7 +75,7 @@ export function Navbar({ onNavigate }) {
           )}
           {isAuthenticated && (
             <>
-              {isAdmin && !forceClientMode ? (
+              {isAdmin ? (
                 <>
                   <Link
                     to={API_PATHS.admin.dashboard}

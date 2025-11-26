@@ -4,7 +4,7 @@ import { X, Trash2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button.jsx"
 import { Price } from "@/components/data-display/Price.jsx"
 
-import { useCartContext } from "@/context/cart-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
 
 import { resolveProductPrice } from "@/modules/products/utils/products.js"
 import { QuantityControl } from '@/components/cart/QuantityControl.jsx'

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Minus, Plus } from "lucide-react";
 import { buttonClasses } from '@/components/shadcn/ui/index.js';
 
-// Reusable quantity control for cart items
+// Reusable quantity 
 export function QuantityControl({ value, onChange, min = 1, max, disabled = false, className = '' }) {
   const canDecrement = !disabled && value > min;
   const canIncrement = !disabled && (typeof max !== 'number' || value < max);

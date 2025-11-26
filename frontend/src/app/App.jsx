@@ -54,10 +54,6 @@ const AdminCategoriesPage = lazy(() => import('@/modules/admin/pages/AdminCatego
 const CustomersPage = lazy(() => import('@/modules/admin/pages/CustomersPage.jsx'))
 const StoreSettingsPage = lazy(() => import('@/modules/admin/pages/StoreSettingsPage.jsx'))
 
-// Lazy load - Modals demo (solo desarrollo)
-const ModalsDemo = lazy(() => import('@/modules/auth/pages/ModalsDemo.jsx'))
-const TestRegionesPage = lazy(() => import('@/pages/TestRegionesPage.jsx'))
-
 import '@/styles/global.css'
 import '@/styles/tokens.css'
 import '@/styles/components/buttons.css'
@@ -220,9 +216,6 @@ export const App = () => {
                 <Route path={admin.customers} element={<EntornoAdmin><CustomersPage /></EntornoAdmin>} />
                 <Route path={admin.settings} element={<EntornoAdmin><StoreSettingsPage /></EntornoAdmin>} />
               </Route>
-
-              <Route path='/modals-demo' element={<ModalsDemo />} />
-              <Route path='/test-regiones' element={<TestRegionesPage />} />
             
             {/* Error Routes */}
               <Route path="/error/500" element={<ServerErrorPage statusCode={500} />} />

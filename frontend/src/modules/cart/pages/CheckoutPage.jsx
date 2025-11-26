@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Trash2, MapPin, CreditCard, MessageSquareHeart, ShoppingCart, Banknote, Wallet, Smartphone, CircleDollarSign, CheckCircle2, Truck, Store, Home } from "lucide-react";
-import { useCartContext } from "@/context/cart-context.js"
-import { useAuth } from "@/context/auth-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
+import { useAuth } from "@/context/AuthContext.jsx"
 import { useAddresses, useCreateAddress } from "@/hooks/useAddresses.query.js"
 import { useStoreConfig } from "@/hooks/useStoreConfig.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/radix/Dialog.jsx"
@@ -12,12 +12,12 @@ import { Price } from "@/components/data-display/Price.jsx"
 import { API_PATHS } from "@/config/api-paths.js"
 import { resolveProductPrice } from "@/modules/products/utils/products.js"
 import { METODOS_DESPACHO } from "@/utils/orderTracking.js"
-import { METODOS_PAGO, METODOS_PAGO_OPTIONS } from "@/shared/constants/payment-methods.js"
+import { METODOS_PAGO, METODOS_PAGO_OPTIONS } from "../../../../../shared/constants/metodos-pago.js"
 import ShippingMethodSelector from "@/modules/cart/components/ShippingMethodSelector.jsx"
 import { useCreateOrder } from "@/modules/cart/hooks/useCheckoutQuery.js";
-import { CHILE_REGIONES } from "@/config/chile-regiones.js"
+import { REGIONES } from "../../../../../shared/constants/ubicaciones.js"
 import '@/styles/alerts.css'
-import { alerts, alertOrderSuccess, alertOrderError, alertGlobalError } from '@/utils/alerts/index.js'
+import { alerts, alertOrderSuccess, alertOrderError, alertGlobalError } from '@/utils/alerts.js'
 import { useErrorHandler, useFormErrorHandler } from '@/hooks/useErrorHandler.js';
 import {
   Button,
@@ -65,7 +65,7 @@ const addressShape = PropTypes.shape({
   calle: PropTypes.string,
   comuna: PropTypes.string,
   ciudad: PropTypes.string,
-  region: PropTypes.oneOf(CHILE_REGIONES),
+  region: PropTypes.string,
 });
 
 const userShape = PropTypes.shape({
@@ -561,8 +561,8 @@ export const CheckoutPage = ({
                                 <SelectValue placeholder="Seleccionar región" />
                               </SelectTrigger>
                               <SelectContent className="w-[--radix-select-trigger-width] max-h-72 overflow-auto">
-                                {CHILE_REGIONES.map(r => (
-                                  <SelectItem key={r} value={r}>{r}</SelectItem>
+                                {REGIONES.map(r => (
+                                  <SelectItem key={r.codigo} value={r.nombre}>{r.nombre}</SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>

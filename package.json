@@ -19,6 +19,7 @@
     "f:dev": "npm run -w frontend dev",
     "f:lint": "npm run -w frontend lint",
     "b:dev": "npm run -w backend dev || echo \"(backend vacío)\"",
+    "test": "npm run test --workspaces",
     "test:watch": "npm test -- --watch",
     "test:coverage": "npm test -- --coverage"
   },
@@ -28,6 +29,5 @@
     "vercel": "^48.10.11"
   },
   "dependencies": {
-    "@vercel/speed-insights": "^1.2.0"
   }
 }

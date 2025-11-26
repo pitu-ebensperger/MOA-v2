@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "vite build",
     "build:analyze": "vite build && node scripts/analyze-bundle.js",
-    "analyze": "node scripts/analyze-bundle.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "snapshot": "npm ls --depth=0 --json > ../snapshots/frontend-deps.json",
@@ -15,9 +14,7 @@
     "test:ui-tokens": "node src/config/__tests__/ui-tokens.test.js",
     "test:accessibility": "node src/config/__tests__/accessibility.test.js",
     "test:config": "npm run test:status-maps && npm run test:ui-tokens && npm run test:accessibility",
-    "test:auth": "node scripts/test-auth-mock.js",
-    "export:tokens": "node scripts/export-tokens.js",
-    "test": "npm run test:config && npm run test:auth"
+    "test": "npm run test:config"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -49,7 +46,6 @@
     "recharts": "^3.4.1",
     "sweetalert2": "^11.26.3",
     "tailwind-merge": "^3.3.1",
-    "xlsx": "^0.18.5",
     "zod": "^4.1.12"
   },
   "devDependencies": {

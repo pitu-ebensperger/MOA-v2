@@ -6,7 +6,7 @@ import {
   getRegionCodeByName,
   getComunasByRegion,
   normalizeRegionName 
-} from "../../shared/constants/locations.js";
+} from "../../../shared/constants/ubicaciones.js";
 
 // Helper para obtener usuario_id del request
 const getRequestUserId = (req) => req.user?.usuario_id ?? req.user?.id;
@@ -253,7 +253,7 @@ export const deleteAddress = async (req, res, next) => {
  */
 export const getRegiones = async (req, res, next) => {
   try {
-    const { REGIONES } = await import('../../../shared/constants/locations.js');
+    const { REGIONES } = await import('../../../shared/constants/ubicaciones.js');
     
     res.status(200).json({
       success: true,

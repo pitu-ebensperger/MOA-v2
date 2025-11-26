@@ -1,5 +1,4 @@
 import { apiClient } from './api-client.js';
-import { logger } from '@/utils/logger.js';
 
 /**
  * @returns {Promise<Object>} Configuración de la tienda
@@ -11,7 +10,7 @@ export const getStoreConfig = async () => {
   } catch (error) {
     // Solo loguear en desarrollo - la app tiene valores por defecto
     if (import.meta.env.DEV) {
-      logger.warn('[configApi.get] No se pudo obtener configuración del servidor:', error.message);
+      console.warn('[configApi.get] No se pudo obtener configuración del servidor:', error.message);
     }
     throw error;
   }

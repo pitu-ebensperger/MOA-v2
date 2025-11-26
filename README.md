@@ -1,23 +1,16 @@
 # Proyecto MOA - Marketplace E-commerce
 
-> **Estado del proyecto:** 🟢 Funcional (85% completo) | **Última actualización:** Noviembre 2025
+Marketplace full-stack (React 19 + Express 5 + PostgreSQL) para la simulación de una tienda chilena.
+Este README mantiene solo la información esencial para revisión rápida; la documentación detallada ahora vive en `.notes/reference/README_EXTENDIDO.md`.
 
-## 📊 Estado Actual
+## Información útil
 
-```
-✅ Core Features:        100%  ████████████████████
-✅ Admin Panel:          95%   ███████████████████░
-✅ Integración:          90%   ██████████████████░░
-⚠️  Testing:             5%    █░░░░░░░░░░░░░░░░░░░
-⚠️  Performance:         60%   ████████████░░░░░░░░
-```
+- **Estado:** 🟢 Funcional (85% completo) · **Última actualización:** Noviembre 2025
+- **Frontend:** React 19.1.1 + Vite 7.1.7
+- **Backend:** Express 5.1.0 + PostgreSQL
+- `jwt-decode` ya está instalado (ver `frontend/package.json`) para monitorear la expiración de sesión del cliente.
 
-**Ver estado completo:** [docs/ESTADO_PROYECTO_NOV_2025.md](./docs/ESTADO_PROYECTO_NOV_2025.md)  
-**Resumen visual:** [docs/RESUMEN_VISUAL.md](./docs/RESUMEN_VISUAL.md)
-
----
-
-## 🔐 Usuarios de Prueba
+### Usuarios de Prueba
 
 | Usuario | Email | Contraseña | Rol |
 |---------|-------|------------|-----|
@@ -25,324 +18,35 @@
 | Demo | `demo@moa.cl` | `demo` / `admin` / `123456` | Cliente |
 | Cliente | `cliente@mail.cl` | `demo` / `admin` / `123456` | Cliente |
 
----
+### Instalación rápida
 
-
-## 🚀 Quick Start
-
-### 1. Instalar Dependencias
-
-```bash
-# Desde la raíz del proyecto
-npm install
-```
-
-### 2. Configurar Base de Datos
-
-```bash
-# Crear schema completo
-npm run -w backend db
-
-# Sembrar datos de prueba
-npm run -w backend seed:all
-```
-
-### 3. Ejecutar Aplicación
-
-```bash
-# Frontend (puerto 5174)
-npm run -w frontend dev
-
-# Backend (puerto 4000)
-npm run -w backend dev
-```
-
-### 4. Acceder a la Aplicación
-
-- **Frontend:** http://localhost:5174
-- **Backend API:** http://localhost:4000
-- **Login como Admin:** admin@moa.cl / admin
+1. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
+2. **Configurar base de datos**
+   ```bash
+   npm run -w backend db
+   npm run -w backend seed:all
+   ```
+3. **Levantar servicios**
+   ```bash
+   npm run -w frontend dev   # http://localhost:5174
+   npm run -w backend dev    # http://localhost:4000
+   ```
 
 ---
 
-## 📦 Scripts Disponibles
+### Github
 
-### Frontend
-```bash
-npm run -w frontend dev      # Desarrollo (Vite)
-npm run -w frontend build    # Build producción
-npm run -w frontend preview  # Preview build
-npm run -w frontend lint     # Linting
-npm run -w frontend test     # Tests
-```
-
-### Backend
-```bash
-npm run -w backend dev       # Desarrollo (nodemon)
-npm run -w backend start     # Producción
-npm run -w backend test      # Tests (pg-mem + HTTP limitados en sandbox)
-```
-
-### Base de Datos
-
-```bash
-# Schema completo
-npm run -w backend db              # Crear todas las tablas
-npm run -w backend db:reset        # Recrear schema
-
-# Sembrar datos (individual)
-npm run -w backend seed:users      # Crea admin@moa.cl y usuarios base
-npm run -w backend seed:clients    # Clientes de ejemplo
-npm run -w backend seed:categories # Categorías iniciales
-npm run -w backend seed:products   # Productos de prueba
-npm run -w backend seed:addresses  # Direcciones ejemplo
-npm run -w backend seed:carts      # Carritos prellenados
-npm run -w backend seed:wishlists  # Listas de deseos ejemplo
-npm run -w backend seed:orders     # Órdenes de prueba
-
-# Sembrar todo
-npm run -w backend seed:all        # Ejecuta todos los seeds en orden
-```
-
-### Testing en entornos restringidos
-
-- El comando `npm run -w backend test` activa `USE_PG_MEM=true` y `SKIP_HTTP_TESTS=true` para cargar todo el schema dentro de `pg-mem` y evitar sockets bloqueados.
-- Los tests que dependen de transacciones reales (`__tests__/stockValidation.test.js`) y los que usan Supertest quedan omitidos automáticamente en este modo.
-- Para ejecutar la suite completa contra un PostgreSQL real y los endpoints HTTP, asegúrate de tener la BD disponible y ejecuta:
-
-```bash
-cd backend
-USE_PG_MEM=false SKIP_HTTP_TESTS=false NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand
-```
+- Flujo GitHub Flow:
+  - `feature/` nuevas funcionalidades.
+  - `fix/` o `bugfix/` correcciones puntuales.
+  - `chore/` mantenimiento.
+  - `refactor/` cambios estructurales.
+- Componentes compartidos viven en `frontend/src/components` cuando se usan en 2+ vistas.
 
 ---
-
-## 🏗️ Estructura del Proyecto
-
-```
-MOA/
-├── backend/                    # API REST (Node.js + Express)
-│   ├── routes/                 # 11 archivos de rutas
-│   ├── src/
-│   │   ├── controllers/        # 13 controllers
-│   │   ├── models/             # 10 models (PostgreSQL)
-│   │   ├── middleware/         # Auth + Admin verification
-│   │   └── services/           # Email service
-│   └── database/
-│       ├── schema/             # DDL y migraciones
-│       └── seed/               # 8 seeders
-│
-├── frontend/                   # SPA (React 19 + Vite)
-│   ├── src/
-│   │   ├── modules/            # 11 módulos de features
-│   │   │   ├── admin/          # Panel administrativo
-│   │   │   ├── auth/           # Login, registro, reset
-│   │   │   ├── cart/           # Carrito y checkout
-│   │   │   ├── products/       # Catálogo y detalle
-│   │   │   ├── profile/        # Perfil de usuario
-│   │   │   └── orders/         # Gestión de órdenes
-│   │   ├── components/         # 40+ componentes UI
-│   │   ├── services/           # 15 API clients
-│   │   ├── hooks/              # Custom hooks
-│   │   └── context/            # Context providers
-│   └── public/
-│
-├── docs/                       # Documentación técnica
-│   ├── ESTADO_PROYECTO_NOV_2025.md  # Estado completo
-│   ├── RESUMEN_VISUAL.md            # Resumen gráfico
-│   ├── TODO.md                      # Tareas pendientes
-│   └── misDOCS/                     # Documentación detallada
-│
-└── scripts/                    # Scripts de utilidad
-```
-
----
-
-## 🎯 Funcionalidades Implementadas
-
-### ✅ Core Features (100%)
-
-- **Autenticación completa**
-  - Login/Registro con JWT
-  - Reset de contraseña con email
-  - Protección de rutas privadas
-  - Roles (admin/customer)
-
-- **Catálogo de Productos**
-  - Listado con paginación
-  - Filtros por categoría y precio
-  - Búsqueda de productos
-  - Vista detallada
-  - **Validación de stock en tiempo real**
-
-- **Carrito de Compras**
-  - Agregar/eliminar productos
-  - Actualizar cantidades
-  - Persistencia en BD
-  - **Validación de stock antes de compra**
-
-- **Proceso de Checkout**
-  - Selección de dirección
-  - Métodos de pago
-  - Vista previa del pedido
-  - Confirmación con modal
-  - Página de confirmación rediseñada
-
-- **Gestión de Órdenes**
-  - Historial de compras
-  - Estados de pago y envío
-  - Timeline visual
-  - Tracking de envío
-
-- **Lista de Deseos**
-  - Agregar/eliminar favoritos
-  - Mover a carrito
-  - Vista en perfil
-
-- **Perfil de Usuario**
-  - Información personal
-  - Historial de compras
-  - Gestión de direcciones
-  - Lista de favoritos
-
-### ✅ Panel de Administración (95%)
-
-- **Dashboard**
-  - Métricas en tiempo real
-  - Gráficos de ventas
-  - Alertas de stock
-  - Productos más vendidos
-
-- **Gestión de Órdenes**
-  - Vista completa de pedidos
-  - Filtros avanzados
-  - Actualización de estados
-  - Agregar tracking
-  - Exportar a CSV
-
-- **Gestión de Clientes**
-  - CRUD completo
-  - Historial de compras
-  - Cambio de estados
-  - Filtros y búsqueda
-
-- **Gestión de Productos**
-  - CRUD completo
-  - Control de stock
-  - Asignación de categorías
-  - Desactivación de productos
-
-- **Configuración de Tienda**
-  - Información de contacto
-  - Redes sociales
-  - Horarios de atención
-  - Footer dinámico
-
----
-
-## 🛠️ Tecnologías
-
-### Frontend
-- React 19.1.1
-- Vite 7.1.7
-- TanStack Query v5 (estado servidor)
-- React Router v7
-- TailwindCSS 4
-- Radix UI (componentes)
-- Lucide React (iconos)
-- Recharts (gráficos)
-
-### Backend
-- Node.js + Express 5.1.0
-- PostgreSQL
-- JWT (autenticación)
-- bcryptjs (passwords)
-- Nodemailer (emails)
-- Stripe SDK (preparado)
-
----
-
-## ⚙️ Configuración JWT y Sesiones
-
-### Tiempos de Expiración del Token
-
-El proyecto incluye un sistema de monitoreo de sesión que:
-- ⚠️ Avisa 5 minutos antes de que expire la sesión
-- 🔄 Permite extender la sesión activa
-- 🚪 Hace logout automático cuando expira
-- 📧 Muestra alerta de "Sesión expirada"
-
-**Configurar tiempos en `backend/.env`:**
-
-```bash
-# Clientes regulares (default: 24 horas)
-JWT_EXPIRES_IN=24h
-
-# Administradores (default: 7 días)
-JWT_ADMIN_EXPIRES_IN=7d
-
-# Ejemplos válidos: 30m, 1h, 12h, 24h, 2d, 7d, 30d
-```
-
-**⚡ Valores recomendados:**
-- **Desarrollo**: `JWT_EXPIRES_IN=1h` (clientes), `JWT_ADMIN_EXPIRES_IN=24h` (admin)
-- **Producción**: `JWT_EXPIRES_IN=24h` (clientes), `JWT_ADMIN_EXPIRES_IN=7d` (admin)
-- **Alta seguridad**: `JWT_EXPIRES_IN=30m` (clientes), `JWT_ADMIN_EXPIRES_IN=2d` (admin)
-
-**📦 Dependencia requerida (frontend):**
-```bash
-npm install jwt-decode
-```
-
----
-
-## ⚠️ Pendientes para Producción
-
-### 🔴 Crítico
-- [ ] Pasarela de pago: se mantiene simulada (fuera de alcance)
-- [ ] Remover logs sensibles
-- [ ] Implementar logger estructurado
-
-### 🟡 Importante
-- [ ] Testing completo (> 70% cobertura)
-- [ ] Optimización de performance (bundle < 500KB)
-- [ ] Documentación API (Swagger)
-
-### 🟢 Opcional
-- [ ] Notificaciones automáticas por email
-- [ ] Integración con APIs de couriers
-- [ ] Sistema de cupones/descuentos
-
-**Ver roadmap completo:** [docs/TODO.md](./docs/TODO.md)
-
-
-**`docs/`**
-
-- [Estructura proyecto y Progreso](./docs/STATUS.md)
-- [Listado de dependecias](./docs/DEPENDENCIAS.md)
-
-### Otros
-
-- [Tailwind_Cheatsheet] (https://www.creative-tim.com/twcomponents/cheatsheet/)
-
----
-
-## Convenciones
-
-### Github Flow
-
-**Ramas/Branches**
-
-- feature/ _(desarrollo de nuevas funcionalidades, ej. feature/add-user-authentication)_
-- fix/ _(correción errores, ej. bugfix/issue-123-login-error)_
-- chore/ _(tareas mantenimiento o administración, ej. chore/update-dependencies)_
-- refactor/ _(restructuración código, ej. refactor/sist-modulos)_
-
-**Organización Proyecto**
-
-- Dejar en componentes si es un elemento genérico o si aparece en 2+ páginas.
-
--------------------------------------------------------
 
 ## Requerimientos
 
@@ -354,13 +58,13 @@ npm install jwt-decode
 4. Diseñar las tablas de la base de datos y sus relaciones.
 5. Diseñar el contrato de datos de la API REST.
 
-### Hito 2: Desarrollo Frontend\*\*
+### Hito 2: Desarrollo Frontend**
 
-1. Crear un nuevo proyecto usando npx e instalar las dependencias.\*\*
-2. Utilizar React Router para la navegación entre rutas.\*\*
-3. Reutilizar componentes haciendo uso del paso de props y renderización dinámica.\*\*
-4. Hacer uso de los hooks para un desarrollo ágil y reactivo.\*\*
-5. Utilizar Context para el manejo del estado global.\*\*
+1. Crear un nuevo proyecto usando npx e instalar las dependencias.**
+2. Utilizar React Router para la navegación entre rutas.**
+3. Reutilizar componentes haciendo uso del paso de props y renderización dinámica.**
+4. Hacer uso de los hooks para un desarrollo ágil y reactivo.**
+5. Utilizar Context para el manejo del estado global.**
 
 ### Hito 3: Desarrollo Backend
 
@@ -405,6 +109,28 @@ npm install jwt-decode
 
 
 -----------------------------------
+
+## Instalación manual de base de datos (setup local)
+
+Si necesitas crear y poblar la base de datos localmente sin scripts automáticos, sigue estos pasos:
+
+1. **Crear la base de datos:**
+   ```bash
+   psql -U postgres -c "CREATE DATABASE moa;"
+   ```
+2. **Aplicar el schema:**
+   ```bash
+   psql -U postgres -d moa -f backend/database/schema/DDL_base.sql
+   psql -U postgres -d moa -f backend/database/schema/DDL_admin.sql
+   ```
+3. **Poblar datos iniciales:**
+   ```bash
+   npm run -w backend seed:all
+   ```
+
+Esto dejará la base de datos lista con datos de ejemplo para desarrollo y pruebas.
+
+> Nota: No se recomienda resetear la base de datos en producción. Usa migraciones o scripts específicos para cambios estructurales en ambientes productivos.
 
 ## Testing (jest)
 

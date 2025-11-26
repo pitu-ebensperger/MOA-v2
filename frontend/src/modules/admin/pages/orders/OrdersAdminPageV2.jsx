@@ -8,7 +8,6 @@ import {
   Eye,
   AlertCircle,
 } from "lucide-react";
-import { utils as XLSXUtils, writeFile as writeXLSXFile } from 'xlsx';
 
 import { useAdminOrders } from '@/modules/admin/hooks/useAdminOrders.js';
 import { ordersAdminApi } from '@/services/ordersAdmin.api.js';
@@ -71,7 +70,6 @@ const DEFAULT_FILTERS = {
 const EXPORT_FORMATS = [
   { label: 'CSV', value: 'csv', extension: 'csv' },
   { label: 'JSON', value: 'json', extension: 'json' },
-  { label: 'Excel (XLSX)', value: 'xlsx', extension: 'xlsx' },
 ];
 
 const EXPORT_CHUNK_SIZE = 200;
@@ -208,14 +206,6 @@ const downloadBlobFile = (content, type, extension) => {
   link.click();
   document.body.removeChild(link);
   window.URL.revokeObjectURL(url);
-};
-
-const exportRowsToXlsx = (rows = []) => {
-  if (!rows.length) return;
-  const worksheet = XLSXUtils.json_to_sheet(rows);
-  const workbook = XLSXUtils.book_new();
-  XLSXUtils.book_append_sheet(workbook, worksheet, 'Pedidos');
-  writeXLSXFile(workbook, buildExportFileName('xlsx'));
 };
 
 // Sin componente OrderFilters - se usa TableToolbar inline
@@ -422,8 +412,6 @@ export default function OrdersAdminPage() {
           'application/json',
           'json',
         );
-      } else if (targetFormat === 'xlsx') {
-        exportRowsToXlsx(formattedRows);
       } else {
         const csvContent = buildCsvFromRows(formattedRows);
         downloadBlobFile(csvContent, 'text/csv;charset=utf-8;', 'csv');

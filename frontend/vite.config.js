@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => {
         '@utils': path.resolve(__dirname, './src/utils'),
         '@config': path.resolve(__dirname, './src/config'),
         '@icons': path.resolve(__dirname, './src/utils/icons'),
+        '@shared': path.resolve(__dirname, '../shared'),
       },
     },
     build: {
@@ -109,6 +110,10 @@ export default defineConfig(({ mode }) => {
       hmr: {
         overlay: true,
       },
+      fs: {
+        // Permitir importar archivos desde la carpeta shared en la raíz del repo
+        allow: [path.resolve(__dirname, '../shared')],
+      },
       watch: {
         usePolling: false,
         interval: 100,
@@ -119,6 +124,8 @@ export default defineConfig(({ mode }) => {
         'react',
         'react-dom',
         'react-router-dom',
+        // Force pre-bundling of local shared lib used via alias
+        '@shared/lib/react-query-lite',
       ],
     },
   };

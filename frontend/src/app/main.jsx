@@ -1,14 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@/lib/react-query-lite'
+import { QueryClient } from '@shared/lib/react-query-lite'
+import { QueryClientProvider } from '@/lib/react-query-lite'
 import { handleAuthError } from '@/utils/handleAuthError.js'
 import { AuthProvider } from "@/context/AuthContext.jsx"
-import { CartProvider } from "@/context/cartContext.jsx"
+import { CartProvider } from "@/context/CartContext.jsx"
 
 import { App } from '@/app/App.jsx'
 import { MessageProvider } from '@/components/ui'
 import { observability } from '@/services/observability.js';
+
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import '../styles/global.css'
 import '../styles/tokens.css'
@@ -178,6 +181,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <CartProvider>
             <App />
             <MessageProvider />
+            <SpeedInsights />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>

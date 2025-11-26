@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Lock, X, Clock, ShoppingCart, PartyPopper, AlarmClock } from "lucide-react";
-import { useAuth, isAdminRole } from '@/context/auth-context.js'
+import { useAuth, isAdminRole } from '@/context/AuthContext.jsx'
 import { useRedirectAfterAuth } from '@/modules/auth/hooks/useRedirectAuth.jsx'
 import { Button } from '@/components/ui/Button.jsx'
 import { API_PATHS } from '@/config/api-paths.js'

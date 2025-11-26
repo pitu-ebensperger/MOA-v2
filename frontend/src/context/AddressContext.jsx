@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/context/auth-context'
-import { AddressContext } from './address-context-state.js'
+import { createStrictContext } from '@/context/createStrictContext'
+import { useAuth } from '@/context/AuthContext.jsx'
 import {
   getAddresses,
   createAddress,
@@ -9,6 +9,21 @@ import {
   deleteAddress,
 } from '@/services/address.api';
 
+// ============================================
+// CONTEXTO Y HOOK
+// ============================================
+
+const [AddressContext, useAddressesStrict] = createStrictContext('Address', {
+  displayName: 'AddressContext',
+  errorMessage: 'useAddresses debe usarse dentro de AddressProvider',
+});
+
+export { AddressContext, useAddressesStrict as useAddresses };
+
+// ============================================
+// PROVIDER
+// ============================================
+
 export const AddressProvider = ({ children }) => {
   const { user, token } = useAuth();
   const [addresses, setAddresses] = useState([]);
@@ -16,9 +31,6 @@ export const AddressProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  /**
-   * Cargar direcciones desde el backend
-   */
   const loadAddresses = useCallback(async () => {
     if (!user || !token) {
       setAddresses([]);
@@ -33,7 +45,6 @@ export const AddressProvider = ({ children }) => {
       const data = await getAddresses();
       setAddresses(data);
       
-      // Encontrar dirección predeterminada
       const defaultAddr = data.find(addr => addr.predeterminada);
       setDefaultAddressState(defaultAddr || null);
     } catch (err) {
@@ -44,19 +55,14 @@ export const AddressProvider = ({ children }) => {
     }
   }, [user, token]);
 
-  /**
-   * Agregar nueva dirección
-   */
   const addAddress = async (addressData) => {
     setError(null);
 
     try {
       const newAddress = await createAddress(addressData);
       
-      // Si es la primera dirección o está marcada como predeterminada
       if (addresses.length === 0 || addressData.predeterminada) {
         setDefaultAddressState(newAddress);
-        // Si hay otras direcciones, desmarcamos como predeterminadas en el estado local
         setAddresses(prev => [
           ...prev.map(addr => ({ ...addr, predeterminada: false })),
           newAddress
@@ -73,9 +79,6 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Actualizar dirección existente
-   */
   const updateExistingAddress = async (direccionId, addressData) => {
     setError(null);
 
@@ -88,7 +91,6 @@ export const AddressProvider = ({ children }) => {
         )
       );
 
-      // Si esta era la dirección predeterminada, actualizarla
       if (defaultAddress?.direccion_id === direccionId) {
         setDefaultAddressState(updatedAddress);
       }
@@ -101,16 +103,12 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Marcar dirección como predeterminada
-   */
   const setDefault = async (direccionId) => {
     setError(null);
 
     try {
       await setDefaultAddress(direccionId);
       
-      // Actualizar estado local
       setAddresses(prev => 
         prev.map(addr => ({
           ...addr,
@@ -129,17 +127,11 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Eliminar dirección
-   */
   const removeAddress = async (direccionId) => {
     setError(null);
 
     try {
       await deleteAddress(direccionId);
-      
-      // Si eliminamos la dirección predeterminada, el backend asignará otra automáticamente
-      // Recargar todas las direcciones para obtener el nuevo estado
       await loadAddresses();
     } catch (err) {
       console.error('Error eliminando dirección:', err);
@@ -148,9 +140,6 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Obtener dirección formateada como string
-   */
   const formatAddress = (address) => {
     if (!address) return '';
     
@@ -165,27 +154,21 @@ export const AddressProvider = ({ children }) => {
     return parts.join(', ');
   };
 
-  // Cargar direcciones cuando el usuario se autentica
   useEffect(() => {
     loadAddresses();
   }, [loadAddresses]);
 
   const value = {
-    // Estado
     addresses,
     defaultAddress,
     loading,
     error,
-
-    // Métodos
     loadAddresses,
     addAddress,
     updateAddress: updateExistingAddress,
     setDefault,
     removeAddress,
     formatAddress,
-
-    // Helpers
     hasAddresses: addresses.length > 0,
   };
 

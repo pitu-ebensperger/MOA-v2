@@ -1,4 +1,5 @@
-import { useRegionesYComunas } from '@/hooks/useRegionesYComunas';
+import { useState } from 'react';
+import { REGIONES, getComunasByRegion } from '../../../../shared/constants/ubicaciones.js';
 
 /**
  * @param {Object} props
@@ -19,20 +20,13 @@ export function CascadingRegionComuna({
   required = true,
   errors = {},
 }) {
-  const {
-    regiones,
-    comunas,
-    selectedRegion,
-    setSelectedRegion,
-    loadingRegiones,
-    loadingComunas,
-    error,
-  } = useRegionesYComunas();
+  const [selectedRegion, setSelectedRegion] = useState(regionValue);
+  
+  const comunas = selectedRegion ? getComunasByRegion(selectedRegion) : [];
 
-  // Sincronizar región interna con prop externa
   const handleRegionChange = (e) => {
     const regionCode = e.target.value;
-    const region = regiones.find((r) => r.codigo === regionCode);
+    const region = REGIONES.find((r) => r.codigo === regionCode);
     
     setSelectedRegion(regionCode);
     
@@ -54,21 +48,6 @@ export function CascadingRegionComuna({
     }
   };
 
-  // Sincronizar con valor externo al montar
-  if (regionValue && regionValue !== selectedRegion) {
-    setSelectedRegion(regionValue);
-  }
-
-  if (error) {
-    return (
-      <div className="rounded-md bg-red-50 p-4">
-        <p className="text-sm text-red-800">
-          Error cargando datos de ubicación: {error}
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {/* Select de Región */}
@@ -81,7 +60,7 @@ export function CascadingRegionComuna({
           name="region"
           value={regionValue || selectedRegion}
           onChange={handleRegionChange}
-          disabled={disabled || loadingRegiones}
+          disabled={disabled}
           required={required}
           className={`
             mt-1 block w-full rounded-md border px-3 py-2 shadow-sm
@@ -90,10 +69,8 @@ export function CascadingRegionComuna({
             ${errors?.region ? 'border-red-300' : 'border-gray-300'}
           `}
         >
-          <option value="">
-            {loadingRegiones ? 'Cargando regiones...' : 'Selecciona una región'}
-          </option>
-          {regiones.map((region) => (
+          <option value="">Selecciona una región</option>
+          {REGIONES.map((region) => (
             <option key={region.codigo} value={region.codigo}>
               {region.nombre}
             </option>
@@ -114,7 +91,7 @@ export function CascadingRegionComuna({
           name="comuna"
           value={comunaValue}
           onChange={handleComunaChange}
-          disabled={disabled || !selectedRegion || loadingComunas}
+          disabled={disabled || !selectedRegion}
           required={required}
           className={`
             mt-1 block w-full rounded-md border px-3 py-2 shadow-sm
@@ -124,11 +101,7 @@ export function CascadingRegionComuna({
           `}
         >
           <option value="">
-            {!selectedRegion
-              ? 'Primero selecciona una región'
-              : loadingComunas
-              ? 'Cargando comunas...'
-              : 'Selecciona una comuna'}
+            {!selectedRegion ? 'Primero selecciona una región' : 'Selecciona una comuna'}
           </option>
           {comunas.map((comuna) => (
             <option key={comuna} value={comuna}>

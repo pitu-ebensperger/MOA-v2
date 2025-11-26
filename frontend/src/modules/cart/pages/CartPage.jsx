@@ -5,7 +5,7 @@ import {
   Trash2,
   ShoppingCart,
 } from "lucide-react";
-import { useCartContext } from "@/context/cart-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
 import { Price } from "@/components/data-display/Price.jsx"
 import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
 import { resolveProductPrice } from "@/modules/products/utils/products.js"

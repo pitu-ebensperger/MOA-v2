@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/auth-context.js"
+import { useAuth } from "@/context/AuthContext.jsx"
 import { API_PATHS } from "@/config/api-paths.js"
 import AdminUnauthorizedPage from "@/modules/support/pages/AdminUnauthorizedPage.jsx"
 

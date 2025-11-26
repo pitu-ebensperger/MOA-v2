@@ -1,6 +1,3 @@
-// Centralized lucide-react exports using per-icon ESM paths for better tree shaking
-// Import icons from '@/icons/lucide' instead of the package root to avoid pulling the full bundle.
-
 export { default as Activity } from "lucide-react/dist/esm/icons/activity";
 export { default as AlertCircle } from "lucide-react/dist/esm/icons/alert-circle";
 export { default as AlertTriangle } from "lucide-react/dist/esm/icons/alert-triangle";

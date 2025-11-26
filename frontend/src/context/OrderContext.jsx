@@ -1,5 +1,18 @@
+import { createStrictContext } from "@/context/createStrictContext.js"
 import { useOrders } from "@/hooks/state/useOrders"
-import { OrderContext } from "@/context/order-context.js"
+
+// ============================================
+// CONTEXTO Y HOOK
+// ============================================
+
+export const [OrderContext, useOrderContext] = createStrictContext("Order", {
+  displayName: "OrderContext",
+  errorMessage: "useOrderContext debe usarse dentro de OrderProvider",
+});
+
+// ============================================
+// PROVIDER
+// ============================================
 
 export const OrderProvider = ({ children }) => {
   const orderState = useOrders();
@@ -9,5 +22,3 @@ export const OrderProvider = ({ children }) => {
     </OrderContext.Provider>
   );
 };
-
-// Nota: useOrderContext y OrderContext se exportan desde ./order-context.js para respetar fast-refresh

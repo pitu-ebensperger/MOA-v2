@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiClient } from '@/services/api-client.js';
-import { useAuth } from '@/context/auth-context.js';
+import { useAuth } from '@/context/AuthContext.jsx';
 
 export const useUser = () => {
   const { user: authUser } = useAuth(); // traemos el usuario autenticado

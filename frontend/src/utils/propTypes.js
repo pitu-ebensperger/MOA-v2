@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-/*Product*/
+//PRODUCTO
 export const ProductShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   slug: PropTypes.string,
@@ -21,7 +21,7 @@ export const ProductShape = PropTypes.shape({
   activo: PropTypes.bool,
 });
 
-/*Order*/
+//ORDENES
 export const OrderShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   pedido_id: PropTypes.number,
@@ -43,7 +43,7 @@ export const OrderShape = PropTypes.shape({
   items: PropTypes.arrayOf(PropTypes.object),
 });
 
-/*Address*/
+//DIRECCIONES
 export const AddressShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   direccion_id: PropTypes.number,
@@ -66,7 +66,7 @@ export const AddressShape = PropTypes.shape({
   is_default: PropTypes.bool,
 });
 
-/*User*/
+//USER
 export const UserShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   usuario_id: PropTypes.number,
@@ -80,7 +80,7 @@ export const UserShape = PropTypes.shape({
   rol_code: PropTypes.string,
 });
 
-/*Category*/
+//CATEGORIA
 export const CategoryShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   categoria_id: PropTypes.number,
@@ -93,7 +93,7 @@ export const CategoryShape = PropTypes.shape({
   active: PropTypes.bool,
 });
 
-/*items del carrito*/
+//ITEMS
 export const CartItemShape = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   producto_id: PropTypes.number,

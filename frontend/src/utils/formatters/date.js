@@ -1,5 +1,3 @@
-// Formatos comunes de fecha (Chile): dd/MM/yyyy y relativeTime.
-
 const LOCALE = 'es-CL';
 const TIME_ZONE = 'America/Santiago';
 
@@ -23,7 +21,6 @@ function partsRecord(date) {
 
   const out = {};
   for (const p of parts) out[p.type] = p.value;
-  // defaults por si acaso
   if (!out.day) out.day = '';
   if (!out.month) out.month = '';
   if (!out.year) out.year = '';

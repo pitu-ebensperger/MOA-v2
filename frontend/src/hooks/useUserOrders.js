@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getUserOrders, getOrderById } from '@/services/checkout.api.js';
-import { useAuth } from '@/context/auth-context.js';
+import { useAuth } from '@/context/AuthContext.jsx';
 
 
 export const useUserOrders = (options = {}) => {

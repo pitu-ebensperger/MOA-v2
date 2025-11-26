@@ -23,11 +23,12 @@ export const useStoreConfig = () => {
         const payload = response?.data ?? response;
         if (payload) setConfig(payload);
       } catch (error) {
-        // Silenciar error y usar configuración por defecto
+        // Usar configuración por defecto en caso de error
         // El error ya se loguea en config.api.js
         if (import.meta.env.DEV) {
-          console.warn('No se pudo cargar configuración de la tienda, usando valores por defecto');
+          console.warn('No se pudo cargar configuración de la tienda, usando valores por defecto', error);
         }
+        // Mantener config con DEFAULT_CONFIG establecido en useState inicial
       } finally {
         setIsLoading(false);
       }

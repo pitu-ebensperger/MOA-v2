@@ -2,7 +2,7 @@ import ContactSection from "@/modules/home/components/ContactSection.jsx"
 import HeroSection from "@/modules/home/components/HeroSection.jsx"
 import ProductsSection from "@/modules/home/components/ProductsSection.jsx"
 import { useHomeLanding } from "@/modules/home/hooks/useHomeLanding.js"
-import { useCartContext } from "@/context/cart-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
 
 export const HomePage = () => {
   const { home, isLoading, error } = useHomeLanding();

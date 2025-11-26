@@ -1,5 +1,5 @@
 import app from "./index.js";
-import { startPasswordResetCleanupJob } from "./src/jobs/passwordResetCleanup.js";
+import { startPasswordResetCleanupJob } from "./src/services/passwordResetCleanup.js";
 
 const PORT = process.env.PORT || 4000;
 

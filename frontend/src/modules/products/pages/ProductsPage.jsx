@@ -14,7 +14,7 @@ import { useCategories } from "@/modules/products/hooks/useCategories.js"
 import { useProducts } from "@/modules/products/hooks/useProducts.js"
 import { useProductFilters } from "@/modules/products/hooks/useProductFilters.js"
 import { useCatalogControls } from "@/modules/products/hooks/useCatalogControls.js"
-import { useCartContext } from "@/context/cart-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
 import { useDebounce } from "@/hooks/useDebounce.js"
 
 export default function ProductsPage() {
@@ -93,7 +93,7 @@ export default function ProductsPage() {
       {/* Layout: Sidebar + Content */}
       <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
         {/* Sidebar - Desktop only */}
-        <aside className="hidden lg:block lg:w-64 lg:flex-shrink-0">
+        <aside className="hidden lg:block lg:w-64 lg:shrink-0">
           <ProductSidebar
             categories={categories}
             filters={filters}
@@ -143,7 +143,7 @@ export default function ProductsPage() {
           </header>
 
           {searchQuery && (
-            <div className="mb-8 flex flex-col gap-2 rounded-2xl border border-[var(--color-border)] bg-[var(--color-neutral1)] px-5 py-4 text-sm text-[var(--color-secondary2)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-8 flex flex-col gap-2 rounded-2xl border border-(--color-border) bg-(--color-neutral1) px-5 py-4 text-sm text-(--color-secondary2) sm:flex-row sm:items-center sm:justify-between">
               <p className="font-medium text-neutral-700">
                 Mostrando resultados para <strong className="text-(--color-primary1)">{searchQuery}</strong>.
               </p>
@@ -200,12 +200,12 @@ export default function ProductsPage() {
 
           {isLoading && paginationInfo.totalItems === 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, index) => (
+              {Array.from({ length: 6 }, (_, i) => i).map((skeletonId) => (
                 <div
-                  key={`product-skeleton-${index}`}
-                  className="flex flex-col gap-3 rounded-3xl border border-[color:var(--color-border)] bg-[color:var(--color-neutral2)] p-4 shadow-[var(--shadow-sm)]"
+                  key={`product-skeleton-${skeletonId}`}
+                  className="flex flex-col gap-3 rounded-3xl border border-(--color-border) bg-(--color-neutral2) p-4 shadow-(--shadow-sm)"
                 >
-                  <Skeleton className="aspect-[4/3] w-full rounded-[1.25rem]" />
+                  <Skeleton className="aspect-4/3 w-full rounded-[1.25rem]" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />

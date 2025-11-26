@@ -10,8 +10,8 @@ import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
 import { API_PATHS } from "@/config/api-paths.js"
 import { Minus, Plus, Recycle, ShieldCheck, Truck } from "lucide-react";
-import { useCartContext } from "@/context/cart-context.js"
-import { useAuth } from "@/context/auth-context.js"
+import { useCartContext } from "@/context/CartContext.jsx"
+import { useAuth } from "@/context/AuthContext.jsx"
 
 const initialState = {
   product: null,
@@ -223,7 +223,7 @@ export const ProductDetailPage = () => {
   return (
     <>
       <main className="page container-px mx-auto max-w-6xl py-10 lg:py-14">
-        
+        <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
         <article className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
           <div className="space-y-4 h-full">
@@ -234,6 +234,10 @@ export const ProductDetailPage = () => {
                 className="h-full w-full object-cover"
                 loading="lazy"
                 decoding="async"
+                onError={(e) => {
+                  e.target.src = DEFAULT_PLACEHOLDER_IMAGE;
+                  e.target.onerror = null; // Prevenir loop infinito
+                }}
               />
             </div>
             {thumbnailImages.length > 0 && (
@@ -245,10 +249,13 @@ export const ProductDetailPage = () => {
                   >
                     <img
                       src={imageUrl}
-                      alt={`${product.name ?? "Producto"} - imagen ${index + 2}`}
+                      alt={`${product.name ?? "Producto"} - vista ${index + 2}`}
                       className="h-24 w-full object-cover"
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        e.target.style.display = 'none'; // Ocultar si falla
+                      }}
                     />
                   </div>
                 ))}
@@ -257,9 +264,6 @@ export const ProductDetailPage = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="mb-6 text-neutral-500">
-          <Breadcrumbs items={breadcrumbItems} className="text-sm font-light" />
-        </div>
             <div>
               <h1 className="title-sans text-xl leading-tight text-(--color-secondary12) sm:text-2xl sm:leading-tight">{product.name}</h1>
               <div className="mt-0 flex items-baseline gap-3">
@@ -315,10 +319,16 @@ export const ProductDetailPage = () => {
                     return;
                   }
                   if (!addToCart) return;
+                  
+                  // Agregar producto al carrito con la cantidad correcta
                   addToCart(product);
                   if (quantity > 1 && updateQuantity) {
+                    // La cantidad inicial es 1, así que actualizamos al total deseado
                     updateQuantity(product.id, quantity);
                   }
+                  
+                  // Resetear cantidad después de agregar
+                  setQuantity(1);
                 }}
                 className="w-full rounded-full border border-(--color-primary1) px-6 py-2 text-base font-medium text-(--color-primary1) transition hover:bg-(--color-primary1) hover:text-(--color-light) disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
               >

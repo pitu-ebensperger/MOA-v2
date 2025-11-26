@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite/index.js'
-import { useAuth } from '../../../context/auth-context.js'
+import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite'
+import { useAuth } from '@/context/AuthContext.jsx'
 import { authApi } from '../../../services/auth.api.js'
 import { usersApi } from '../../../services/users.api.js'
 import { IconButton } from "@/components/ui/Button.jsx";

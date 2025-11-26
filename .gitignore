@@ -54,13 +54,15 @@ src/modules/styleguide/
 snapshots/*.json
 snapshots/*.txt
 
-# Development docs (archivos draft solamente)
-docs/development/archives/
-docs/drafts/
-*.draft.md
+# Personal notes and documentation
+.notes/
+TODO.private.md
+scratch.md
+
+# Personal scripts (no versionar)
+.personal-scripts/
 
 # Ignore generated/misc docs and GitHub workflow/config directory
-docs/misDOCS/
 .github/
 
 # Copilot temp

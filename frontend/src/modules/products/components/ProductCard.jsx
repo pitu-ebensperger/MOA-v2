@@ -5,7 +5,7 @@ import { Eye, Heart, ShoppingCart } from "lucide-react";
 import { Price } from "@/components/data-display/Price.jsx"
 import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
 import { API_PATHS } from "@/config/api-paths.js"
-import { useAuth } from "@/context/auth-context.js"
+import { useAuth } from "@/context/AuthContext.jsx"
 import { ProductShape } from "@/utils/propTypes.js"
 import { useCacheManager } from "@/hooks/useCacheManager.js"
 import { useToast } from "@/components/ui/useToast.js"

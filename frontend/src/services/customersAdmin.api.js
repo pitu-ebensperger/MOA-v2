@@ -1,6 +1,16 @@
 import { API_PATHS } from "@/config/api-paths.js";
 import { apiClient } from "@/services/api-client.js";
-import { buildQueryString } from "@/utils/https.js";
+
+const buildQueryString = (params = {}) => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== '') {
+      searchParams.append(key, String(value));
+    }
+  });
+  const query = searchParams.toString();
+  return query ? `?${query}` : '';
+};
 
 const buildQuery = (params = {}) => {
   const query = buildQueryString(params);

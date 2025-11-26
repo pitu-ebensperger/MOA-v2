@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
+import { createStrictContext } from "@/context/createStrictContext.js"
 import { productsApi } from "@/services/products.api.js"
-import { CategoriesContext } from "@/context/categories-context.js"
+
+// ============================================
+// CONTEXTO Y HOOK
+// ============================================
+
+export const [CategoriesContext, useCategoriesContext] = createStrictContext("Categories", {
+  displayName: "CategoriesContext",
+  errorMessage: "useCategoriesContext debe usarse dentro de CategoriesProvider",
+});
+
+// ============================================
+// PROVIDER
+// ============================================
 
 export const CategoriesProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);

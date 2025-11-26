@@ -1,22 +1,16 @@
 # Proyecto MOA - Marketplace E-commerce
+# MOA
+Marketplace full-stack 
 
-Marketplace full-stack (React 19 + Express 5 + PostgreSQL) para la simulación de una tienda chilena.
-Este README mantiene solo la información esencial para revisión rápida; la documentación detallada ahora vive en `.notes/reference/README_EXTENDIDO.md`.
-
-## Información útil
-
-- **Estado:** 🟢 Funcional (85% completo) · **Última actualización:** Noviembre 2025
 - **Frontend:** React 19.1.1 + Vite 7.1.7
 - **Backend:** Express 5.1.0 + PostgreSQL
-- `jwt-decode` ya está instalado (ver `frontend/package.json`) para monitorear la expiración de sesión del cliente.
+
 
 ### Usuarios de Prueba
 
 | Usuario | Email | Contraseña | Rol |
 |---------|-------|------------|-----|
-| Admin | `admin@moa.cl` | `admin` / `demo` / `123456` | Administrador |
-| Demo | `demo@moa.cl` | `demo` / `admin` / `123456` | Cliente |
-| Cliente | `cliente@mail.cl` | `demo` / `admin` / `123456` | Cliente |
+| Admin | `admin@moa.cl` | `admin123`| Administrador |
 
 ### Instalación rápida
 

@@ -105,12 +105,30 @@ export const ProductDetailPage = () => {
   };
   const categoryBreadcrumb = useMemo(() => {
     if (!product) return null;
-    const rawCandidate = product.fk_category_id ?? product.categoryId ?? product.category?.id ?? null;
-    const candidateId = toPrimitive(rawCandidate);
-    const match =
-      candidateId !== null
-        ? categories.find((category) => String(category.id) === String(candidateId))
-        : null;
+    // Robust extracción y comparación de IDs evitando coerción de objetos complejos
+    const toComparable = (val) => {
+      try {
+        if (val == null) return null;
+        if (typeof val === 'string' || typeof val === 'number') return String(val);
+        if (typeof val === 'bigint') return val.toString();
+        if (typeof val.toString === 'function') {
+          const str = val.toString();
+          return typeof str === 'string' ? str : null;
+        }
+        return null;
+      } catch (_e) {
+        return null;
+      }
+    };
+
+    const candidateId = product.fk_category_id ?? product.categoryId ?? product.category?.id ?? null;
+    const candidateComparable = toComparable(candidateId);
+    const match = candidateComparable
+      ? categories.find((category) => {
+          const catComparable = toComparable(category.id);
+          return catComparable !== null && catComparable === candidateComparable;
+        })
+      : null;
     if (match) {
       const param = toPrimitive(match.slug ?? match.id ?? candidateId);
       const href = param ? `${productsBasePath}?category=${encodeURIComponent(String(param))}` : productsBasePath;

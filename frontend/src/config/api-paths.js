@@ -41,6 +41,7 @@ export const API_PATHS = {
   admin: {
     dashboard: "/admin",
     products: "/admin/productos",
+    productDetail: (id) => `/admin/productos/${id}`,
     categories: "/admin/categorias",
     categoryDetail: (id) => `/admin/categorias/${id}`,
     categoryProductsCount: (id) => `/admin/categorias/${id}/productos/count`,

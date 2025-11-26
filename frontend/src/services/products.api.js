@@ -67,17 +67,17 @@ const remoteProductsApi = {
     return normalizeCategoryList(data);
   },
   async create(payload = {}) {
-    const data = await apiClient.private.post(API_PATHS.products.products, payload);
+    const data = await apiClient.private.post(API_PATHS.admin.products, payload);
     return normalizeProduct(data);
   },
   async update(id, patch = {}) {
     if (id == null) throw new Error("product id is required");
-    const data = await apiClient.private.put(API_PATHS.products.productDetail(id), patch);
+    const data = await apiClient.private.put(API_PATHS.admin.productDetail(id), patch);
     return normalizeProduct(data);
   },
   async remove(id) {
     if (id == null) throw new Error("product id is required");
-    const data = await apiClient.private.delete(API_PATHS.products.productDetail(id));
+    const data = await apiClient.private.delete(API_PATHS.admin.productDetail(id));
     return { ok: true, removedId: id, ...(data || {}) };
   },
 };

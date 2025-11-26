@@ -14,7 +14,8 @@
     "test:ui-tokens": "node src/config/__tests__/ui-tokens.test.js",
     "test:accessibility": "node src/config/__tests__/accessibility.test.js",
     "test:config": "npm run test:status-maps && npm run test:ui-tokens && npm run test:accessibility",
-    "test": "npm run test:config"
+    "test:react": "jest --config jest.config.js --runTestsByPath src/modules/products/pages/__tests__/ProductDetailPage.test.jsx",
+    "test": "npm run test:config && npm run test:react"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -60,6 +61,14 @@
     "globals": "^16.4.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.16",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "jest": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9"
   }
 }

@@ -111,9 +111,13 @@ export default defineConfig(({ mode }) => {
         overlay: true,
       },
       fs: {
-        // Permitir importar archivos desde la carpeta shared en la raíz del repo
-        // y desde la propia raíz del frontend para evitar errores 403 al servir index.html
-        allow: [path.resolve(__dirname, '.'), path.resolve(__dirname, '../shared')],
+        // Permitir importar archivos desde la carpeta shared y desde el propio root del proyecto
+        // Nota: cuando se define 'server.fs.allow', debemos incluir explícitamente el directorio raiz
+        // para evitar el error "outside of Vite serving allow list" al servir index.html
+        allow: [
+          __dirname,
+          path.resolve(__dirname, '../shared'),
+        ],
       },
       watch: {
         usePolling: false,

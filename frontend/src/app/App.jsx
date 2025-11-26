@@ -71,32 +71,23 @@ const PageLoader = () => (
 
 // Componente de error para lazy loading fallido
 const LazyLoadError = () => {
-  React.useEffect(() => {
-    // Auto-reload después de 100ms si es error de HMR
-    const timer = setTimeout(() => {
-      if (import.meta.hot) {
-        console.log('[HMR] Auto-recargando por error de módulo...');
-        window.location.reload();
-      }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
+  // Evitar recargas automáticas que pueden causar loops.
+  // Vite HMR ya gestiona actualizaciones; ofrecemos un botón manual.
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-4">
       <div className="text-center space-y-4 max-w-md">
         <div className="flex justify-center mb-2">
           <WifiOff className="h-16 w-16 text-(--color-error)" strokeWidth={1.5} />
         </div>
-        <h2 className="text-xl font-semibold text-(--text-strong)">Recargando módulo...</h2>
+        <h2 className="text-xl font-semibold text-(--text-strong)">No se pudo cargar el módulo</h2>
         <p className="text-sm text-(--text-weak)">
-          Detectamos una actualización. La página se recargará automáticamente.
+          Detectamos una actualización o error de carga. Puedes recargar manualmente.
         </p>
         <button
           onClick={() => window.location.reload()}
           className="px-6 py-2 text-sm bg-(--color-primary1) text-white rounded-full hover:bg-(--color-hover) transition-colors shadow-sm hover:shadow-md"
         >
-          Recargar ahora
+          Recargar la página
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button';
 import { confirm } from '@/components/ui';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function ContactPage() {
   const handleSubmit = async (e) => {
@@ -10,7 +11,8 @@ export default function ContactPage() {
 
     await confirm.info(
       'Mensaje enviado',
-      `Gracias, ${name || '😊'} — hemos recibido tu mensaje.`
+      `Gracias, ${name || '😊'} — hemos recibido tu mensaje.`,
+      { icon: CheckCircle2 }
     );
 
     e.target.reset();

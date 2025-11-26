@@ -86,3 +86,53 @@ services:
         value: 60
       - key: PASSWORD_RESET_CLEANUP_LOGS
         value: false
+
+  # One-off Job to seed clients and orders into the same database
+  - type: job
+    name: moa-seed-job
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: |
+      cd backend && \
+      npm run seed:users && \
+      npm run seed:clients && \
+      npm run seed:categories && \
+      npm run seed:products && \
+      npm run seed:addresses && \
+      npm run seed:orders && \
+      npm run seed:carts && \
+      npm run seed:wishlists && \
+      npm run seed:verify
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: MOA
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: MOA
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: MOA
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: MOA
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: MOA
+          property: database
+      - key: DB_SSL
+        value: true
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DUAL_PASSWORD
+        sync: false

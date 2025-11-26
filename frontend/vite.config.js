@@ -112,7 +112,8 @@ export default defineConfig(({ mode }) => {
       },
       fs: {
         // Permitir importar archivos desde la carpeta shared en la raíz del repo
-        allow: [path.resolve(__dirname, '../shared')],
+        // y desde la propia raíz del frontend para evitar errores 403 al servir index.html
+        allow: [path.resolve(__dirname, '.'), path.resolve(__dirname, '../shared')],
       },
       watch: {
         usePolling: false,

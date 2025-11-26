@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react";
-import { alerts } from '@/utils/sweetalert.js';
+import { alerts } from '@/utils/alerts.js';
 import { observability } from '@/services/observability.js';
 
 class ErrorBoundary extends Component {

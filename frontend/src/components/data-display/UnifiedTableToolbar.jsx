@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 import { Search, LayoutGrid, Rows3, Download, RefreshCw, Plus, Columns3, X, SlidersHorizontal, ChevronDown, FileDown, FileJson } from "lucide-react";
 import { Button, IconButton } from "@/components/ui/Button.jsx";
 import { SelectGhost } from "@/components/ui/Select.jsx";

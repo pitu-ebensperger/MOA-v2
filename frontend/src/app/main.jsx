@@ -181,7 +181,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <CartProvider>
             <App />
             <MessageProvider />
-            <SpeedInsights />
+            {import.meta.env.PROD && <SpeedInsights />}
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>

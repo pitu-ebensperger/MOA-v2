@@ -1,5 +1,5 @@
 import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js";
-import { formatCurrencyCLP } from "@/utils/currency.js";
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 
 const Card = ({ data = {} }) => {
   const name = data.name ?? data.slug ?? "Producto MOA";

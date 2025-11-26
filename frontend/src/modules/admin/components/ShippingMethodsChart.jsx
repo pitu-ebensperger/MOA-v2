@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { motion as Motion } from 'framer-motion';
 import { Truck, Zap, Store, Package } from 'lucide-react';
-import { BarChart } from '@/components/charts/index.js';
+import { BarChart } from '@/components/charts/BarChart.jsx';
 import { Price } from '@/components/data-display/Price.jsx';
 import { useShippingMethodStats } from '@/modules/admin/hooks/useDashboardStats.js';
 

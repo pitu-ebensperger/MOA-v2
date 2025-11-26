@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420">
+  <style>
+    .box{fill:#fff;stroke:#1f2937;stroke-width:2;rx:8;ry:8}
+    .label{font:14px system-ui; fill:#111827}
+    .small{font:12px system-ui; fill:#374151}
+    .arrow{stroke:#6b7280;stroke-width:2;marker-end:url(#arrow)}
+    .title{font:16px system-ui; fill:#111827; font-weight:700}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#6b7280" />
+    </marker>
+  </defs>
+  <text x="20" y="28" class="title">Export CSV (UX)</text>
+
+  <rect class="box" x="40" y="70" width="220" height="60"/>
+  <text class="label" x="60" y="105">Click "Exportar CSV"</text>
+
+  <rect class="box" x="300" y="70" width="260" height="60"/>
+  <text class="label" x="320" y="105">ordersAdminApi.exportOrders</text>
+
+  <rect class="box" x="600" y="70" width="280" height="60"/>
+  <text class="label" x="620" y="95">GET /admin/pedidos/export?format=csv</text>
+  <text class="small" x="620" y="115">responseType: blob</text>
+
+  <line class="arrow" x1="260" y1="100" x2="300" y2="100"/>
+  <line class="arrow" x1="560" y1="100" x2="600" y2="100"/>
+
+  <rect class="box" x="300" y="170" width="260" height="60"/>
+  <text class="label" x="320" y="205">URL.createObjectURL(blob)</text>
+
+  <rect class="box" x="600" y="170" width="260" height="60"/>
+  <text class="label" x="620" y="205">Descarga (a.download)</text>
+
+  <line class="arrow" x1="560" y1="200" x2="600" y2="200"/>
+
+  <text class="small" x="60" y="360">Limpiar URL luego: URL.revokeObjectURL</text>
+</svg>

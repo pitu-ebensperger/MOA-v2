@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360">
+  <style>
+    .frame{fill:#f9fafb;stroke:#d1d5db;stroke-width:2}
+    .box{fill:#fff;stroke:#1f2937;stroke-width:2}
+    .label{font:14px system-ui; fill:#111827}
+    .title{font:16px system-ui; fill:#111827; font-weight:700}
+    .small{font:12px system-ui; fill:#374151}
+  </style>
+  <text x="20" y="28" class="title">Layout con Sidebar y Grid responsivo</text>
+
+  <rect class="frame" x="40" y="50" width="880" height="260"/>
+  <rect class="box" x="60" y="70" width="180" height="220"/>
+  <text class="label" x="85" y="190">Sidebar (lg)</text>
+
+  <!-- grid 3 cols -->
+  <rect class="box" x="260" y="70" width="640" height="220"/>
+  <text class="small" x="280" y="95">Grid: sm 2 cols, lg 3 cols</text>
+
+  <!-- columns visual -->
+  <rect class="frame" x="280" y="110" width="180" height="160"/>
+  <rect class="frame" x="470" y="110" width="180" height="160"/>
+  <rect class="frame" x="660" y="110" width="180" height="160"/>
+
+  <text class="small" x="280" y="295">En móvil: 1 columna</text>
+  <text class="small" x="280" y="315">En sm: 2 columnas</text>
+  <text class="small" x="280" y="335">En lg: 3 columnas</text>
+</svg>

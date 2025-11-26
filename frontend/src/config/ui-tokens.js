@@ -1,4 +1,4 @@
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 /* PILL STYLES   ----------------------------------------------------------------------------*/ 
 

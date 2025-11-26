@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 import { Info, CheckCircle, AlertTriangle, XCircle, X } from "lucide-react";
 
 /* Alert Component -------------------------------------------------------------------------- */

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, HelpCircle, Trash2 } from "lucide-react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 import { Button } from "./Button";
 import { confirmDialogManager } from "./confirmDialogService.js";
 

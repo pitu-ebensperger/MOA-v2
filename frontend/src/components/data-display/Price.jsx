@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { formatCurrencyCLP } from "@/utils/currency.js"
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 
 export const Price = ({
   value,

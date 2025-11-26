@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 const normalizeItems = (items = []) => {
   if (!Array.isArray(items)) return [];

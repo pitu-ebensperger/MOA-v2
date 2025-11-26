@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { formatCurrencyCLP } from "@/utils/currency.js";
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 import { useNavigate, Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 

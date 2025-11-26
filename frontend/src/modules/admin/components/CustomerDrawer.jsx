@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/radix/Dialog.jsx"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { Price } from "@/components/data-display/Price.jsx"
 import { Mail, Phone, Calendar, MapPin, ShoppingBag, Package } from "lucide-react";
-import { formatDate_ddMMyyyy } from "@/utils/date.js"
+import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js"
 import { UserShape } from "@/utils/propTypes.js";
 

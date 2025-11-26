@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { DoubleRangeSlider } from "@/modules/products/components/DoubleRangeSlider.jsx"
 import { normalizeCategoryFilterOptions } from "@/utils/normalizers.js"
-import { clamp } from "@/utils/math.js"
+import { clamp } from "@/utils/formatters/numbers.js"
 
 export function ProductFiltersContent({
   categories,

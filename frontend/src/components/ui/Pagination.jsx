@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 const Pages = (currentPage, totalPages) => {
   if (totalPages <= 7) {

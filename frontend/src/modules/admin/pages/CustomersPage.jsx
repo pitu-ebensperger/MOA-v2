@@ -11,7 +11,7 @@ import { Button, IconButton } from "@/components/ui/Button.jsx"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/radix/DropdownMenu.jsx";
 import { USER_STATUS_MAP } from "@/config/status-maps.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js"
-import { formatDate_ddMMyyyy } from "@/utils/date.js"
+import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { TooltipNeutral } from "@/components/ui/Tooltip.jsx";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/radix/Dialog.jsx";

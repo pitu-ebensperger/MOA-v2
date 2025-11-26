@@ -1,5 +1,5 @@
 import * as Dropdown from "@radix-ui/react-dropdown-menu";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 export function DropdownMenu({ children }) {
   return <Dropdown.Root>{children}</Dropdown.Root>;

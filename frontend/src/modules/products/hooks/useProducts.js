@@ -13,8 +13,10 @@ export const useProducts = (filters) => {
   const queryClient = useQueryClient();
   const normalizedFilters = useMemo(() => normalizeFilters(filters), [filters]);
   
+  const queryKey = useMemo(() => [...PRODUCTS_QUERY_KEY, normalizedFilters], [normalizedFilters]);
+
   const query = useQuery({
-    queryKey: [...PRODUCTS_QUERY_KEY, normalizedFilters],
+    queryKey: queryKey,
     queryFn: async () => {
       try {
         const data = await productsApi.list(normalizedFilters);
@@ -35,7 +37,7 @@ export const useProducts = (filters) => {
     refetchOnWindowFocus: false, // No refetch innecesario
     // Prefetch siguiente página si hay filtros de paginación
     onSuccess: (data) => {
-      if (data?.pagination?.hasNextPage && normalizedFilters?.page) {
+        if (data?.pagination?.hasNextPage && normalizedFilters?.page) {
         // Prefetch silencioso de siguiente página
         queryClient.prefetchQuery({
           queryKey: [...PRODUCTS_QUERY_KEY, { ...normalizedFilters, page: normalizedFilters.page + 1 }],

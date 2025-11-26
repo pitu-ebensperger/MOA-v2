@@ -2,7 +2,7 @@ import React from "react";
 import { X, Edit, Package, Tag, DollarSign, Calendar, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button.jsx";
 import { Badge } from "@/components/ui/Badge.jsx";
-import { formatCurrencyCLP } from "@/utils/currency.js";
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 
 /**
  * ProductDetailDrawer - Vista de solo lectura para detalles de un producto

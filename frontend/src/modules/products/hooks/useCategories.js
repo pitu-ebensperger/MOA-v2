@@ -1,21 +1,16 @@
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from '@/lib/react-query-lite';
 import { productsApi } from '@/services/products.api.js'
+import { normalizeCategoryList } from '@/utils/normalizers.js'
 
 const CATEGORIES_QUERY_KEY = ['categories'];
-
-const normalizeCategories = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.items)) return payload.items;
-  return [];
-};
 
 export function useCategories({ enabled = true } = {}) {
   const normalizedEnabled = useMemo(() => Boolean(enabled), [enabled]);
   
   const query = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
-    queryFn: async () => normalizeCategories(await productsApi.listCategories()),
+    queryFn: async () => normalizeCategoryList(await productsApi.listCategories()),
     enabled: normalizedEnabled,
     // Configuración agresiva de cache - categorías rara vez cambian
     staleTime: Infinity, // Nunca marcar como stale (casi estático)

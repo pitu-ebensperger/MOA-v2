@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle, AlertTriangle, XCircle, Info, X } from "lucide-react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 import { toastManager } from "./toastService.js";
 
 /* Toast Component -------------------------------------------------------------------------- */

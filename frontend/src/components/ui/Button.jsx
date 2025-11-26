@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { cn } from "@/utils/classNames.js"
+import { cn } from "@/utils/cn.js"
 import {
   BUTTON_APPEARANCES,
   BUTTON_INTENTS,

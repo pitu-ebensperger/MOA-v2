@@ -1,5 +1,5 @@
-import { formatDate_ddMMyyyy } from "@/utils/date.js"
-import { formatCurrencyCLP } from "@/utils/currency.js"
+import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/radix/DropdownMenu.jsx"
 import { Eye, XCircle } from "lucide-react";

@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 /* -------------------------------------------------------------------------- */
 /* Icon Component - Wrapper para lucide-react con tokens CSS                 */

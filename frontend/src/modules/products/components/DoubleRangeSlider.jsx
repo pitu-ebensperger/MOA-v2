@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { clamp } from "@/utils/math.js"
+import { clamp } from "@/utils/formatters/numbers.js"
 
 export function DoubleRangeSlider({
   min = 0,

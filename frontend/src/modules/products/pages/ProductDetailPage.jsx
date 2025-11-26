@@ -80,19 +80,40 @@ export const ProductDetailPage = () => {
   }, [slugOrId]);
 
   const product = state.product;
+  const toPrimitive = (v) => {
+    if (v === null || v === undefined) return null;
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') return v;
+    // If it's an object, try common id/slug fields
+    if (typeof v === 'object') {
+      if (v.id !== undefined && v.id !== null) return v.id;
+      if (v.slug) return v.slug;
+      if (v.toString && typeof v.toString === 'function') {
+        try {
+          const s = v.toString();
+          if (typeof s === 'string') return s;
+        } catch (e) {
+          // ignore
+        }
+      }
+      try {
+        return JSON.stringify(v);
+      } catch (e) {
+        return String(v);
+      }
+    }
+    return String(v);
+  };
   const categoryBreadcrumb = useMemo(() => {
     if (!product) return null;
-    const candidateId =
-      product.fk_category_id ?? product.categoryId ?? product.category?.id ?? null;
+    const rawCandidate = product.fk_category_id ?? product.categoryId ?? product.category?.id ?? null;
+    const candidateId = toPrimitive(rawCandidate);
     const match =
       candidateId !== null
         ? categories.find((category) => String(category.id) === String(candidateId))
         : null;
     if (match) {
-      const param = match.slug ?? match.id ?? candidateId;
-      const href = param
-        ? `${productsBasePath}?category=${encodeURIComponent(param)}`
-        : productsBasePath;
+      const param = toPrimitive(match.slug ?? match.id ?? candidateId);
+      const href = param ? `${productsBasePath}?category=${encodeURIComponent(String(param))}` : productsBasePath;
       return {
         label: match.name ?? "Categoría",
         href,

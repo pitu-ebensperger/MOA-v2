@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 /**
  * Modal Component - Sistema unificado de modales

@@ -31,6 +31,13 @@ export default function EntornoAdmin({ children }) {
   const location = useLocation();
   const currentPath = location.pathname;
   const [isExpanded, setIsExpanded] = useState(true);
+  const handleLogout = () => {
+    if (typeof globalThis !== "undefined" && globalThis.localStorage) {
+      globalThis.localStorage.removeItem("moa.accessToken");
+      globalThis.localStorage.removeItem("moa.user");
+      globalThis.location.href = API_PATHS.auth.login;
+    }
+  };
 
   // Cargar preferencia desde localStorage
   useEffect(() => {
@@ -182,17 +189,10 @@ export default function EntornoAdmin({ children }) {
               )}
 
               {isExpanded ? (
-                <Button
-                  appearance="ghost"
-                  size="sm"
-                  className="sidebar-link rounded-lg w-full pl-3 pr-2 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
-                  onClick={() => {
-                    if (typeof globalThis !== "undefined" && globalThis.localStorage) {
-                      globalThis.localStorage.removeItem("moa.accessToken");
-                      globalThis.localStorage.removeItem("moa.user");
-                      globalThis.location.href = API_PATHS.auth.login;
-                    }
-                  }}
+                <button
+                  type="button"
+                  className="sidebar-link rounded-lg flex items-center w-full pl-3 pr-2 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
+                  onClick={handleLogout}
                 >
                   <span className="btn-label flex items-center gap-2">
                     <span className="flex items-center justify-center w-5 shrink-0">
@@ -200,26 +200,19 @@ export default function EntornoAdmin({ children }) {
                     </span>
                     <span className="text-xs text-left">Cerrar sesión</span>
                   </span>
-                </Button>
+                </button>
               ) : (
                 <TooltipNeutral label="Cerrar sesión" position="right">
-                  <Button
-                    appearance="ghost"
-                    size="sm"
-                    className="sidebar-link rounded-lg w-full px-2.5 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
+                  <button
+                    type="button"
+                    className="sidebar-link rounded-lg flex items-center justify-center w-full px-2.5 py-2.5 text-xs font-medium transition-colors duration-200 text-neutral-700 hover:text-primary hover:bg-neutral-50"
                     aria-label="Cerrar sesión"
-                    onClick={() => {
-                      if (typeof globalThis !== "undefined" && globalThis.localStorage) {
-                        globalThis.localStorage.removeItem("moa.accessToken");
-                        globalThis.localStorage.removeItem("moa.user");
-                        globalThis.location.href = API_PATHS.auth.login;
-                      }
-                    }}
+                    onClick={handleLogout}
                   >
                     <span className="flex items-center justify-center w-5">
                       <LogOut className="h-5 w-5 stroke-[1.5] text-primary" aria-hidden />
                     </span>
-                  </Button>
+                  </button>
                 </TooltipNeutral>
               )}
             </div>

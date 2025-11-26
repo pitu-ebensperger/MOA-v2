@@ -13,25 +13,26 @@ import { PRODUCTS as productsData } from "./productsData.js";
 function normalizeProduct(product) {
   return {
     public_id: nanoid(),
-
     categoria_id: product.fk_category_id ?? null,
 
-    nombre: product.name,
-    slug: product.slug,
-    sku: product.sku,
+    nombre: product.name ?? null,
+    // Normalizar slug y sku para evitar duplicados por mayúsculas/minúsculas
+    slug: (product.slug || '').toString().toLowerCase(),
+    sku: product.sku ? product.sku.toString().toUpperCase() : null,
 
-    precio_cents: product.price * 100,
+    precio_cents: Number.isFinite(product.price) ? Math.round(product.price * 100) : null,
 
-    stock: product.stock ?? 0,
+    stock: Number.isFinite(product.stock) ? Number(product.stock) : 0,
     status: product.status ?? "activo",
 
     descripcion: product.description ?? null,
 
     img_url: product.imgUrl ?? null,
-    gallery: product.gallery ?? null,
+    // Asegurar que gallery sea un array o null
+    gallery: Array.isArray(product.gallery) ? product.gallery : (product.gallery ? [product.gallery] : null),
 
-    badge: product.badge ?? [],
-    tags: product.tags ?? [],
+    badge: Array.isArray(product.badge) ? product.badge : (product.badge ? [product.badge] : []),
+    tags: Array.isArray(product.tags) ? product.tags : (product.tags ? [product.tags] : []),
 
     color: product.color ?? null,
     material: product.material ?? null,
@@ -43,8 +44,34 @@ function normalizeProduct(product) {
 
 async function seedProducts() {
   try {
+    // Usar transacción para evitar insertar datos parciales en caso de error
+    await pool.query('BEGIN');
+
     for (const product of productsData) {
+      // Resolver y validar la categoría referenciada antes de normalizar/insertar
+      const fk = product.fk_category_id ?? null;
+      let resolvedCategoriaId = null;
+
+      if (fk !== null) {
+        if (Number.isFinite(fk)) {
+          const { rows: catRows } = await pool.query('SELECT categoria_id FROM categorias WHERE categoria_id = $1', [fk]);
+          if (catRows.length === 0) {
+            throw new Error(`Categoria con id ${fk} no encontrada para producto '${product.slug}'. Aborting seed.`);
+          }
+          resolvedCategoriaId = fk;
+        } else {
+          // Si por alguna razón fk viene como string/slug, intentar resolver por slug
+          const { rows: catRows } = await pool.query('SELECT categoria_id FROM categorias WHERE slug = $1', [String(fk)]);
+          if (catRows.length === 0) {
+            throw new Error(`Categoria con slug '${fk}' no encontrada para producto '${product.slug}'. Aborting seed.`);
+          }
+          resolvedCategoriaId = catRows[0].categoria_id;
+        }
+      }
+
       const p = normalizeProduct(product);
+      // Forzar la categoria resuelta (evitar dependencias implícitas en ordering)
+      p.categoria_id = resolvedCategoriaId;
 
       const query = `
         INSERT INTO productos (
@@ -115,9 +142,16 @@ async function seedProducts() {
       console.log(`Producto insertado → ID: ${result.rows[0].producto_id}`);
     }
 
+    await pool.query('COMMIT');
     console.log("Seed de productos COMPLETADO con éxito.");
   } catch (error) {
-    console.error("Error al insertar productos:", error);
+    try {
+      await pool.query('ROLLBACK');
+    } catch (e) {
+      // Ignorar rollback error
+    }
+    console.error("Error al insertar productos:", error.message || error);
+    process.exit(1);
   } finally {
     pool.end();
   }

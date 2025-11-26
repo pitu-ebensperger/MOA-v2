@@ -1,6 +1,6 @@
 //path/frontend/src/modules/admin/utils/productsColumns.jsx
 import { AlertTriangle, Eye, Edit3, Copy, Trash2, Filter, Check } from "lucide-react";
-import { formatCurrencyCLP } from "@/utils/currency.js"
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { LOW_STOCK_THRESHOLD } from "@/config/constants.js"
 import {

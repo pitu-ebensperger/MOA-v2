@@ -1,4 +1,4 @@
-import { toNum } from "@/utils/number.js"
+import { toNum } from "@/utils/formatters/numbers.js"
 import { ALL_CATEGORY_ID } from "@/config/constants.js"
 
 export const normalizeProduct = (p = {}) => {
@@ -32,6 +32,32 @@ export const normalizeProduct = (p = {}) => {
 
   const status = p.status ?? (stockSafe > 0 ? "activo" : "sin_stock");
 
+  // Normalize category-related fields to primitives when possible
+  let fk_category_id = p.fk_category_id ?? p.categoryId ?? p.categoria_id ?? null;
+  if (fk_category_id !== null && fk_category_id !== undefined) {
+    try {
+      fk_category_id = String(fk_category_id);
+    } catch (e) {
+      fk_category_id = fk_category_id;
+    }
+  }
+
+  let categorySlug = p.categorySlug ?? p.categoria_slug ?? null;
+  if (!categorySlug && p.category && (p.category.slug || p.category.id)) {
+    categorySlug = p.category.slug ?? p.category.id ?? null;
+  }
+  if (categorySlug !== null && categorySlug !== undefined) {
+    categorySlug = String(categorySlug);
+  }
+
+  let categoryName = p.categoryName ?? p.categoria_nombre ?? null;
+  if (!categoryName && p.category && p.category.name) {
+    categoryName = p.category.name;
+  }
+  if (categoryName !== null && categoryName !== undefined) {
+    categoryName = String(categoryName);
+  }
+
   return {
     id,
     name,
@@ -53,9 +79,9 @@ export const normalizeProduct = (p = {}) => {
     weight: p.weight ?? null,
     createdAt: p.createdAt ?? p.created_at ?? null,
     updatedAt: p.updatedAt ?? p.updated_at ?? null,
-    fk_category_id: p.fk_category_id ?? p.categoryId ?? p.categoria_id ?? null,
-    categoryName: p.categoryName ?? p.categoria_nombre ?? null,
-    categorySlug: p.categorySlug ?? p.categoria_slug ?? null,
+    fk_category_id,
+    categoryName,
+    categorySlug,
   };
 };
 

@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/radix/DropdownMenu.jsx";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 export function ResponsiveRowActions({
   actions = [],

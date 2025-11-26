@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import { formatCurrencyCLP } from "@/utils/currency.js";
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 
 const OrderCard = ({ order }) => {
   const navigate = useNavigate();

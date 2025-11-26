@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 import { PILL_STYLES } from "@/config/ui-tokens.js"
 
 const PILL_SIZES = {

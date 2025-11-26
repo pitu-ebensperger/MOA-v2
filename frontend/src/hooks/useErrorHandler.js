@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { alerts } from '@/utils/sweetalert.js';
+import { alerts } from '@/utils/alerts.js';
 import { observability } from '@/services/observability.js';
 
 /**

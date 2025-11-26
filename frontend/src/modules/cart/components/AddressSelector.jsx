@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useAddresses, useCreateAddress } from '@/hooks/useAddresses.query';
 import { Input, Textarea } from '@/components/ui/Input.jsx';
-import { Card, CardContent, Label, buttonClasses } from '@/components/shadcn/ui/index.js';
+import { Card, CardContent } from '@/components/shadcn/ui/card.jsx';
+import { Label } from '@/components/shadcn/ui/label.jsx';
+import { buttonClasses } from '@/components/shadcn/ui/button-classes.js';
 
 export function AddressSelector({ onSelect, className = '' }) {
   const { addresses, isLoading: loading, error, refetch } = useAddresses();

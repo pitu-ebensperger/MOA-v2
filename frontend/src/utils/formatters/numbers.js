@@ -126,3 +126,18 @@ export function ensureNumber(value, fallback = 0) {
 export function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
+
+/**
+ * Convert any value into a finite number or return a fallback
+ * @param {unknown} value - Value to convert
+ * @param {number|null} fallback - Value returned when conversion fails (default: null)
+ * @returns {number|null} Parsed number or fallback
+ */
+export function toNum(value, fallback = null) {
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420">
+  <style>
+    .box{fill:#fff;stroke:#1f2937;stroke-width:2;rx:8;ry:8}
+    .label{font:14px system-ui; fill:#111827}
+    .small{font:12px system-ui; fill:#374151}
+    .arrow{stroke:#6b7280;stroke-width:2;marker-end:url(#arrow)}
+    .title{font:16px system-ui; fill:#111827; font-weight:700}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#6b7280" />
+    </marker>
+  </defs>
+  <text x="20" y="28" class="title">Admin: actualizar estado de orden</text>
+
+  <rect class="box" x="40" y="70" width="240" height="60"/>
+  <text class="label" x="60" y="105">UI (select estado/envío)</text>
+
+  <rect class="box" x="320" y="70" width="260" height="60"/>
+  <text class="label" x="340" y="105">ordersAdminApi.updateOrderStatus</text>
+
+  <rect class="box" x="620" y="70" width="280" height="60"/>
+  <text class="label" x="640" y="95">PUT /api/admin/orders/:id/status</text>
+  <text class="small" x="640" y="115">verifyAdmin + controller</text>
+
+  <line class="arrow" x1="280" y1="100" x2="320" y2="100"/>
+  <line class="arrow" x1="580" y1="100" x2="620" y2="100"/>
+
+  <rect class="box" x="320" y="170" width="260" height="60"/>
+  <text class="label" x="340" y="205">Optimistic UI (opcional)</text>
+
+  <rect class="box" x="620" y="170" width="260" height="60"/>
+  <text class="label" x="640" y="205">Refetch + toast</text>
+
+  <line class="arrow" x1="580" y1="200" x2="620" y2="200"/>
+
+  <text class="small" x="60" y="360">Errores comunes: falta `estado_pago`, conflicto ids → validar antes de enviar</text>
+</svg>

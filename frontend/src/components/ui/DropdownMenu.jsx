@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/Button"
-import { cn } from "@/utils/classNames.js";
+import { cn } from "@/utils/cn.js";
 
 
 export function Dropdown({

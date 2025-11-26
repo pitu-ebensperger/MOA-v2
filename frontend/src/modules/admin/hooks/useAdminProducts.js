@@ -35,8 +35,10 @@ export function useAdminProducts({ page, limit, search, status, categoryId, only
     [page, limit, search, status, categoryId, onlyLowStock],
   );
 
+  const queryKey = useMemo(() => [...ADMIN_PRODUCTS_QUERY_KEY, params], [params]);
+
   const query = useQuery({
-    queryKey: [...ADMIN_PRODUCTS_QUERY_KEY, params],
+    queryKey,
     queryFn: () => productsApi.list(params),
     keepPreviousData: true,
     staleTime: 1000 * 60,

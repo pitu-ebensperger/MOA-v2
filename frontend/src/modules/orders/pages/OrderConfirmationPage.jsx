@@ -20,8 +20,8 @@ import { Spinner } from "@/components/ui/Spinner.jsx"
 import { Badge } from "@/components/ui/Badge.jsx"
 import { getOrderById } from "@/services/checkout.api.js"
 import { API_PATHS } from "@/config/api-paths.js"
-import { formatCurrencyCLP } from "@/utils/currency.js"
-import { formatDate_ddMMyyyy } from "@/utils/date.js"
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
+import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
 
 // ⚠️ NOTA: Algunos valores legacy no coinciden con DDL actual
 // DDL válido: 'preparacion' | 'enviado' | 'en_transito' | 'entregado' | 'cancelado'

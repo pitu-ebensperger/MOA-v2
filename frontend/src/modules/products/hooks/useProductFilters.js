@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { ALL_CATEGORY_ID, DEFAULT_PAGE_SIZE } from "@/config/constants.js"
-import { ensureNumber } from "@/utils/number.js"
-import { clamp } from "@/utils/math.js"
-import { formatCurrencyCLP } from "@/utils/currency.js"
+import { ensureNumber } from "@/utils/formatters/numbers.js"
+import { clamp } from "@/utils/formatters/numbers.js"
+import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { buildCategoriesWithAll } from "@/utils/normalizers.js"
 import { createCategoryMatcher, resolveProductPrice } from "@/modules/products/utils/products.js"
 import { matchesText } from "@/modules/products/utils/productsFilter.js"

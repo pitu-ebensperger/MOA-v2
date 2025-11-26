@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Plus, Package, X, AlertCircle, Download, FileSpreadsheet, FileText, ChevronDown } from "lucide-react";
+import { Plus, Package, X, AlertCircle, Download, FileText, ChevronDown } from "lucide-react";
 import ProductDrawer from "@/modules/admin/components/ProductDrawer.jsx"
 import ProductDetailDrawer from "@/modules/admin/components/ProductDetailDrawer.jsx"
 
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/Badge.jsx"
 import { productsApi } from "@/services/products.api.js"
 import { confirm } from "@/components/ui";
 
-import { useAdminProducts, fetchAllAdminProducts } from "@/modules/admin/hooks/useAdminProducts.js"
+import { useAdminProducts } from "@/modules/admin/hooks/useAdminProducts.js"
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
 import { buildProductColumns } from "@/modules/admin/utils/ProductsColumns.jsx"
 import { DEFAULT_PAGE_SIZE } from "@/config/constants.js"
@@ -205,44 +205,6 @@ export default function AdminProductsPage() {
     }
   };
 
-  const exportToExcel = async () => {
-    try {
-      const { items: allItems } = await fetchAllAdminProducts({
-        search,
-        status,
-        categoryId,
-        onlyLowStock,
-      });
-      
-      const headers = ["SKU", "Nombre", "Categoría", "Precio (CLP)", "Stock", "Estado"];
-      const csvData = [
-        headers.join("\t"),
-        ...allItems.map(item => [
-          item.sku || "",
-          item.name || "",
-          categoryMap[item.fk_category_id] || "",
-          item.price || 0,
-          item.stock || 0,
-          item.status || ""
-        ].join("\t"))
-      ].join("\n");
-
-      const blob = new Blob([csvData], { type: "application/vnd.ms-excel;charset=utf-8;" });
-      const link = document.createElement("a");
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", `productos_moa_${new Date().toISOString().split('T')[0]}.xls`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      handleError(error, 'Error al exportar Excel');
-    } finally {
-      setShowExportDropdown(false);
-    }
-  };
-
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -329,18 +291,11 @@ export default function AdminProductsPage() {
             {showExportDropdown && (
               <div className="absolute right-0 mt-2 w-48 rounded-lg border bg-white shadow-lg z-50">
                 <button
-                  className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm hover:bg-gray-50 rounded-t-lg"
+                  className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm hover:bg-gray-50 rounded-lg"
                   onClick={exportToCSV}
                 >
                   <FileText className="h-4 w-4" />
                   Exportar como CSV
-                </button>
-                <button
-                  className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm hover:bg-gray-50 rounded-b-lg"
-                  onClick={exportToExcel}
-                >
-                  <FileSpreadsheet className="h-4 w-4" />
-                  Exportar como Excel
                 </button>
               </div>
             )}

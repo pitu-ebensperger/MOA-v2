@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420">
+  <style>
+    .box{fill:#fff;stroke:#1f2937;stroke-width:2;rx:8;ry:8}
+    .label{font:14px system-ui; fill:#111827}
+    .small{font:12px system-ui; fill:#374151}
+    .arrow{stroke:#6b7280;stroke-width:2;marker-end:url(#arrow)}
+    .title{font:16px system-ui; fill:#111827; font-weight:700}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#6b7280" />
+    </marker>
+  </defs>
+  <text x="20" y="28" class="title">Carrito end-to-end</text>
+
+  <rect class="box" x="40" y="70" width="220" height="60"/>
+  <text class="label" x="60" y="105">Producto (Add to Cart)</text>
+
+  <rect class="box" x="300" y="70" width="220" height="60"/>
+  <text class="label" x="320" y="105">useCart / mutations</text>
+
+  <rect class="box" x="580" y="70" width="220" height="60"/>
+  <text class="label" x="600" y="105">cartApi.add(productId)</text>
+
+  <rect class="box" x="300" y="160" width="220" height="60"/>
+  <text class="label" x="320" y="195">useCartQuery()</text>
+  
+  <rect class="box" x="580" y="160" width="240" height="60"/>
+  <text class="label" x="600" y="195">GET /cart → items</text>
+
+  <line class="arrow" x1="260" y1="100" x2="300" y2="100"/>
+  <line class="arrow" x1="520" y1="100" x2="580" y2="100"/>
+  <line class="arrow" x1="520" y1="190" x2="580" y2="190"/>
+
+  <rect class="box" x="300" y="250" width="220" height="60"/>
+  <text class="label" x="320" y="285">CartContext</text>
+
+  <rect class="box" x="580" y="250" width="220" height="60"/>
+  <text class="label" x="600" y="285">Navbar badge</text>
+
+  <line class="arrow" x1="520" y1="280" x2="580" y2="280"/>
+
+  <text class="small" x="60" y="360">Auth gating: ensureAuthenticated() antes de mutar</text>
+  <text class="small" x="60" y="380">Refetch: tras mutaciones, invalida o refetch para sincronizar badge</text>
+</svg>

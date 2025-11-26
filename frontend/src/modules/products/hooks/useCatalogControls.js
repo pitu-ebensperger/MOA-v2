@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { PAGE_SIZE_OPTIONS } from "@/config/constants.js"
-import { ensureNumber } from "@/utils/number.js"
+import { ensureNumber } from "@/utils/formatters/numbers.js"
 
 export const useCatalogControls = ({
   defaultSort = "relevance",

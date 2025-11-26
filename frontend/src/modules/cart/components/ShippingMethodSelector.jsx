@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { METODOS_DESPACHO } from "@/utils/orderTracking.js"
 import { Price } from "@/components/data-display/Price.jsx"
-import {
-  Label,
-  Card
-} from "@/components/shadcn/ui/index.js";
+import { Label } from "@/components/shadcn/ui/label.jsx";
+import { Card } from "@/components/shadcn/ui/card.jsx";
 import { Check } from "lucide-react";
 
 /**

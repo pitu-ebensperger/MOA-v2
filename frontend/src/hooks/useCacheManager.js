@@ -1,5 +1,5 @@
 import { useQueryClient } from '@/lib/react-query-lite';
-import { QUERY_KEYS } from '@shared/constants/react-query.config.js';
+import { QUERY_KEYS } from '@config/react-query.config.js';
 
 /**
  * Hook para gestionar invalidación de cache

@@ -22,8 +22,8 @@ import { ordersAdminApi } from '@/services/ordersAdmin.api.js';
 import { Button } from '@/components/ui/Button.jsx';
 import { Select } from '@/components/ui/Select.jsx';
 import { StatusPill } from '@/components/ui/StatusPill.jsx';
-import { formatCurrencyCLP } from '@/utils/currency.js';
-import { formatDateTime } from '@/utils/date.js';
+import { formatCurrencyCLP } from '@/utils/formatters/currency.js';
+import { formatDateTime } from '@/utils/formatters/date.js';
 import AdminPageHeader from '@/modules/admin/components/AdminPageHeader.jsx';
 import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/status-maps.js';
 

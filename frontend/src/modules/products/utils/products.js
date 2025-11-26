@@ -1,4 +1,4 @@
-import { toNum } from "@/utils/number.js"
+import { toNum } from "@/utils/formatters/numbers.js"
 
 // Precio num o null
 export const resolveProductPrice = (product) => {

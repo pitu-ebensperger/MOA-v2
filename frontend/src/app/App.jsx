@@ -205,7 +205,6 @@ export const App = () => {
               <Route path={support.faq} element={<FAQPage />} /> 
               <Route path={support.returns} element={<ReturnsAndExchangesPage />} /> 
               <Route path={support.legalNotice} element={<LegalNoticePage />} /> 
-              <Route path='*' element={<NotFoundPage />} />
 
               <Route element={<AdminRoute />}>
                 <Route path={admin.dashboard} element={<EntornoAdmin><AdminDashboardPage /></EntornoAdmin>} />
@@ -222,6 +221,7 @@ export const App = () => {
               <Route path="/error/502" element={<ServerErrorPage statusCode={502} />} />
               <Route path="/error/503" element={<ServerErrorPage statusCode={503} />} />
               <Route path="/error/504" element={<ServerErrorPage statusCode={504} />} />
+              <Route path='*' element={<NotFoundPage />} />
             </Routes>
           </Suspense>
           </SuspenseErrorBoundary>

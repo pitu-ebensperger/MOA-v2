@@ -23,7 +23,11 @@ export const useStoreConfig = () => {
         const payload = response?.data ?? response;
         if (payload) setConfig(payload);
       } catch (error) {
-        console.error('Error al cargar configuración de la tienda:', error);
+        // Silenciar error y usar configuración por defecto
+        // El error ya se loguea en config.api.js
+        if (import.meta.env.DEV) {
+          console.warn('No se pudo cargar configuración de la tienda, usando valores por defecto');
+        }
       } finally {
         setIsLoading(false);
       }

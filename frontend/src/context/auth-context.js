@@ -1,27 +1,11 @@
 import { createStrictContext } from "@/context/createStrictContext.js"
-import * as AuthOptimized from './AuthOptimized.jsx'
 
 // Context aislado de componentes para cumplir la regla react-refresh/only-export-components
-// Guardamos el hook original generado por createStrictContext y exportamos
-// un adaptador `useAuth` que intenta usar `AuthOptimized` cuando esté
-// disponible (y dentro de su provider), y cae al hook original si no.
-export const [AuthContext, _originalUseAuth] = createStrictContext("Auth", {
+// Hook generado por createStrictContext que valida que el hook se use dentro del provider
+export const [AuthContext, useAuth] = createStrictContext("Auth", {
   displayName: "AuthContext",
   errorMessage: "useAuth debe usarse dentro de AuthProvider",
 });
-
-export function useAuth() {
-  try {
-    const state = AuthOptimized.useAuthState();
-    const actions = AuthOptimized.useAuthActions();
-    const meta = AuthOptimized.useAuthMeta();
-    return { ...state, ...actions, ...meta };
-  } catch (e) {
-    // Si no estamos dentro del AuthOptimized provider o no está integrado,
-    // caer al hook original que usa `AuthContext`.
-    return _originalUseAuth();
-  }
-}
 
 const normalizeRoleValue = (value) =>
   typeof value === "string" ? value.trim().toLowerCase() : ""
@@ -37,7 +21,7 @@ try {
   if (raw && typeof raw === 'string') {
     DESIGN_BYPASS_EMAILS = new Set(raw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean));
   }
-} catch (e) { // eslint-disable-line no-unused-vars
+} catch {
   // Silenciar errores de acceso a import.meta.env en tests
 }
 

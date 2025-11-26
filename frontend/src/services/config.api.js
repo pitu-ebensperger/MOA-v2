@@ -9,7 +9,10 @@ export const getStoreConfig = async () => {
     const response = await apiClient.get('/api/config');
     return response?.data ?? response;
   } catch (error) {
-    logger.error('[configApi.get] Error al obtener configuración:', error);
+    // Solo loguear en desarrollo - la app tiene valores por defecto
+    if (import.meta.env.DEV) {
+      logger.warn('[configApi.get] No se pudo obtener configuración del servidor:', error.message);
+    }
     throw error;
   }
 };

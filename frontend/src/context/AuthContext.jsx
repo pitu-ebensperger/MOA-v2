@@ -447,13 +447,13 @@ export const AuthProvider = ({ children }) => {
       
       {/* Alerta de sesión expirada (fija en top) */}
       {showExpiredAlert && (
-        <div className="fixed left-1/2 top-[80px] z-[var(--z-modal,1050)] w-full max-w-lg -translate-x-1/2 px-4">
+        <div className="fixed left-1/2 top-20 z-1050 w-full max-w-lg -translate-x-1/2 px-4">
           <Alert
             variant="warning"
             title="Sesión expirada"
             dismissible
             onDismiss={() => setShowExpiredAlert(false)}
-            className="border-[color:var(--color-warning)]/50 bg-[var(--color-warning-veil)] backdrop-blur-md shadow-lg"
+            className="border-warning/50 bg-warning-veil backdrop-blur-md shadow-lg"
           >
             Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.
           </Alert>

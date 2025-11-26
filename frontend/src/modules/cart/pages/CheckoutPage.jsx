@@ -263,7 +263,8 @@ export const CheckoutPage = ({
       if (orderPreview.metodo_despacho !== 'retiro') {
         if (orderPreview.selectedAddressId) {
           // Usar dirección guardada existente
-          direccionIdParaOrden = orderPreview.selectedAddressId;
+          const parsedId = Number(orderPreview.selectedAddressId);
+          direccionIdParaOrden = Number.isNaN(parsedId) ? orderPreview.selectedAddressId : parsedId;
         } else {
           // Crear nueva dirección primero usando hook con optimistic updates
           try {
@@ -284,7 +285,12 @@ export const CheckoutPage = ({
             }
             
             const nuevaDireccion = await createAddressMutation.mutateAsync(addressDataToCreate);
-            direccionIdParaOrden = nuevaDireccion.direccion_id;
+            const nuevaDireccionId = getAddressId(nuevaDireccion);
+            if (!nuevaDireccionId) {
+              throw new Error('No pudimos determinar la nueva dirección creada.');
+            }
+            const parsedNewId = Number(nuevaDireccionId);
+            direccionIdParaOrden = Number.isNaN(parsedNewId) ? nuevaDireccionId : parsedNewId;
           } catch (addressError) {
             debugError('[handleConfirmOrder] Error creando dirección:', addressError);
             throw new Error('No pudimos guardar la dirección de envío. ' + (addressError.response?.data?.message || addressError.message));

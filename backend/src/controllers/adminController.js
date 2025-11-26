@@ -202,6 +202,16 @@ const buildOrderDistribution = (rows) => {
   });
 };
 
+const getReferenceOptions = (req) => ({
+  overrideDate: req?.query?.referenceDate,
+});
+
+const getMonthlyWindow = (referenceDate) => {
+  const start = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+  const end = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 1);
+  return { start, end };
+};
+
 
 export class AdminController {
   static async getDashboardMetrics(req, res, next) {
@@ -239,15 +249,14 @@ export class AdminController {
 
   static async getSalesAnalytics(req, res, next) {
     try {
-      const referenceDate = await getReferenceDate();
-      const now = new Date(referenceDate);
-      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const weekWindowStart = new Date(now);
+      const referenceOptions = getReferenceOptions(req);
+      const referenceDate = await getReferenceDate(referenceOptions);
+      const { start: currentMonthStart, end: nextMonthStart } = getMonthlyWindow(referenceDate);
+      const previousMonthStart = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() - 1, 1);
+      const weekWindowStart = new Date(referenceDate);
       weekWindowStart.setDate(weekWindowStart.getDate() - 28);
       weekWindowStart.setHours(0, 0, 0, 0);
-      const monthlyWindowStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+      const monthlyWindowStart = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() - 5, 1);
 
       const statsQuery = `
         SELECT
@@ -283,22 +292,22 @@ export class AdminController {
             SELECT DATE_TRUNC('week', creado_en) AS period,
                    COALESCE(SUM(total_cents), 0)::bigint AS revenue
             FROM ordenes
-            WHERE creado_en >= $1
+            WHERE creado_en >= $1 AND creado_en < $2
             GROUP BY 1
             ORDER BY 1 ASC
           `,
-          [weekWindowStart.toISOString()]
+          [weekWindowStart.toISOString(), nextMonthStart.toISOString()]
         ),
         pool.query(
           `
             SELECT DATE_TRUNC('month', creado_en) AS period,
                    COALESCE(SUM(total_cents), 0)::bigint AS revenue
             FROM ordenes
-            WHERE creado_en >= $1
+            WHERE creado_en >= $1 AND creado_en < $2
             GROUP BY 1
             ORDER BY 1 ASC
           `,
-          [monthlyWindowStart.toISOString()]
+          [monthlyWindowStart.toISOString(), nextMonthStart.toISOString()]
         ),
       ]);
 
@@ -345,7 +354,8 @@ export class AdminController {
 
   static async getConversionMetrics(req, res, next) {
     try {
-      const referenceDate = await getReferenceDate();
+      const referenceOptions = getReferenceOptions(req);
+      const referenceDate = await getReferenceDate(referenceOptions);
       const trendStart = new Date(referenceDate.getFullYear(), referenceDate.getMonth() - 5, 1);
       const trendEnd = new Date(referenceDate);
       trendEnd.setHours(23, 59, 59, 999);
@@ -429,6 +439,9 @@ export class AdminController {
   static async getTopProducts(req, res, next) {
     try {
       const limitValue = parsePositiveInt(req.query.limit ?? 10, 10);
+      const referenceOptions = getReferenceOptions(req);
+      const referenceDate = await getReferenceDate(referenceOptions);
+      const { start: windowStart, end: windowEnd } = getMonthlyWindow(referenceDate);
 
       const result = await pool.query(
         `
@@ -444,11 +457,13 @@ export class AdminController {
           JOIN productos p ON oi.producto_id = p.producto_id
           JOIN ordenes o ON oi.orden_id = o.orden_id
           WHERE p.status = 'activo'
+            AND o.creado_en >= $1
+            AND o.creado_en < $2
           GROUP BY p.producto_id, p.nombre, p.sku, p.img_url, p.precio_cents
           ORDER BY revenue DESC
-          LIMIT $1
+          LIMIT $3
         `,
-        [limitValue]
+        [windowStart.toISOString(), windowEnd.toISOString(), limitValue]
       );
 
       const topProducts = result.rows.map((row) => {
@@ -485,9 +500,19 @@ export class AdminController {
   static async getCategoryAnalytics(req, res, next) {
     try {
       const limitValue = parsePositiveInt(req.query.limit ?? 6, 6);
+      const referenceOptions = getReferenceOptions(req);
+      const referenceDate = await getReferenceDate(referenceOptions);
+      const { start: windowStart, end: windowEnd } = getMonthlyWindow(referenceDate);
 
       const [ordersResult, categoriesResult] = await Promise.all([
-        pool.query("SELECT COUNT(*)::int AS total_orders FROM ordenes"),
+        pool.query(
+          `
+            SELECT COUNT(*)::int AS total_orders
+            FROM ordenes
+            WHERE creado_en >= $1 AND creado_en < $2
+          `,
+          [windowStart.toISOString(), windowEnd.toISOString()]
+        ),
         pool.query(
           `
             SELECT
@@ -501,11 +526,13 @@ export class AdminController {
             JOIN productos p ON oi.producto_id = p.producto_id
             JOIN categorias c ON p.categoria_id = c.categoria_id
             WHERE p.status = 'activo'
+              AND o.creado_en >= $1
+              AND o.creado_en < $2
             GROUP BY c.categoria_id, c.nombre
             ORDER BY revenue DESC
-            LIMIT $1
+            LIMIT $3
           `,
-          [limitValue]
+          [windowStart.toISOString(), windowEnd.toISOString(), limitValue]
         ),
       ]);
 
@@ -626,7 +653,8 @@ export class AdminController {
 
   static async getOrderDistribution(req, res, next) {
     try {
-      const referenceDate = await getReferenceDate();
+      const referenceOptions = getReferenceOptions(req);
+      const referenceDate = await getReferenceDate(referenceOptions);
       const windowEnd = new Date(referenceDate);
       windowEnd.setHours(23, 59, 59, 999);
       const windowStart = new Date(windowEnd);
@@ -660,7 +688,8 @@ export class AdminController {
   static async getCustomerRegistrations(req, res, next) {
     try {
       const days = 30;
-      const { startDate, endDate } = await getLastNDaysWindow(days);
+      const referenceOptions = getReferenceOptions(req);
+      const { startDate, endDate } = await getLastNDaysWindow(days, referenceOptions);
       const inclusiveEndDate = new Date(endDate);
       inclusiveEndDate.setDate(inclusiveEndDate.getDate() - 1);
 

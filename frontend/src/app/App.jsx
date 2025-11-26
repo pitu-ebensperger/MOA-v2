@@ -46,7 +46,6 @@ const ServerErrorPage = lazy(() => import('@/modules/support/pages/ServerErrorPa
 
 // Lazy load - Admin (chunk separado grande)
 const EntornoAdmin = lazy(() => import('@/modules/admin/components/EntornoAdmin.jsx'))
-const AdminDashboardPage = lazy(() => import('@/modules/admin/pages/AdminDashboardPage.jsx'))
 const OrdersAdminPage = lazy(() => import('@/modules/admin/pages/orders/OrdersAdminPageV2.jsx'))
 const OrderDetailPage = lazy(() => import('@/modules/admin/pages/orders/OrderDetailPage.jsx'))
 const AdminProductsPage = lazy(() => import('@/modules/admin/pages/AdminProductsPage.jsx'))
@@ -223,7 +222,7 @@ export const App = () => {
               <Route path={support.legalNotice} element={<LegalNoticePage />} /> 
 
               <Route element={<AdminRoute />}>
-                <Route path={admin.dashboard} element={<EntornoAdmin><AdminDashboardPage /></EntornoAdmin>} />
+                <Route path={admin.dashboard} element={<Navigate to={admin.products} replace />} />
                 <Route path={admin.orders} element={<EntornoAdmin><OrdersAdminPage /></EntornoAdmin>} />
                 <Route path="/admin/orders/:orderId" element={<EntornoAdmin><OrderDetailPage /></EntornoAdmin>} />
                 <Route path={admin.products} element={<EntornoAdmin><AdminProductsPage /></EntornoAdmin>} />

@@ -22,6 +22,9 @@
     "seed:carts": "node database/seed/cartsSeed.js",
     "seed:wishlists": "node database/seed/wishlistsSeed.js",
     "seed:all": "npm run seed:users && npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify"
+    ,
+    "seed:append": "npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
+    "seed:clients:append": "npm run seed:clients && npm run seed:orders && npm run seed:verify"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

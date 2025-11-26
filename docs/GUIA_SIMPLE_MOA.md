@@ -31,6 +31,13 @@ Piensa: El dashboard es una serie de tarjetas/gráficos que piden datos a endpoi
   2) El backend consulta la DB, resume y devuelve números/series listos para usar.
   3) El componente muestra tarjetas (totales), gráficos (series) y texto (resumen). Sin transformar mucho en el frontend.
 
+2.0) ¿Y si hoy no hay ventas recientes? (forzar mes de referencia)
+- El backend siempre ancla los dashboards al último mes con órdenes registradas. Si la última orden fue en nov/2024 y hoy es 2025, los gráficos siguen mostrando noviembre.
+- Puedes forzar manualmente la "fecha de hoy" con variables de entorno:
+  - Backend: `ANALYTICS_REFERENCE_DATE=2024-11-30` (ISO o yyyy-mm-dd). Todos los endpoints `/admin/analytics/*` y `/admin/dashboard/*` usan ese mes.
+  - Frontend: `VITE_DASHBOARD_REFERENCE_DATE=2024-11-30` para que cada request envíe `?referenceDate=...` (útil cuando no quieres tocar el backend remoto).
+- Si no defines nada, se toma `MAX(creado_en)` de `ordenes`. El valor se cachea 5 minutos para evitar golpear la DB en cada request.
+
 2.1) Paso a paso detallado: crear y consumir un endpoint de Admin
 - ¿Qué queremos?: una tabla de usuarios con paginación y búsqueda.
 - Backend (pasos):

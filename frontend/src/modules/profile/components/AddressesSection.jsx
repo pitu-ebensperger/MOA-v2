@@ -387,7 +387,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
         </Button>
       </DialogFooter>
     </form>
-);
+  );
 };
 
 AddressForm.propTypes = {

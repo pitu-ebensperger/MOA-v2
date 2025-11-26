@@ -11,6 +11,12 @@ const processEnv =
 const rawEnv = importMetaEnv || processEnv || {};
 const mode = rawEnv.MODE ?? rawEnv.NODE_ENV ?? "development";
 
+const normalizeOptionalString = (value) => {
+  if (value === undefined || value === null) return null;
+  const trimmed = String(value).trim();
+  return trimmed.length ? trimmed : null;
+};
+
 export const env = {
   API_BASE_URL: (
     rawEnv.VITE_API_URL ??
@@ -23,4 +29,7 @@ export const env = {
   NODE_ENV: mode,
   IS_DEV: mode === "development",
   IS_PROD: mode === "production",
+  DASHBOARD_REFERENCE_DATE: normalizeOptionalString(
+    rawEnv.VITE_DASHBOARD_REFERENCE_DATE ?? processEnv?.VITE_DASHBOARD_REFERENCE_DATE
+  ),
 };

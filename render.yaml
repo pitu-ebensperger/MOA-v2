@@ -96,15 +96,7 @@ services:
     buildCommand: cd backend && npm install
     startCommand: |
       cd backend && \
-      npm run seed:users && \
-      npm run seed:clients && \
-      npm run seed:categories && \
-      npm run seed:products && \
-      npm run seed:addresses && \
-      npm run seed:orders && \
-      npm run seed:carts && \
-      npm run seed:wishlists && \
-      npm run seed:verify
+      npm run seed:append
     envVars:
       - key: NODE_ENV
         value: production

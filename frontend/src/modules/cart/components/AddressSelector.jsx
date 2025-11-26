@@ -1,28 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAddresses, useCreateAddress } from '@/hooks/useAddresses.query';
+import { useAuth } from '@/context/AuthContext.jsx';
 import { Input, Textarea } from '@/components/ui/Input.jsx';
 import { Card, CardContent } from '@/components/shadcn/ui/card.jsx';
 import { Label } from '@/components/shadcn/ui/label.jsx';
 import { buttonClasses } from '@/components/shadcn/ui/button-classes.js';
 
+const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
+
 export function AddressSelector({ onSelect, className = '' }) {
   const { addresses, isLoading: loading, error, refetch } = useAddresses();
   const [mode, setMode] = useState('lista'); // 'lista' | 'nueva'
   const [selectedId, setSelectedId] = useState(null);
-  const [formData, setFormData] = useState({
+  const { user } = useAuth();
+  const buildInitialForm = () => ({
+    nombre_contacto: user?.nombre || user?.name || '',
+    telefono_contacto: user?.telefono || user?.phone || '',
     calle: '',
+    numero: '',
     comuna: '',
     ciudad: '',
     region: '',
     referencia: ''
   });
+  const [formData, setFormData] = useState(buildInitialForm);
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      nombre_contacto: prev.nombre_contacto || user?.nombre || user?.name || '',
+      telefono_contacto: prev.telefono_contacto || user?.telefono || user?.phone || '',
+    }));
+  }, [user]);
   const [saving, setSaving] = useState(false);
 
   const createAddressMutation = useCreateAddress();
 
   const handleSelect = (id) => {
-    setSelectedId(id);
-    const addr = addresses.find(a => a.id === id) || null;
+    const normalizedId = id == null ? null : String(id);
+    setSelectedId(normalizedId);
+    const addr = addresses.find(a => String(getAddressId(a)) === normalizedId) || null;
     if (onSelect) onSelect(addr);
   };
 
@@ -30,17 +46,18 @@ export function AddressSelector({ onSelect, className = '' }) {
     setFormData(f => ({ ...f, [field]: e.target.value }));
   };
 
-  const canSave = formData.calle && formData.comuna && formData.ciudad && formData.region;
+  const canSave = formData.nombre_contacto && formData.telefono_contacto && formData.calle && formData.numero && formData.comuna && formData.ciudad && formData.region;
 
   const handleSave = async () => {
     if (!canSave) return;
     setSaving(true);
     try {
-      const { data: created } = await createAddressMutation.mutateAsync(formData);
+      const created = await createAddressMutation.mutateAsync(formData);
       setMode('lista');
-      setSelectedId(created?.id || created?.direccion_id || null);
+      const createdId = getAddressId(created);
+      setSelectedId(createdId ? String(createdId) : null);
       if (onSelect) onSelect(created);
-      setFormData({ calle: '', comuna: '', ciudad: '', region: '', referencia: '' });
+      setFormData(buildInitialForm());
 
       refetch();        // ensure fresh data
     } catch (err) {
@@ -77,33 +94,69 @@ export function AddressSelector({ onSelect, className = '' }) {
               {addresses.length === 0 && (
                 <p className="text-xs text-(--color-text-secondary)">No tienes direcciones guardadas aún.</p>
               )}
-              {addresses.map(addr => (
-                <button
-                  key={addr.id}
-                  type="button"
-                  onClick={() => handleSelect(addr.id)}
-                  className={buttonClasses({
-                    variant: selectedId === addr.id ? 'outline' : 'ghost',
-                    size: 'sm',
-                    className: 'w-full justify-start text-left flex flex-col gap-0.5'
-                  })}
-                >
-                  <span className="text-xs font-semibold text-(--color-primary2)">{addr.calle}{addr.comuna ? `, ${addr.comuna}` : ''}</span>
-                  <span className="text-[0.65rem] text-(--color-text-muted)">{addr.ciudad}{addr.region ? `, ${addr.region}` : ''}</span>
-                </button>
-              ))}
+              {addresses.map(addr => {
+                const addrId = getAddressId(addr);
+                if (addrId == null) return null;
+                const addrIdStr = String(addrId);
+                return (
+                  <button
+                    key={addrIdStr}
+                    type="button"
+                    onClick={() => handleSelect(addrIdStr)}
+                    className={buttonClasses({
+                      variant: selectedId === addrIdStr ? 'outline' : 'ghost',
+                      size: 'sm',
+                      className: 'w-full justify-start text-left flex flex-col gap-0.5'
+                    })}
+                  >
+                    <span className="text-xs font-semibold text-(--color-primary2)">
+                      {[addr.calle, addr.numero].filter(Boolean).join(' ')}
+                      {addr.comuna ? `, ${addr.comuna}` : ''}
+                    </span>
+                    <span className="text-[0.65rem] text-(--color-text-muted)">{addr.ciudad}{addr.region ? `, ${addr.region}` : ''}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
 
           {!loading && mode === 'nueva' && (
             <div className="space-y-3">
               <Input
-                label="Calle y número"
+                label="Nombre de contacto"
+                required
+                value={formData.nombre_contacto}
+                onChange={handleField('nombre_contacto')}
+                size="sm"
+                placeholder="Ej: Ana Pérez"
+                fullWidth
+              />
+              <Input
+                label="Teléfono de contacto"
+                required
+                type="tel"
+                value={formData.telefono_contacto}
+                onChange={handleField('telefono_contacto')}
+                size="sm"
+                placeholder="+56 9 1234 5678"
+                fullWidth
+              />
+              <Input
+                label="Calle"
                 required
                 value={formData.calle}
                 onChange={handleField('calle')}
                 size="sm"
-                placeholder="Ej: Av. Principal 1234"
+                placeholder="Ej: Av. Principal"
+                fullWidth
+              />
+              <Input
+                label="Número"
+                required
+                value={formData.numero}
+                onChange={handleField('numero')}
+                size="sm"
+                placeholder="1234"
                 fullWidth
               />
               <Input

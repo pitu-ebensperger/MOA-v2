@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Button } from "@components/ui/Button.jsx";
 import { TooltipNeutral } from "@components/ui/Tooltip.jsx";
 import {
-  LayoutDashboard,
   Package,
   Warehouse,
   Users,
@@ -18,7 +17,6 @@ import {
 import { API_PATHS } from "@config/api-paths.js";
 
 const navItems = [
-  { label: "Resumen", to: API_PATHS.admin.dashboard, icon: LayoutDashboard },
   { label: "Pedidos", to: API_PATHS.admin.orders, icon: Package },
   { label: "Productos", to: API_PATHS.admin.products, icon: Warehouse },
   { label: "Categorías", to: API_PATHS.admin.categories, icon: Layers },
@@ -70,7 +68,7 @@ export default function EntornoAdmin({ children }) {
           <div className="mb-5 w-full grid grid-cols-3 items-center">
             <div />
 
-            <a href={API_PATHS.admin.dashboard} className="justify-self-center flex items-center gap-2" title="MOA Admin">
+            <a href={API_PATHS.admin.products} className="justify-self-center flex items-center gap-2" title="MOA Admin">
               {isExpanded ? (
                 <>
                   <span className="title-serif text-primary text-xl font-semibold tracking-tight">MOA</span>
@@ -122,8 +120,7 @@ export default function EntornoAdmin({ children }) {
               <nav className="flex flex-col gap-2 mb-4 items-stretch w-full">
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const isDashboard = item.to === API_PATHS.admin.dashboard;
-                  const isActive = isDashboard ? currentPath === item.to : currentPath.startsWith(item.to);
+                  const isActive = currentPath === item.to || currentPath.startsWith(`${item.to}/`);
                   const linkNode = (
                     <Link
                       key={item.to}

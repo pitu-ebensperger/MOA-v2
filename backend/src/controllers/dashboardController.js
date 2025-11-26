@@ -6,13 +6,18 @@ const parseDays = (value, fallback = 30) => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 
+const getReferenceOptions = (req) => ({
+  overrideDate: req?.query?.referenceDate,
+});
+
 /**
  * Obtiene estadísticas generales del dashboard
  */
 export const getDashboardStats = async (req, res) => {
   try {
     const periodDays = parseDays(req.query.periodo, 30);
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
 
     const statsQuery = `
       SELECT 
@@ -57,7 +62,8 @@ export const getDashboardStats = async (req, res) => {
 export const getPaymentMethodStats = async (req, res) => {
   try {
     const periodDays = parseDays(req.query.periodo, 30);
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
 
     const query = `
       SELECT 
@@ -97,7 +103,8 @@ export const getPaymentMethodStats = async (req, res) => {
 export const getShippingMethodStats = async (req, res) => {
   try {
     const periodDays = parseDays(req.query.periodo, 30);
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
 
     const query = `
       SELECT 
@@ -138,7 +145,8 @@ export const getShippingMethodStats = async (req, res) => {
 export const getDashboardKPIs = async (req, res) => {
   try {
     const periodDays = parseDays(req.query.periodo, 30);
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
     const previousEnd = new Date(startDate);
     const previousStart = new Date(previousEnd);
     previousStart.setDate(previousStart.getDate() - periodDays);
@@ -235,7 +243,8 @@ export const getTopProducts = async (req, res) => {
     const periodDays = parseDays(req.query.periodo, 30);
     const limitValue = parseInt(req.query.limit ?? '5', 10);
     const limitSanitized = Number.isFinite(limitValue) && limitValue > 0 ? limitValue : 5;
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
 
     const query = `
       SELECT 
@@ -283,7 +292,8 @@ export const getTopProducts = async (req, res) => {
 export const getSalesEvolution = async (req, res) => {
   try {
     const periodDays = parseDays(req.query.periodo, 30);
-    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays, referenceOptions);
 
     const query = `
       SELECT 
@@ -320,7 +330,8 @@ export const getSalesEvolution = async (req, res) => {
  */
 export const getOrdersByStatus = async (req, res) => {
   try {
-    const { startDate, endDate } = await getLastNDaysWindow(30);
+    const referenceOptions = getReferenceOptions(req);
+    const { startDate, endDate } = await getLastNDaysWindow(30, referenceOptions);
 
     const query = `
       SELECT 

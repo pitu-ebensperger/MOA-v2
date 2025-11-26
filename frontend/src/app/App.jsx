@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { WifiOff } from 'lucide-react'
 
 import { Navbar } from '@/components/layout/Navbar.jsx'

@@ -81,6 +81,8 @@ const configShape = PropTypes.shape({
   telefono: PropTypes.string,
 });
 
+const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
+
 export const CheckoutPage = ({
   cartItems: controlledCartItems,
   total: controlledTotal,
@@ -106,7 +108,8 @@ export const CheckoutPage = ({
   const defaultAddress = controlledDefaultAddress ?? addressesQuery?.defaultAddress ?? null;
   const config = controlledConfig ?? storeConfig?.config ?? {};
   const [shippingMethod, setShippingMethod] = useState('standard');
-  const [selectedAddressId, setSelectedAddressId] = useState(defaultAddress?.direccion_id || null);
+  const defaultAddressId = getAddressId(defaultAddress);
+  const [selectedAddressId, setSelectedAddressId] = useState(defaultAddressId ? String(defaultAddressId) : null);
   const [paymentMethod, setPaymentMethod] = useState(METODOS_PAGO.TRANSFERENCIA);
   const [notes, setNotes] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -134,12 +137,13 @@ export const CheckoutPage = ({
   const [newAddress, setNewAddress] = useState({
     etiqueta: '',
     calle: '',
+    numero: '',
     comuna: '',
     ciudad: '',
     region: '',
   });
   const clearAddressFieldErrors = useCallback(() => {
-    ['calle', 'comuna', 'ciudad', 'region'].forEach((field) => clearFieldError(field));
+    ['calle', 'numero', 'comuna', 'ciudad', 'region'].forEach((field) => clearFieldError(field));
   }, [clearFieldError]);
 
   const hasItems = cartItems.length > 0;
@@ -205,6 +209,9 @@ export const CheckoutPage = ({
       if (!newAddress.calle) {
         ensureField('calle', 'Indica la calle y número');
       }
+      if (!newAddress.numero) {
+        ensureField('numero', 'Indica el número de la calle');
+      }
       if (!newAddress.comuna) {
         ensureField('comuna', 'La comuna es obligatoria');
       }
@@ -225,7 +232,7 @@ export const CheckoutPage = ({
     let direccionParaPreview = null;
     if (shippingMethod !== 'retiro') {
       direccionParaPreview = selectedAddressId 
-        ? addresses.find(a => a.direccion_id === selectedAddressId) 
+        ? addresses.find(a => String(getAddressId(a)) === String(selectedAddressId))
         : newAddress;
     }
 
@@ -262,9 +269,12 @@ export const CheckoutPage = ({
           try {
             const addressDataToCreate = {
               calle: newAddress.calle,
+              numero: newAddress.numero,
               comuna: newAddress.comuna,
               ciudad: newAddress.ciudad,
               region: newAddress.region,
+              nombre_contacto: contactData.nombre,
+              telefono_contacto: contactData.telefono,
               predeterminada: addresses.length === 0, // Primera dirección es predeterminada
             };
             
@@ -455,13 +465,12 @@ export const CheckoutPage = ({
                       <div className="space-y-2">
                         <Label>Dirección de envío</Label>
                         <Select
-                          value={selectedAddressId ? selectedAddressId.toString() : 'new'}
+                          value={selectedAddressId ?? 'new'}
                           onValueChange={(val) => {
                             if (val === 'new') {
                               setSelectedAddressId(null);
                             } else {
-                              const parsed = Number.parseInt(val, 10);
-                              setSelectedAddressId(Number.isNaN(parsed) ? null : parsed);
+                              setSelectedAddressId(val);
                             }
                           }}
                         >
@@ -475,16 +484,22 @@ export const CheckoutPage = ({
                                 <span>➕ Nueva dirección</span>
                               </div>
                             </SelectItem>
-                            {addresses.map(addr => (
-                              <SelectItem key={addr.direccion_id} value={addr.direccion_id.toString()}>
-                                <div className="flex flex-col">
-                                  <span className="font-medium">{addr.etiqueta || addr.calle}</span>
-                                  <span className="text-xs text-(--color-text-muted)">
-                                    {addr.comuna}, {addr.ciudad}
-                                  </span>
-                                </div>
-                              </SelectItem>
-                            ))}
+                            {addresses.map(addr => {
+                              const addrId = getAddressId(addr);
+                              if (addrId === null || addrId === undefined) {
+                                return null;
+                              }
+                              return (
+                                <SelectItem key={addrId} value={String(addrId)}>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">{addr.etiqueta || addr.calle}</span>
+                                    <span className="text-xs text-(--color-text-muted)">
+                                      {addr.comuna}, {addr.ciudad}
+                                    </span>
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -513,15 +528,27 @@ export const CheckoutPage = ({
                         </div>
                         <div className="space-y-2">
                           <Label required>Calle y número</Label>
-                          <Input 
-                            placeholder="Avenida Italia 1234, Depto 501" 
-                            autoComplete="street-address"
-                            value={newAddress.calle}
-                            onChange={(e) => handleAddressChange('calle', e.target.value)}
-                            aria-invalid={Boolean(fieldErrors.calle)}
-                          />
+                          <div className="grid grid-cols-3 gap-3">
+                            <Input 
+                              placeholder="Avenida Italia"
+                              autoComplete="address-line1"
+                              value={newAddress.calle}
+                              onChange={(e) => handleAddressChange('calle', e.target.value)}
+                              aria-invalid={Boolean(fieldErrors.calle)}
+                              className="col-span-2"
+                            />
+                            <Input
+                              placeholder="1234"
+                              value={newAddress.numero}
+                              onChange={(e) => handleAddressChange('numero', e.target.value)}
+                              aria-invalid={Boolean(fieldErrors.numero)}
+                            />
+                          </div>
                           {fieldErrors.calle && (
                             <p className="text-xs text-(--color-error)">{fieldErrors.calle}</p>
+                          )}
+                          {fieldErrors.numero && (
+                            <p className="text-xs text-(--color-error)">{fieldErrors.numero}</p>
                           )}
                         </div>
                         <div className="grid gap-4 md:grid-cols-3">

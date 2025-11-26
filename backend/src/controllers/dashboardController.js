@@ -1,11 +1,18 @@
 import { pool } from "../../database/config.js";
+import { getLastNDaysWindow } from "../utils/referenceDate.js";
+
+const parseDays = (value, fallback = 30) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
 
 /**
  * Obtiene estadísticas generales del dashboard
  */
 export const getDashboardStats = async (req, res) => {
   try {
-    const { periodo = '30' } = req.query; // días
+    const periodDays = parseDays(req.query.periodo, 30);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
 
     const statsQuery = `
       SELECT 
@@ -22,11 +29,12 @@ export const getDashboardStats = async (req, res) => {
         COALESCE(ROUND(AVG(total_cents) FILTER (WHERE estado_pago = 'pagado')), 0)::INT as ticket_promedio_pagado
         
       FROM ordenes
-      WHERE creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+      WHERE creado_en >= $1
+        AND creado_en < $2
         AND estado_orden = 'confirmado'
     `;
 
-    const { rows } = await pool.query(statsQuery);
+    const { rows } = await pool.query(statsQuery, [startDate.toISOString(), endDate.toISOString()]);
 
     res.json({
       success: true,
@@ -48,7 +56,8 @@ export const getDashboardStats = async (req, res) => {
  */
 export const getPaymentMethodStats = async (req, res) => {
   try {
-    const { periodo = '30' } = req.query;
+    const periodDays = parseDays(req.query.periodo, 30);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
 
     const query = `
       SELECT 
@@ -59,12 +68,13 @@ export const getPaymentMethodStats = async (req, res) => {
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje_uso
       FROM ordenes 
       WHERE estado_orden = 'confirmado'
-        AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+        AND creado_en >= $1
+        AND creado_en < $2
       GROUP BY metodo_pago
       ORDER BY ingresos_totales DESC
     `;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, [startDate.toISOString(), endDate.toISOString()]);
 
     res.json({
       success: true,
@@ -86,7 +96,8 @@ export const getPaymentMethodStats = async (req, res) => {
  */
 export const getShippingMethodStats = async (req, res) => {
   try {
-    const { periodo = '30' } = req.query;
+    const periodDays = parseDays(req.query.periodo, 30);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
 
     const query = `
       SELECT 
@@ -98,12 +109,13 @@ export const getShippingMethodStats = async (req, res) => {
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje_uso
       FROM ordenes 
       WHERE estado_orden = 'confirmado'
-        AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+        AND creado_en >= $1
+        AND creado_en < $2
       GROUP BY metodo_despacho
       ORDER BY cantidad_ordenes DESC
     `;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, [startDate.toISOString(), endDate.toISOString()]);
 
     res.json({
       success: true,
@@ -125,7 +137,11 @@ export const getShippingMethodStats = async (req, res) => {
  */
 export const getDashboardKPIs = async (req, res) => {
   try {
-    const { periodo = '30' } = req.query;
+    const periodDays = parseDays(req.query.periodo, 30);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
+    const previousEnd = new Date(startDate);
+    const previousStart = new Date(previousEnd);
+    previousStart.setDate(previousStart.getDate() - periodDays);
 
     // KPIs del período actual
     const currentQuery = `
@@ -137,7 +153,8 @@ export const getDashboardKPIs = async (req, res) => {
           COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio
         FROM ordenes
         WHERE estado_orden = 'confirmado'
-          AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+          AND creado_en >= $1
+          AND creado_en < $2
       ),
       previous_period AS (
         SELECT 
@@ -147,8 +164,8 @@ export const getDashboardKPIs = async (req, res) => {
           COALESCE(ROUND(AVG(total_cents)), 0)::INT as ticket_promedio_prev
         FROM ordenes
         WHERE estado_orden = 'confirmado'
-          AND creado_en >= NOW() - INTERVAL '${parseInt(periodo) * 2} days'
-          AND creado_en < NOW() - INTERVAL '${parseInt(periodo)} days'
+          AND creado_en >= $3
+          AND creado_en < $4
       )
       SELECT 
         cp.*,
@@ -159,8 +176,24 @@ export const getDashboardKPIs = async (req, res) => {
       FROM current_period cp, previous_period pp
     `;
 
-    const { rows } = await pool.query(currentQuery);
-    const kpis = rows[0];
+    const values = [
+      startDate.toISOString(),
+      endDate.toISOString(),
+      previousStart.toISOString(),
+      previousEnd.toISOString(),
+    ];
+
+    const { rows } = await pool.query(currentQuery, values);
+    const kpis = rows[0] ?? {
+      ingresos_totales: 0,
+      ingresos_totales_prev: 0,
+      total_ordenes: 0,
+      total_ordenes_prev: 0,
+      total_clientes: 0,
+      total_clientes_prev: 0,
+      ticket_promedio: 0,
+      ticket_promedio_prev: 0,
+    };
 
     res.json({
       success: true,
@@ -199,7 +232,10 @@ export const getDashboardKPIs = async (req, res) => {
  */
 export const getTopProducts = async (req, res) => {
   try {
-    const { periodo = '30', limit = '5' } = req.query;
+    const periodDays = parseDays(req.query.periodo, 30);
+    const limitValue = parseInt(req.query.limit ?? '5', 10);
+    const limitSanitized = Number.isFinite(limitValue) && limitValue > 0 ? limitValue : 5;
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
 
     const query = `
       SELECT 
@@ -216,13 +252,15 @@ export const getTopProducts = async (req, res) => {
       LEFT JOIN categorias c ON p.categoria_id = c.categoria_id
       JOIN ordenes o ON oi.orden_id = o.orden_id
       WHERE o.estado_orden = 'confirmado'
-        AND o.creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+        AND o.creado_en >= $1
+        AND o.creado_en < $2
       GROUP BY p.producto_id, p.nombre, p.img_url, p.precio_cents, c.nombre
       ORDER BY unidades_vendidas DESC
-      LIMIT ${parseInt(limit)}
+      LIMIT $3
     `;
 
-    const { rows } = await pool.query(query);
+    const params = [startDate.toISOString(), endDate.toISOString(), limitSanitized];
+    const { rows } = await pool.query(query, params);
 
     res.json({
       success: true,
@@ -244,7 +282,8 @@ export const getTopProducts = async (req, res) => {
  */
 export const getSalesEvolution = async (req, res) => {
   try {
-    const { periodo = '30' } = req.query;
+    const periodDays = parseDays(req.query.periodo, 30);
+    const { startDate, endDate } = await getLastNDaysWindow(periodDays);
 
     const query = `
       SELECT 
@@ -253,12 +292,13 @@ export const getSalesEvolution = async (req, res) => {
         COALESCE(SUM(total_cents), 0)::BIGINT as ingresos
       FROM ordenes
       WHERE estado_orden = 'confirmado'
-        AND creado_en >= NOW() - INTERVAL '${parseInt(periodo)} days'
+        AND creado_en >= $1
+        AND creado_en < $2
       GROUP BY DATE(creado_en)
       ORDER BY fecha ASC
     `;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, [startDate.toISOString(), endDate.toISOString()]);
 
     res.json({
       success: true,
@@ -280,6 +320,8 @@ export const getSalesEvolution = async (req, res) => {
  */
 export const getOrdersByStatus = async (req, res) => {
   try {
+    const { startDate, endDate } = await getLastNDaysWindow(30);
+
     const query = `
       SELECT 
         estado_envio,
@@ -287,11 +329,13 @@ export const getOrdersByStatus = async (req, res) => {
         ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as porcentaje
       FROM ordenes
       WHERE estado_orden = 'confirmado'
+        AND creado_en >= $1
+        AND creado_en < $2
       GROUP BY estado_envio
       ORDER BY cantidad DESC
     `;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, [startDate.toISOString(), endDate.toISOString()]);
 
     res.json({
       success: true,

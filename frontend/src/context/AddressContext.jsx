@@ -24,6 +24,16 @@ export { AddressContext, useAddressesStrict as useAddresses };
 // PROVIDER
 // ============================================
 
+const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
+const isDefaultAddress = (address) => Boolean(address?.predeterminada ?? address?.es_predeterminada ?? address?.isDefault);
+const isSameAddress = (address, id) => {
+  const currentId = getAddressId(address);
+  if (currentId === null || currentId === undefined || id === null || id === undefined) {
+    return false;
+  }
+  return String(currentId) === String(id);
+};
+
 export const AddressProvider = ({ children }) => {
   const { user, token } = useAuth();
   const [addresses, setAddresses] = useState([]);
@@ -44,8 +54,8 @@ export const AddressProvider = ({ children }) => {
     try {
       const data = await getAddresses();
       setAddresses(data);
-      
-      const defaultAddr = data.find(addr => addr.predeterminada);
+
+      const defaultAddr = data.find((addr) => isDefaultAddress(addr));
       setDefaultAddressState(defaultAddr || null);
     } catch (err) {
       console.error('Error cargando direcciones:', err);
@@ -61,15 +71,22 @@ export const AddressProvider = ({ children }) => {
     try {
       const newAddress = await createAddress(addressData);
       
-      if (addresses.length === 0 || addressData.predeterminada) {
-        setDefaultAddressState(newAddress);
-        setAddresses(prev => [
-          ...prev.map(addr => ({ ...addr, predeterminada: false })),
-          newAddress
-        ]);
-      } else {
-        setAddresses(prev => [...prev, newAddress]);
-      }
+      setAddresses(prev => {
+        const newAddressId = getAddressId(newAddress);
+        const shouldBeDefault = isDefaultAddress(newAddress) || prev.length === 0 || addressData?.predeterminada || addressData?.es_predeterminada;
+        const sanitized = shouldBeDefault
+          ? prev.map(addr => ({ ...addr, predeterminada: false, es_predeterminada: false, isDefault: false }))
+          : prev;
+
+        const withoutDuplicate = sanitized.filter(addr => !isSameAddress(addr, newAddressId));
+        const nextAddresses = [...withoutDuplicate, newAddress];
+
+        if (shouldBeDefault) {
+          setDefaultAddressState(newAddress);
+        }
+
+        return nextAddresses;
+      });
 
       return newAddress;
     } catch (err) {
@@ -85,15 +102,17 @@ export const AddressProvider = ({ children }) => {
     try {
       const updatedAddress = await updateAddress(direccionId, addressData);
       
-      setAddresses(prev => 
-        prev.map(addr => 
-          addr.direccion_id === direccionId ? updatedAddress : addr
-        )
-      );
+      setAddresses(prev => {
+        const next = prev.map(addr =>
+          isSameAddress(addr, direccionId) ? updatedAddress : addr
+        );
 
-      if (defaultAddress?.direccion_id === direccionId) {
-        setDefaultAddressState(updatedAddress);
-      }
+        if (defaultAddress && isSameAddress(defaultAddress, direccionId)) {
+          setDefaultAddressState(updatedAddress);
+        }
+
+        return next;
+      });
 
       return updatedAddress;
     } catch (err) {
@@ -107,16 +126,20 @@ export const AddressProvider = ({ children }) => {
     setError(null);
 
     try {
-      await setDefaultAddress(direccionId);
-      
-      setAddresses(prev => 
-        prev.map(addr => ({
-          ...addr,
-          predeterminada: addr.direccion_id === direccionId
-        }))
+      const newDefault = await setDefaultAddress(direccionId);
+
+      setAddresses(prev =>
+        prev.map(addr => {
+          const isTarget = isSameAddress(addr, direccionId);
+          return {
+            ...addr,
+            predeterminada: isTarget,
+            es_predeterminada: isTarget,
+            isDefault: isTarget,
+          };
+        })
       );
 
-      const newDefault = addresses.find(addr => addr.direccion_id === direccionId);
       setDefaultAddressState(newDefault || null);
 
       return newDefault;
@@ -144,7 +167,7 @@ export const AddressProvider = ({ children }) => {
     if (!address) return '';
     
     const parts = [
-      address.calle,
+      [address.calle, address.numero].filter(Boolean).join(' ').trim(),
       address.departamento,
       address.comuna,
       address.ciudad,

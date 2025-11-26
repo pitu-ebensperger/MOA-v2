@@ -198,6 +198,103 @@ export default function CustomersPage() {
     [refetchCustomers],
   );
 
+  const customerColumns = useMemo(() => [
+    {
+      accessorKey: "nombre",
+      header: "Nombre",
+      size: 220,
+      cell: ({ row }) => {
+        const customer = row.original;
+        return (
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-medium text-neutral-900 truncate" title={customer.nombre}>
+              {customer.nombre || "—"}
+            </span>
+            {customer.phone && (
+              <span className="text-xs text-neutral-500 truncate">{customer.phone}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Correo",
+      size: 260,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2 min-w-0">
+          <Mail className="h-3.5 w-3.5 text-neutral-500 shrink-0" />
+          <span className="text-xs text-neutral-600 truncate" title={row.original.email}>
+            {row.original.email || "—"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "orderCount",
+      header: "Pedidos",
+      size: 110,
+      meta: { align: "center" },
+      cell: ({ row }) => {
+        const count = Number.isFinite(row.original.orderCount)
+          ? row.original.orderCount
+          : Number(row.original.orderCount ?? 0) || 0;
+        return (
+          <div className="flex items-center justify-center gap-1">
+            <ShoppingBag className="h-3.5 w-3.5 text-neutral-400" />
+            <span className="font-semibold tabular-nums">{count}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Estado",
+      size: 160,
+      meta: { align: "center" },
+      cell: ({ row }) => {
+        const customer = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="cursor-pointer transition-opacity hover:opacity-80"
+                aria-label="Cambiar estado"
+              >
+                <StatusPill status={customer.status} domain="user" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {USER_STATUS_OPTIONS.filter((opt) => opt.value).map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onSelect={() => handleStatusChange(customer.id, option.value)}
+                  className="flex items-center justify-between gap-2"
+                >
+                  <StatusPill status={option.value} domain="user" />
+                  {customer.status === option.value && (
+                    <span className="text-(--color-primary1)">✓</span>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Registro",
+      size: 170,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1 text-sm text-neutral-600">
+          <Calendar className="h-3.5 w-3.5" />
+          <span>{formatDate_ddMMyyyy(row.original.createdAt)}</span>
+        </div>
+      ),
+    },
+  ], [handleStatusChange]);
+
   const handleOpenEditDialog = useCallback((customer) => {
     setEditingCustomer(customer);
     setEditForm({
@@ -332,98 +429,13 @@ export default function CustomersPage() {
           {/* Toolbar */}
           {toolbar(null)}
           
-          {/* Loading State */}
-          {isLoadingCustomers && (
-            <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-8 text-center">
-              <RefreshCw className="h-8 w-8 animate-spin mx-auto text-neutral-400" />
-              <p className="mt-2 text-sm text-neutral-500">Cargando clientes...</p>
-            </div>
-          )}
-          {!isLoadingCustomers && filteredCustomers.length === 0 && (
-            <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-8 text-center">
-              <p className="text-sm text-neutral-500">No se encontraron clientes</p>
-            </div>
-          )}
-          {!isLoadingCustomers && filteredCustomers.length > 0 && (
-            <UnifiedDataTable
-              data={filteredCustomers}
-              virtualized
-              columns={[
-                { key: 'nombre', header: 'Nombre', width: '180px' },
-                { key: 'correo', header: 'Correo', width: '260px' },
-                { key: 'pedidos', header: 'Pedidos', width: '120px' },
-                { key: 'estado', header: 'Estado', width: '180px' },
-                { key: 'registro', header: 'Registro', width: '150px' },
-              ]}
-              renderRow={(customer) => (
-                <div
-                  className="grid items-center"
-                  style={{
-                    gridTemplateColumns: '180px 260px 120px 180px 150px',
-                    height: '70px',
-                  }}
-                >
-                  {/* Nombre */}
-                  <div className="px-4 flex items-center">
-                    <span className="text-sm font-medium text-neutral-900 truncate" title={customer.nombre}>
-                      {customer.nombre}
-                    </span>
-                  </div>
-
-                  {/* Correo */}
-                  <div className="px-4 flex items-center gap-1">
-                    <Mail className="h-3.5 w-3.5 text-neutral-500" />
-                    <span className="text-xs text-neutral-600 truncate" title={customer.email}>{customer.email}</span>
-                  </div>
-
-                  {/* Pedidos */}
-                  <div className="flex items-center gap-1 px-4 text-sm">
-                    <ShoppingBag className="h-3.5 w-3.5 text-neutral-400" />
-                    <span className="font-medium tabular-nums">
-                      {Number.isFinite(customer.orderCount) ? customer.orderCount : 0}
-                    </span>
-                  </div>
-
-                  {/* Estado */}
-                  <div className="px-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          className="cursor-pointer transition-opacity hover:opacity-80"
-                          aria-label="Cambiar estado"
-                        >
-                          <StatusPill status={customer.status} domain="user" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        {USER_STATUS_OPTIONS.filter((opt) => opt.value).map((option) => (
-                          <DropdownMenuItem
-                            key={option.value}
-                            onSelect={() => handleStatusChange(customer.id, option.value)}
-                            className="flex items-center justify-between gap-2"
-                          >
-                            <StatusPill status={option.value} domain="user" />
-                            {customer.status === option.value && (
-                              <span className="text-(--color-primary1)">✓</span>
-                            )}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-
-                  {/* Registro */}
-                  <div className="flex items-center gap-1 px-4 text-sm text-neutral-600">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {formatDate_ddMMyyyy(customer.createdAt)}
-                  </div>
-                </div>
-              )}
-              rowHeight={70}
-              overscan={5}
-              className="mt-4"
-            />
-          )}
+          <UnifiedDataTable
+            data={filteredCustomers}
+            columns={customerColumns}
+            loading={isLoadingCustomers}
+            emptyMessage="No se encontraron clientes"
+            className="mt-4"
+          />
           
           {/* Paginación */}
           {totalCustomers > pageSize && !isLoadingCustomers && filteredCustomers.length > 0 && (

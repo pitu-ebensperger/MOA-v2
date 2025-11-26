@@ -9,12 +9,46 @@ import { useSalesEvolution } from '@/modules/admin/hooks/useDashboardStats';
 import { Price } from '@/components/data-display/Price';
 import ChartCard from './ChartCard';
 
+const PERIOD_PRESETS = [7, 30, 90, 180, 365];
+
+const formatPeriodLabel = (days) => {
+  if (days >= 365) {
+    const years = days / 365;
+    if (Number.isInteger(years)) {
+      return years === 1 ? 'Últimos 12 meses' : `Últimos ${years} años`;
+    }
+    const months = Math.round(days / 30);
+    return `Últimos ${months} meses`;
+  }
+  if (days >= 30) {
+    const months = Math.round(days / 30);
+    return `Últimos ${months} meses`;
+  }
+  return `Últimos ${days} días`;
+};
+
+const formatButtonLabel = (days) => {
+  if (days >= 365) {
+    const years = days / 365;
+    return Number.isInteger(years) ? `${years}a` : `${Math.round(days / 30)}m`;
+  }
+  if (days >= 30) {
+    return `${Math.round(days / 30)}m`;
+  }
+  return `${days}d`;
+};
+
 /**
  * Gráfico de evolución de ventas (línea + área)
  */
 export default function SalesEvolutionChart({ periodo = 30 }) {
   const [activePeriod, setActivePeriod] = useState(periodo);
   const { data, isLoading, isError } = useSalesEvolution(activePeriod);
+  const periodOptions = useMemo(() => {
+    const options = new Set(PERIOD_PRESETS);
+    options.add(periodo);
+    return Array.from(options).sort((a, b) => a - b);
+  }, [periodo]);
 
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -38,7 +72,7 @@ export default function SalesEvolutionChart({ periodo = 30 }) {
   // Filtros de período
   const periodFilters = (
     <div className="flex gap-2">
-      {[7, 30, 90].map(days => (
+      {periodOptions.map(days => (
         <button
           key={days}
           onClick={() => setActivePeriod(days)}
@@ -48,7 +82,7 @@ export default function SalesEvolutionChart({ periodo = 30 }) {
               : 'bg-(--color-neutral2) text-(--text-secondary1) hover:bg-(--color-neutral3)'
           }`}
         >
-          {days}d
+          {formatButtonLabel(days)}
         </button>
       ))}
     </div>
@@ -76,7 +110,7 @@ export default function SalesEvolutionChart({ periodo = 30 }) {
     return (
       <ChartCard
         title="Evolución de Ventas"
-        subtitle={`Últimos ${activePeriod} días`}
+        subtitle={formatPeriodLabel(activePeriod)}
         filters={periodFilters}
       >
         <div className="flex h-64 items-center justify-center">
@@ -91,7 +125,7 @@ export default function SalesEvolutionChart({ periodo = 30 }) {
       title="Evolución de Ventas"
       subtitle={
         <div className="flex items-center gap-4">
-          <span>Últimos {activePeriod} días</span>
+          <span>{formatPeriodLabel(activePeriod)}</span>
           <span className="text-(--text-strong) font-semibold">
             Total: <Price priceInCents={totalIngresos} />
           </span>

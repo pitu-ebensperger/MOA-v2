@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MapPin, Plus, Trash2, Star, StarOff, Edit } from "lucide-react";
 import { useAddresses } from '@/context/AddressContext.jsx'
@@ -48,7 +48,11 @@ const REGIONES = [
 
 const addressShape = PropTypes.shape({
   direccion_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  nombre_contacto: PropTypes.string,
+  telefono_contacto: PropTypes.string,
   calle: PropTypes.string,
+  numero: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   departamento: PropTypes.string,
   comuna: PropTypes.string,
   ciudad: PropTypes.string,
@@ -61,8 +65,38 @@ const addressShape = PropTypes.shape({
 
 const noopAsync = async () => {};
 
+const EMPTY_ADDRESS_FORM = {
+  nombre_contacto: '',
+  telefono_contacto: '',
+  etiqueta: '',
+  calle: '',
+  numero: '',
+  departamento: '',
+  comuna: '',
+  ciudad: '',
+  region: '',
+  codigo_postal: '',
+  referencia: '',
+  predeterminada: false,
+};
+
+const buildInitialFormData = (address) => {
+  if (!address) return { ...EMPTY_ADDRESS_FORM };
+  return {
+    ...EMPTY_ADDRESS_FORM,
+    ...address,
+    etiqueta: address.etiqueta ?? address.label ?? EMPTY_ADDRESS_FORM.etiqueta,
+    nombre_contacto: address.nombre_contacto ?? address.contactName ?? EMPTY_ADDRESS_FORM.nombre_contacto,
+    telefono_contacto: address.telefono_contacto ?? address.contactPhone ?? EMPTY_ADDRESS_FORM.telefono_contacto,
+    numero: address.numero ? String(address.numero) : EMPTY_ADDRESS_FORM.numero,
+  };
+};
+
+const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
+
 const AddressCard = ({ address, onEdit, onDelete, onSetDefault }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const addressId = getAddressId(address);
 
   return (
     <>
@@ -93,12 +127,20 @@ const AddressCard = ({ address, onEdit, onDelete, onSetDefault }) => {
         </div>
 
         <div className="space-y-1 text-sm">
-          <p className="font-medium">{address.calle}</p>
+          <p className="font-medium">
+            {[address.calle, address.numero].filter(Boolean).join(' ').trim() || 'Dirección sin calle'}
+          </p>
           {address.departamento && <p className="text-muted-foreground">{address.departamento}</p>}
           <p className="text-muted-foreground">
             {address.comuna}, {address.ciudad}
           </p>
           <p className="text-muted-foreground">{address.region}</p>
+          {address.nombre_contacto && (
+            <p className="text-muted-foreground">Contacto: {address.nombre_contacto}</p>
+          )}
+          {address.telefono_contacto && (
+            <p className="text-muted-foreground">Teléfono: {address.telefono_contacto}</p>
+          )}
           {address.codigo_postal && (
             <p className="text-muted-foreground">CP: {address.codigo_postal}</p>
           )}
@@ -112,7 +154,7 @@ const AddressCard = ({ address, onEdit, onDelete, onSetDefault }) => {
             variant="outline"
             size="sm"
             className="mt-3 w-full"
-            onClick={() => onSetDefault(address.direccion_id)}
+            onClick={() => onSetDefault(addressId)}
           >
             <Star className="w-3 h-3 mr-1" />
             Establecer como predeterminada
@@ -132,7 +174,7 @@ const AddressCard = ({ address, onEdit, onDelete, onSetDefault }) => {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                onDelete(address.direccion_id);
+                onDelete(addressId);
                 setShowDeleteDialog(false);
               }}
               className="bg-destructive hover:bg-destructive/90"
@@ -154,18 +196,11 @@ AddressCard.propTypes = {
 };
 
 const AddressForm = ({ address, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState(
-    address || {
-      calle: '',
-      departamento: '',
-      comuna: '',
-      ciudad: '',
-      region: '',
-      codigo_postal: '',
-      referencia: '',
-      predeterminada: false,
-    }
-  );
+  const [formData, setFormData] = useState(() => buildInitialFormData(address));
+
+  useEffect(() => {
+    setFormData(buildInitialFormData(address));
+  }, [address]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -181,6 +216,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
     
     // Remover campos vacíos opcionales
     const cleanData = { ...formData };
+    if (!cleanData.etiqueta) delete cleanData.etiqueta;
     if (!cleanData.departamento) delete cleanData.departamento;
     if (!cleanData.codigo_postal) delete cleanData.codigo_postal;
     if (!cleanData.referencia) delete cleanData.referencia;
@@ -190,16 +226,64 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="nombre_contacto">Nombre de contacto *</Label>
+          <Input
+            id="nombre_contacto"
+            name="nombre_contacto"
+            placeholder="Ej: Ana Pérez"
+            value={formData.nombre_contacto}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="telefono_contacto">Teléfono de contacto *</Label>
+          <Input
+            id="telefono_contacto"
+            name="telefono_contacto"
+            type="tel"
+            placeholder="+56 9 1234 5678"
+            value={formData.telefono_contacto}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
+
       <div className="space-y-2">
-        <Label htmlFor="calle">Calle y número *</Label>
+        <Label htmlFor="etiqueta">Etiqueta (opcional)</Label>
         <Input
-          id="calle"
-          name="calle"
-          placeholder="Ej: Av. Providencia 1234"
-          value={formData.calle}
+          id="etiqueta"
+          name="etiqueta"
+          placeholder="Casa, Oficina, etc."
+          value={formData.etiqueta}
           onChange={handleChange}
-          required
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Calle y número *</Label>
+        <div className="grid grid-cols-3 gap-4">
+          <Input
+            id="calle"
+            name="calle"
+            placeholder="Ej: Av. Providencia"
+            value={formData.calle}
+            onChange={handleChange}
+            required
+            className="col-span-2"
+          />
+          <Input
+            id="numero"
+            name="numero"
+            placeholder="1234"
+            value={formData.numero}
+            onChange={handleChange}
+            required
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -348,7 +432,7 @@ export const AddressesSection = ({
 
   const handleEdit = async (data) => {
     try {
-      await updateAddress(editingAddress.direccion_id, data);
+      await updateAddress(getAddressId(editingAddress), data);
       closeDialog();
     } catch (err) {
       console.error('Error al actualizar dirección:', err);
@@ -443,7 +527,7 @@ export const AddressesSection = ({
         <div className="grid gap-4 md:grid-cols-2">
             {addresses.map(address => (
               <AddressCard
-                key={address.direccion_id}
+                key={getAddressId(address) ?? address.calle}
                 address={address}
                 onEdit={openDialog}
                 onDelete={handleDelete}

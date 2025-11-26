@@ -64,6 +64,9 @@ const CATEGORY_COLORS = [
   'var(--color-secondary2)'
 ];
 
+const EXTENDED_PERIOD_DAYS = 730; // 24 meses para cubrir los seeds actuales
+const EXTENDED_PERIOD_LABEL = "últimos 24 meses";
+
 // Componente de Card envolvente para gráficos
 const ChartCard = ({ title, subtitle, children, loading, action, className = "" }) => (
   <Motion.div
@@ -100,8 +103,9 @@ ChartCard.propTypes = {
 };
 
 // Componente de KPIs del Overview con nuevos StatCards
-const OverviewKPIs = () => {
-  const { data: kpis, isLoading } = useDashboardKPIs(30);
+const OverviewKPIs = ({ periodDays = 30, periodLabel }) => {
+  const displayLabel = periodLabel || `últimos ${periodDays} días`;
+  const { data: kpis, isLoading } = useDashboardKPIs(periodDays);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -110,7 +114,7 @@ const OverviewKPIs = () => {
         value={formatCurrencyCLP(kpis?.ingresos?.value || 0)}
         previousValue={kpis?.ingresos?.previousValue}
         icon={DollarSign}
-        period="últimos 30 días"
+        period={displayLabel}
         colorScheme="success"
         isLoading={isLoading}
       />
@@ -120,7 +124,7 @@ const OverviewKPIs = () => {
         value={kpis?.ordenes?.value || 0}
         previousValue={kpis?.ordenes?.previousValue}
         icon={ShoppingCart}
-        period="últimos 30 días"
+        period={displayLabel}
         colorScheme="primary"
         isLoading={isLoading}
       />
@@ -130,7 +134,7 @@ const OverviewKPIs = () => {
         value={kpis?.clientes?.value || 0}
         previousValue={kpis?.clientes?.previousValue}
         icon={Users}
-        period="últimos 30 días"
+        period={displayLabel}
         colorScheme="info"
         isLoading={isLoading}
       />
@@ -140,12 +144,17 @@ const OverviewKPIs = () => {
         value={formatCurrencyCLP(kpis?.aov?.value || 0)}
         previousValue={kpis?.aov?.previousValue}
         icon={TrendingUp}
-        period="últimos 30 días"
+        period={displayLabel}
         colorScheme="warning"
         isLoading={isLoading}
       />
     </div>
   );
+};
+
+OverviewKPIs.propTypes = {
+  periodDays: PropTypes.number,
+  periodLabel: PropTypes.string,
 };
 
 export default function AdminDashboardPage() {
@@ -162,14 +171,6 @@ export default function AdminDashboardPage() {
   // const orderDistribution = useMemo(() => dashboardData?.orderDistribution || [], [dashboardData]);
   const recentOrders = useMemo(() => dashboardData?.recentOrders || [], [dashboardData]);
   const customerRegistrations = useMemo(() => dashboardData?.customerRegistrations || [], [dashboardData]);
-  const topProductsRevenueTotal = useMemo(
-    () => topProducts.reduce((sum, product) => sum + (product.revenue || 0), 0),
-    [topProducts]
-  );
-  const topProductsSalesMax = useMemo(
-    () => topProducts.reduce((max, product) => Math.max(max, product.sales || 0), 0),
-    [topProducts]
-  );
 
   // Prepare chart data
   const revenueChartData = useMemo(() => {
@@ -292,14 +293,21 @@ export default function AdminDashboardPage() {
               transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <OverviewKPIs />
+              <OverviewKPIs
+                periodDays={EXTENDED_PERIOD_DAYS}
+                periodLabel={EXTENDED_PERIOD_LABEL}
+              />
 
               {/* Gráfico de Evolución de Ventas */}
-              <SalesEvolutionChart periodo={30} />
+                <SalesEvolutionChart periodo={EXTENDED_PERIOD_DAYS} />
 
               {/* Grid de 2 columnas: Top Productos y Estado de Órdenes */}
               <div className="grid gap-4 lg:grid-cols-2">
-                <TopProductsList periodo={30} limit={5} />
+                <TopProductsList
+                  periodo={EXTENDED_PERIOD_DAYS}
+                  periodLabel={EXTENDED_PERIOD_LABEL}
+                  limit={5}
+                />
                 <OrderStatusDistribution />
               </div>
 
@@ -343,8 +351,14 @@ export default function AdminDashboardPage() {
 
               {/* NEW: Charts Row 2 - Payment & Shipping Methods */}
               <div className="grid gap-4 lg:grid-cols-2">
-                <PaymentMethodsChart periodo={30} />
-                <ShippingMethodsChart periodo={30} />
+                <PaymentMethodsChart
+                  periodo={EXTENDED_PERIOD_DAYS}
+                  periodLabel={EXTENDED_PERIOD_LABEL}
+                />
+                <ShippingMethodsChart
+                  periodo={EXTENDED_PERIOD_DAYS}
+                  periodLabel={EXTENDED_PERIOD_LABEL}
+                />
               </div>
             </Motion.div>
           </AnimatePresence>
@@ -412,62 +426,6 @@ export default function AdminDashboardPage() {
                   </div>
                 </ChartCard>
 
-                <ChartCard title="Productos destacados" subtitle="Top performance" loading={isLoading}>
-                  <div className="space-y-4">
-                    {topProducts.slice(0, 2).map((product, index) => {
-                      const revenueShare = topProductsRevenueTotal > 0
-                        ? ((product.revenue || 0) / topProductsRevenueTotal) * 100
-                        : 0;
-
-                      return (
-                        <Motion.div
-                          key={product.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="rounded-2xl border border-(--color-border) bg-white p-4"
-                        >
-                          <div className="mb-3 flex items-start justify-between">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
-                              <p className="mt-1 text-xs text-(--text-muted)">{product.sales} ventas</p>
-                            </div>
-                            {index === 0 ? (
-                              <div className="rounded-full bg-(--color-success)/10 px-3 py-1">
-                                <p className="text-xs font-semibold text-(--color-success)">Más vendido</p>
-                              </div>
-                            ) : (
-                              <div className="rounded-full bg-(--color-primary1)/10 px-3 py-1">
-                                <p className="text-xs font-semibold text-(--color-primary1)">{product.conversionRate}% conv.</p>
-                              </div>
-                            )}
-                          </div>
-                          <div className="space-y-3">
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-(--text-muted)">
-                              <span>{formatCurrencyCLP(product.price || 0)}</span>
-                              <span>{(product.views || 0).toLocaleString("es-CL")} vistas</span>
-                              <span>{product.conversionRate}% conv.</span>
-                            </div>
-                            <div className="flex items-end justify-between gap-3">
-                              <span className="text-xl font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
-                              <span className="text-xs font-semibold text-(--text-muted)">
-                                {revenueShare.toFixed(1)}% de ingresos top
-                              </span>
-                            </div>
-                            <div className="h-2 rounded-full bg-(--color-neutral3)">
-                              <Motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${Math.min(100, revenueShare)}%` }}
-                                transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                                className="h-full rounded-full bg-gradient-to-r from-(--color-primary1) to-(--color-secondary1)"
-                              />
-                            </div>
-                          </div>
-                        </Motion.div>
-                      );
-                    })}
-                  </div>
-                </ChartCard>
               </div>
             </Motion.div>
           </AnimatePresence>
@@ -639,62 +597,6 @@ export default function AdminDashboardPage() {
                 </div>
               </ChartCard>
 
-              {/* Top Products with Sparklines */}
-              <ChartCard title="Productos Destacados" loading={isLoading}>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {topProducts.slice(0, 6).map((product, index) => {
-                    const salesShare = topProductsSalesMax > 0
-                      ? ((product.sales || 0) / topProductsSalesMax) * 100
-                      : 0;
-                    const revenueShare = topProductsRevenueTotal > 0
-                      ? ((product.revenue || 0) / topProductsRevenueTotal) * 100
-                      : 0;
-
-                    return (
-                      <Motion.div
-                        key={product.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="group rounded-2xl border border-(--color-border) bg-(--color-neutral2) p-4 transition-all hover:shadow-(--shadow-md)"
-                      >
-                        <div className="mb-3 flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-(--text-strong)">{product.name}</h4>
-                            <p className="mt-1 text-xs text-(--text-muted)">
-                              {product.sales} ventas
-                              {product.sku ? ` · SKU ${product.sku}` : ""}
-                            </p>
-                          </div>
-                          <div className="rounded-full bg-(--color-primary1)/10 px-3 py-1 text-xs font-semibold text-(--color-primary1)">
-                            {revenueShare.toFixed(1)}% ingresos
-                          </div>
-                        </div>
-                        <div className="space-y-4">
-                          <div>
-                            <div className="flex items-center justify-between text-xs text-(--text-muted)">
-                              <span>Ventas relativas</span>
-                              <span>{Math.round(salesShare)}%</span>
-                            </div>
-                            <div className="mt-1 h-2 overflow-hidden rounded-full bg-(--color-neutral3)">
-                              <Motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${Math.min(100, salesShare)}%` }}
-                                transition={{ duration: 0.6, delay: 0.1 + index * 0.05 }}
-                                className="h-full rounded-full bg-gradient-to-r from-(--color-primary1) to-(--color-secondary1)"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-(--color-primary1)">{formatCurrencyCLP(product.revenue)}</span>
-                            <span className="text-xs text-(--color-success)">{product.conversionRate}% conv.</span>
-                          </div>
-                        </div>
-                      </Motion.div>
-                    );
-                  })}
-                </div>
-              </ChartCard>
             </Motion.div>
           </AnimatePresence>
         </TabsContent>

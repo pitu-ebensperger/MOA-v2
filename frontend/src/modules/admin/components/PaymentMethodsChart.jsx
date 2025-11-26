@@ -33,7 +33,8 @@ const PAYMENT_METHOD_COLORS = {
   efectivo: '#f59e0b'        // amber
 };
 
-export default function PaymentMethodsChart({ periodo = 30 }) {
+export default function PaymentMethodsChart({ periodo = 30, periodLabel }) {
+  const rangeLabel = periodLabel || `Últimos ${periodo} días`;
   const { data, isLoading, isError } = usePaymentMethodStats(periodo);
 
   const chartData = useMemo(() => {
@@ -94,7 +95,7 @@ export default function PaymentMethodsChart({ periodo = 30 }) {
         <div>
           <h3 className="text-lg font-semibold text-(--text-strong)">Ingresos por Método de Pago</h3>
           <p className="mt-1 text-sm text-(--text-secondary1)">
-            Últimos {periodo} días · Total: <Price priceInCents={totalIngresos} />
+            {rangeLabel} · Total: <Price priceInCents={totalIngresos} />
           </p>
         </div>
         <div className="rounded-full bg-success/10 p-2">
@@ -157,5 +158,6 @@ export default function PaymentMethodsChart({ periodo = 30 }) {
 }
 
 PaymentMethodsChart.propTypes = {
-  periodo: PropTypes.number
+  periodo: PropTypes.number,
+  periodLabel: PropTypes.string,
 };

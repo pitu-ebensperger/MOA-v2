@@ -2,6 +2,7 @@ import pool from "../../database/config.js";
 import { NotFoundError, ValidationError, ForbiddenError } from "../utils/error.utils.js";
 import { createAdminCustomerModel, updateAdminCustomerModel } from "../models/usersModel.js";
 import configModel from "../models/configModel.js";
+import { getReferenceDate, getLastNDaysWindow } from "../utils/referenceDate.js";
 
 const safeNumber = (value) => {
   if (value === null || value === undefined) return 0;
@@ -118,14 +119,14 @@ const buildDailyRevenueSeries = (rows, startDate, endDate) => {
   return series;
 };
 
-const buildWeeklyRevenueSeries = (rows, weeksToShow = 4) => {
+const buildWeeklyRevenueSeries = (rows, weeksToShow = 4, referenceDate = new Date()) => {
   const map = new Map();
   rows.forEach((row) => {
     const start = getWeekStart(row.period);
     map.set(start.toISOString(), toClp(row.revenue));
   });
 
-  const reference = getWeekStart(new Date());
+  const reference = getWeekStart(referenceDate);
   const series = [];
   for (let i = weeksToShow - 1; i >= 0; i--) {
     const date = new Date(reference);
@@ -139,7 +140,7 @@ const buildWeeklyRevenueSeries = (rows, weeksToShow = 4) => {
   return series;
 };
 
-const buildMonthlyRevenueSeries = (rows, monthsToShow = 6) => {
+const buildMonthlyRevenueSeries = (rows, monthsToShow = 6, referenceDate = new Date()) => {
   const map = new Map();
   rows.forEach((row) => {
     const date = new Date(row.period);
@@ -147,7 +148,7 @@ const buildMonthlyRevenueSeries = (rows, monthsToShow = 6) => {
     map.set(key, toClp(row.revenue));
   });
 
-  const reference = new Date();
+  const reference = new Date(referenceDate);
   reference.setDate(1);
   reference.setHours(0, 0, 0, 0);
 
@@ -238,12 +239,13 @@ export class AdminController {
 
   static async getSalesAnalytics(req, res, next) {
     try {
-      const now = new Date();
+      const referenceDate = await getReferenceDate();
+      const now = new Date(referenceDate);
       const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
       const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
       const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const weekWindowStart = new Date(now);
-      weekWindowStart.setDate(now.getDate() - 28);
+      weekWindowStart.setDate(weekWindowStart.getDate() - 28);
       weekWindowStart.setHours(0, 0, 0, 0);
       const monthlyWindowStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
@@ -309,8 +311,8 @@ export class AdminController {
         : 0;
 
       const dailyRevenue = buildDailyRevenueSeries(dailyRows.rows, currentMonthStart, nextMonthStart);
-      const weeklyRevenue = buildWeeklyRevenueSeries(weeklyRows.rows, 4);
-      const monthlyRevenue = buildMonthlyRevenueSeries(monthlyRows.rows, 6);
+      const weeklyRevenue = buildWeeklyRevenueSeries(weeklyRows.rows, 4, referenceDate);
+      const monthlyRevenue = buildMonthlyRevenueSeries(monthlyRows.rows, 6, referenceDate);
 
       const salesData = {
         currentMonth: {
@@ -343,8 +345,10 @@ export class AdminController {
 
   static async getConversionMetrics(req, res, next) {
     try {
-      const now = new Date();
-      const trendStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+      const referenceDate = await getReferenceDate();
+      const trendStart = new Date(referenceDate.getFullYear(), referenceDate.getMonth() - 5, 1);
+      const trendEnd = new Date(referenceDate);
+      trendEnd.setHours(23, 59, 59, 999);
 
       const [
         visitorResult,
@@ -380,11 +384,11 @@ export class AdminController {
               DATE_TRUNC('month', creado_en) AS period,
               COUNT(DISTINCT usuario_id)::int AS unique_buyers
             FROM ordenes
-            WHERE creado_en >= $1
+            WHERE creado_en >= $1 AND creado_en <= $2
             GROUP BY 1
             ORDER BY 1 ASC
           `,
-          [trendStart.toISOString()]
+          [trendStart.toISOString(), trendEnd.toISOString()]
         ),
       ]);
 
@@ -622,7 +626,10 @@ export class AdminController {
 
   static async getOrderDistribution(req, res, next) {
     try {
-      const windowStart = new Date();
+      const referenceDate = await getReferenceDate();
+      const windowEnd = new Date(referenceDate);
+      windowEnd.setHours(23, 59, 59, 999);
+      const windowStart = new Date(windowEnd);
       windowStart.setDate(windowStart.getDate() - 6);
       windowStart.setHours(0, 0, 0, 0);
 
@@ -633,10 +640,10 @@ export class AdminController {
             COUNT(*)::int AS order_count,
             COALESCE(SUM(total_cents), 0)::bigint AS revenue
           FROM ordenes
-          WHERE creado_en >= $1
+          WHERE creado_en >= $1 AND creado_en <= $2
           GROUP BY dow
         `,
-        [windowStart.toISOString()]
+        [windowStart.toISOString(), windowEnd.toISOString()]
       );
 
       const distributionData = buildOrderDistribution(rows);
@@ -653,20 +660,19 @@ export class AdminController {
   static async getCustomerRegistrations(req, res, next) {
     try {
       const days = 30;
-      const endDate = new Date();
-      endDate.setHours(0, 0, 0, 0);
-      const startDate = new Date(endDate);
-      startDate.setDate(startDate.getDate() - (days - 1));
+      const { startDate, endDate } = await getLastNDaysWindow(days);
+      const inclusiveEndDate = new Date(endDate);
+      inclusiveEndDate.setDate(inclusiveEndDate.getDate() - 1);
 
       const { rows } = await pool.query(
         `
           SELECT DATE_TRUNC('day', creado_en) AS period, COUNT(*)::int AS registrations
           FROM usuarios
-          WHERE rol_code != 'ADMIN' AND creado_en >= $1
+          WHERE rol_code != 'ADMIN' AND creado_en >= $1 AND creado_en < $2
           GROUP BY 1
           ORDER BY 1 ASC
         `,
-        [startDate.toISOString()]
+        [startDate.toISOString(), endDate.toISOString()]
       );
 
       // Build complete daily series including missing days
@@ -678,7 +684,7 @@ export class AdminController {
 
       const series = [];
       const cursor = new Date(startDate);
-      while (cursor <= endDate) {
+      while (cursor <= inclusiveEndDate) {
         const key = cursor.toISOString().split('T')[0];
         series.push({ date: key, registrations: map.get(key) || 0 });
         cursor.setDate(cursor.getDate() + 1);

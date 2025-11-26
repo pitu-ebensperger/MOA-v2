@@ -9,7 +9,8 @@ import ChartCard from './ChartCard';
 /**
  * Lista de top productos más vendidos
  */
-export default function TopProductsList({ periodo = 30, limit = 5 }) {
+export default function TopProductsList({ periodo = 30, limit = 5, periodLabel }) {
+  const rangeLabel = periodLabel || `Últimos ${periodo} días`;
   const { data, isLoading, isError } = useTopProducts(periodo, limit);
 
   const maxUnidades = useMemo(() => {
@@ -35,7 +36,7 @@ export default function TopProductsList({ periodo = 30, limit = 5 }) {
     return (
       <ChartCard
         title="Top Productos Más Vendidos"
-        subtitle={`Últimos ${periodo} días`}
+        subtitle={rangeLabel}
       >
         <div className="flex h-64 items-center justify-center">
           <p className="text-sm text-(--text-muted)">No hay ventas en este período</p>
@@ -47,7 +48,7 @@ export default function TopProductsList({ periodo = 30, limit = 5 }) {
   return (
     <ChartCard
       title="Top Productos Más Vendidos"
-      subtitle={`Últimos ${periodo} días · ${data.length} productos`}
+      subtitle={`${rangeLabel} · ${data.length} productos`}
       actions={
         <div className="rounded-full bg-success/10 p-2">
           <TrendingUp className="h-5 w-5 text-success" />
@@ -132,5 +133,6 @@ export default function TopProductsList({ periodo = 30, limit = 5 }) {
 
 TopProductsList.propTypes = {
   periodo: PropTypes.number,
-  limit: PropTypes.number
+  limit: PropTypes.number,
+  periodLabel: PropTypes.string,
 };

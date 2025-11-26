@@ -7,3 +7,4 @@ export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectL
 export { Badge } from './badge.jsx';
 export { EmptyPlaceholder, EmptyPlaceholderIcon, EmptyPlaceholderTitle, EmptyPlaceholderDescription } from './empty-state.jsx';
 export { buttonClasses } from './button-classes.js';
+export { Separator } from './separator.jsx';

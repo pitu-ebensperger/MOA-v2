@@ -24,7 +24,8 @@ const SHIPPING_METHOD_COLORS = {
   retiro: '#8b5cf6'     // purple
 };
 
-export default function ShippingMethodsChart({ periodo = 30 }) {
+export default function ShippingMethodsChart({ periodo = 30, periodLabel }) {
+  const rangeLabel = periodLabel || `Últimos ${periodo} días`;
   const { data, isLoading, isError } = useShippingMethodStats(periodo);
 
   const chartData = useMemo(() => {
@@ -80,7 +81,7 @@ export default function ShippingMethodsChart({ periodo = 30 }) {
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-(--text-strong)">Métodos de Envío</h3>
         <p className="mt-1 text-sm text-(--text-secondary1)">
-          Distribución de pedidos últimos {periodo} días
+          Distribución de pedidos {rangeLabel}
         </p>
       </div>
 
@@ -151,5 +152,6 @@ export default function ShippingMethodsChart({ periodo = 30 }) {
 }
 
 ShippingMethodsChart.propTypes = {
-  periodo: PropTypes.number
+  periodo: PropTypes.number,
+  periodLabel: PropTypes.string,
 };

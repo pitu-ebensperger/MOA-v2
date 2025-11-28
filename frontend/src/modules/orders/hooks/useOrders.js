@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite';
+import { useQuery, useMutation, useQueryClient } from '@config/react-query';
 import { ordersApi } from '@/services/orders.api.js';
 
 const ORDERS_QUERY_KEY = ['orders'];

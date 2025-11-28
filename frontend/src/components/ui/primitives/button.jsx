@@ -1,5 +1,5 @@
 import * as React from "react";
-import { buttonClasses } from "@/components/shadcn/ui/button-classes.js"
+import { buttonClasses } from "@/components/ui/primitives/button-classes.js"
 
 export const Button = React.forwardRef(
   ({ className, variant = "default", size = "md", ...props }, ref) => (

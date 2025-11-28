@@ -1,3 +1,4 @@
+// Shadcn/Radix primitives
 export { Button } from './button.jsx';
 export { Input } from './input.jsx';
 export { Textarea } from './textarea.jsx';
@@ -8,3 +9,6 @@ export { Badge } from './badge.jsx';
 export { EmptyPlaceholder, EmptyPlaceholderIcon, EmptyPlaceholderTitle, EmptyPlaceholderDescription } from './empty-state.jsx';
 export { buttonClasses } from './button-classes.js';
 export { Separator } from './separator.jsx';
+export { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './Dialog.jsx';
+export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './DropdownMenu.jsx';
+export { Popover, PopoverContent, PopoverTrigger } from './Popover.jsx';

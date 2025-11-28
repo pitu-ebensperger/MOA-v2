@@ -6,10 +6,10 @@ import { useProducts } from "@/modules/products/hooks/useProducts.js";
 import { productsApi } from "@/services/products.api.js";
 import { useWishlistQuery, useToggleWishlist, useClearWishlist } from "@/modules/profile/hooks/useWishlistQuery.js";
 import { useCartContext } from "@/context/CartContext.jsx";
-import { Button } from "@/components/shadcn/ui/button.jsx";
-import { EmptyPlaceholder, EmptyPlaceholderDescription, EmptyPlaceholderIcon, EmptyPlaceholderTitle } from "@/components/shadcn/ui/empty-state.jsx";
+import { Button } from "@/components/ui/primitives";
+import { EmptyPlaceholder, EmptyPlaceholderDescription, EmptyPlaceholderIcon, EmptyPlaceholderTitle } from "@/components/ui/primitives";
 import { Skeleton } from "@/components/ui/Skeleton.jsx";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/shadcn/ui/card.jsx";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/primitives";
 
 // Limite ajustado a 100 (backend exige 1-100). Se filtra luego por ids en wishlist.
 const WISHLIST_PRODUCT_FILTERS = Object.freeze({ limit: 100 });

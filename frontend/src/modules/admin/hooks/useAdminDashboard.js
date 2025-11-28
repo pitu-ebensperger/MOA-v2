@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQueries } from "@/lib/react-query-lite";
+import { useQueries } from "@config/react-query";
 import { analyticsApi } from "@/services/analytics.api.js";
 import { ordersApi } from "@/services/orders.api.js";
 

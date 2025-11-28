@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useAddresses, useCreateAddress } from '@/hooks/useAddresses.query';
 import { useAuth } from '@/context/AuthContext.jsx';
 import { Input, Textarea } from '@/components/ui/Input.jsx';
-import { Card, CardContent } from '@/components/shadcn/ui/card.jsx';
-import { Label } from '@/components/shadcn/ui/label.jsx';
-import { buttonClasses } from '@/components/shadcn/ui/button-classes.js';
+import { Card, CardContent } from '@/components/ui/primitives';
+import { Label } from '@/components/ui/primitives';
+import { buttonClasses } from '@/components/ui/primitives/button-classes.js';
 
 const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
 

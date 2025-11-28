@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { hashQueryKey } from "@shared/lib/react-query-lite/key-utils.js";
-import { useQueryClient } from "./useQueryClient.js";
+import { useQueryClient } from "@hooks/useQueryClient.js";
 
 const buildResult = (state, previousData, keepPreviousData) => {
   const status = state?.status ?? "idle";

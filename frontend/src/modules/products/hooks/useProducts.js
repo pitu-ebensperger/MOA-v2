@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQuery, useQueryClient } from "@/lib/react-query-lite";
+import { useQuery, useQueryClient } from "@config/react-query";
 import { productsApi } from "@/services/products.api.js"
 
 const PRODUCTS_QUERY_KEY = ["products"];

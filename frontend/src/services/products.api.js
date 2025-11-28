@@ -51,13 +51,13 @@ const remoteProductsApi = {
   },
   async getById(id) {
     if (id == null) throw new Error("product id is required");
-    const response = await apiClient.public.get(`/productos/${id}`);
+    const response = await apiClient.public.get(`/api/productos/${id}`);
     const data = response?.data ?? response;
     return normalizeProduct(data);
   },
   async getBySlug(slug) {
     if (!slug) throw new Error("product slug is required");
-    const response = await apiClient.public.get(`/producto/${slug}`);
+    const response = await apiClient.public.get(`/api/producto/${slug}`);
     const data = response?.data ?? response;
     return normalizeProduct(data);
   },

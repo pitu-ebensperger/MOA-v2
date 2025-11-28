@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useMutation, useQueryClient } from "@/lib/react-query-lite";
+import { useMutation, useQueryClient } from "@config/react-query";
 import { Plus, Edit3, Trash2, Check, X } from "lucide-react";
 
 import { categoriesApi } from "@/services/categories.api.js";
@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "@/components/ui/radix/Dialog.jsx";
+} from "@/components/ui/primitives";
 import { Input, Textarea } from "@/components/ui/Input.jsx";
 import { buildCategoryColumns } from "@/modules/admin/utils/categoriesColumns.jsx";
 import { useAdminCategories, ADMIN_CATEGORIES_QUERY_KEY } from "@/modules/admin/hooks/useAdminCategories.js";

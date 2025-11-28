@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MapPin, Plus, Trash2, Star, StarOff, Edit } from "lucide-react";
 import { useAddresses } from '@/context/AddressContext.jsx'
-import { Button } from '@/components/shadcn/ui/button.jsx'
+import { Button } from '@/components/ui/primitives'
 import {
   Dialog,
   DialogContent,
@@ -11,10 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from '@/components/ui/radix/Dialog.jsx';
-import { Input } from '@/components/shadcn/ui/input.jsx'
-import { Label } from '@/components/shadcn/ui/label.jsx'
-import { Textarea } from '@/components/shadcn/ui/textarea.jsx'
+} from '@/components/ui/primitives';
+import { Input } from '@/components/ui/primitives'
+import { Label } from '@/components/ui/primitives'
+import { Textarea } from '@/components/ui/primitives'
 
 // Alias para AlertDialog (usamos Dialog)
 const AlertDialog = Dialog;

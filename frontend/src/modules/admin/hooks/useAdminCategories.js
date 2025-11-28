@@ -1,4 +1,4 @@
-import { useQuery } from "@/lib/react-query-lite";
+import { useQuery } from "@config/react-query";
 import { categoriesApi } from "@/services/categories.api.js";
 
 export const ADMIN_CATEGORIES_QUERY_KEY = ["admin-categories"];

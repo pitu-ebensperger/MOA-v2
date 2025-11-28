@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Minus, Plus } from "lucide-react";
-import { buttonClasses } from '@/components/shadcn/ui/button-classes.js';
+import { buttonClasses } from '@/components/ui/primitives/button-classes.js';
 
 // Reusable quantity 
 export function QuantityControl({ value, onChange, min = 1, max, disabled = false, className = '' }) {

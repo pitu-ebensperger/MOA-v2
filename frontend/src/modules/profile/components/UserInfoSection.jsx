@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@/lib/react-query-lite'
+import { useQuery, useMutation, useQueryClient } from '@config/react-query'
 import { useAuth } from '@/context/AuthContext.jsx'
 import { authApi } from '../../../services/auth.api.js'
 import { usersApi } from '../../../services/users.api.js'

@@ -11,12 +11,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from "@/components/ui/radix/DropdownMenu.jsx";
+} from "@/components/ui/primitives";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/radix/Popover.jsx";
+} from "@/components/ui/primitives";
 
 /**
  * UnifiedTableToolbar - Toolbar all-in-one para tablas MOA

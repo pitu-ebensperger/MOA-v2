@@ -12,8 +12,8 @@ export const API_PATHS = {
     resetPassword: "/api/auth/reset-password",
   },
   products: {
-    products: "/productos",
-    productDetail: (id) => `/producto/${id}`,
+    products: "/api/productos",
+    productDetail: (id) => `/api/producto/${id}`,
     categories: "/categorias",
   },
   cart: {

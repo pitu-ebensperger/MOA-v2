@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@/components/ui/radix/DropdownMenu.jsx";
+} from "@/components/ui/primitives";
 import { cn } from "@/utils/cn.js";
 
 export function ResponsiveRowActions({

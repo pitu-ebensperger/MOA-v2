@@ -3,7 +3,7 @@ import { Save, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
 import { getStoreConfig, updateStoreConfig } from '@/services/config.api.js';
 import { Button } from '@/components/ui/Button.jsx';
 import { Input } from '@/components/ui/Input.jsx';
-import { Textarea } from '@/components/shadcn/ui/textarea.jsx';
+import { Textarea } from '@/components/ui/primitives';
 import AdminPageHeader from '@/modules/admin/components/AdminPageHeader.jsx';
 
 const StoreSettingsPage = () => {

@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, useLayoutEffect, useRef } from "react";
-import { useQueryClient } from '@/lib/react-query-lite';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, useLayoutEffect, useRef } from "react";
+import { useQueryClient } from '@config/react-query';
 import PropTypes from "prop-types";
 import { setOnUnauthorized, setTokenGetter } from "@/services/api-client.js"
 import { authApi } from "@/services/auth.api.js"
-import { createStrictContext } from "@/context/createStrictContext.js"
 import { usePersistentState } from "@/hooks/usePersistentState.js"
 import { useNavigate } from "react-router-dom";
 import { observability } from '@/services/observability.js';
@@ -11,10 +10,28 @@ import { useSessionMonitor } from "@/hooks/useSessionMonitor.js";
 import { SessionExpirationDialog } from "@/components/auth/SessionExpirationDialog.jsx";
 import { Alert } from "@/components/ui/Alert.jsx";
 
-// ============================================
-// CONTEXTO Y HOOKS
-// ============================================
+// Contexto estricto inline
+const CONTEXT_NOT_SET = Symbol("STRICT_CONTEXT_NOT_SET");
 
+const createStrictContext = (
+  label = "Context",
+  { displayName = `${label}Context`, errorMessage } = {},
+) => {
+  const Context = createContext(CONTEXT_NOT_SET);
+  Context.displayName = displayName;
+
+  const useStrictContext = () => {
+    const ctx = useContext(Context);
+    if (ctx === CONTEXT_NOT_SET) {
+      throw new Error(errorMessage ?? `use${label} debe usarse dentro de ${label}Provider`);
+    }
+    return ctx;
+  };
+
+  return [Context, useStrictContext];
+};
+
+// Contexto y Hook
 export const [AuthContext, useAuth] = createStrictContext("Auth", {
   displayName: "AuthContext",
   errorMessage: "useAuth debe usarse dentro de AuthProvider",

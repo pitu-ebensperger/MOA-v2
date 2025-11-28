@@ -20,16 +20,16 @@ const router = Router();
 // ===== RUTAS PÚBLICAS =====
 
 // Obtener productos (con filtros y paginación)
-router.get("/productos", getProducts);
+router.get("/api/productos", getProducts);
 
 // Buscar productos
-router.get("/productos/search", searchProducts);
+router.get("/api/productos/search", searchProducts);
 
 // Obtener producto por slug (público)
-router.get("/producto/:slug", getProductBySlug);
+router.get("/api/producto/:slug", getProductBySlug);
 
 // Obtener producto por ID o public_id
-router.get("/productos/:id", getProductById);
+router.get("/api/productos/:id", getProductById);
 
 // ===== RUTAS PROTEGIDAS - SOLO ADMIN =====
 

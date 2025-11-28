@@ -1,4 +1,4 @@
-import { useQuery } from "./useQuery.js";
+import { useQuery } from "@hooks/useQuery.js";
 
 export const useQueries = ({ queries }) => {
   if (!Array.isArray(queries)) {

@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@/lib/react-query-lite';
+import { useMutation, useQueryClient } from '@config/react-query';
 import { createOrder as createOrderService } from '@/services/checkout.api.js';
 
 /**

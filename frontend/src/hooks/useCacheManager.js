@@ -1,4 +1,4 @@
-import { useQueryClient } from '@/lib/react-query-lite';
+import { useQueryClient } from '@config/react-query';
 import { QUERY_KEYS } from '@config/react-query.config.js';
 
 /**

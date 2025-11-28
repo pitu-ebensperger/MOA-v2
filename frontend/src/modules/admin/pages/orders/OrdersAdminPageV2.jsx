@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/components/ui/radix/DropdownMenu.jsx';
+} from '@/components/ui/primitives';
 
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";
 import { useErrorHandler, useFormErrorHandler } from '@/hooks/useErrorHandler.js';

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Dialog, DialogContent } from "@/components/ui/radix/Dialog.jsx";
+import { Dialog, DialogContent } from "@/components/ui/primitives";
 import { Price } from "@/components/data-display/Price.jsx";
 import { StatusPill } from "@/components/ui/StatusPill.jsx";
 import { Pill } from "@/components/ui/Pill.jsx";
 import { Button } from "@/components/ui/Button.jsx";
 import { Input } from "@/components/ui/Input.jsx";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/shadcn/ui/select.jsx";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/primitives";
 import { Accordion } from "@/components/ui/Accordion.jsx";
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js";
 import { CalendarDays, PackageCheck, Truck, ChevronRight, Edit, Save, X, AlertCircle } from "lucide-react";

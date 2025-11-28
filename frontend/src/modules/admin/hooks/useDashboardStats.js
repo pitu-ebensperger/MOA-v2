@@ -1,4 +1,4 @@
-import { useQuery } from '@/lib/react-query-lite';
+import { useQuery } from '@config/react-query';
 import { apiClient } from '@/services/api-client';
 import { env } from '@/config/env.js';
 

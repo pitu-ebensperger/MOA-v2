@@ -1,7 +1,7 @@
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/radix/DropdownMenu.jsx"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/primitives"
 import { Eye, XCircle } from "lucide-react";
 import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx";
 

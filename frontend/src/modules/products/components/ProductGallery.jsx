@@ -9,7 +9,7 @@ import {
   EmptyPlaceholderDescription,
   EmptyPlaceholderIcon,
   EmptyPlaceholderTitle,
-} from "@/components/shadcn/ui/empty-state.jsx";
+} from "@/components/ui/primitives";
 
 const ProductGallery = memo(function ProductGallery({ products = [], onAddToCart }) {
   const { items: wishlist } = useWishlistQuery();

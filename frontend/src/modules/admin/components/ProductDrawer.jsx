@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/radix/Dialog.jsx";
+import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/primitives";
 import { Button } from "@/components/ui/Button.jsx";
 import { Input, Textarea } from "@/components/ui/Input.jsx";
 import { Select } from "@/components/ui/Select.jsx";

@@ -13,7 +13,6 @@ router.get("/admin/pedidos/stats", verifyAdmin, asyncHandler(orderAdminControlle
 router.get("/admin/pedidos", verifyAdmin, asyncHandler(orderAdminController.getAllOrders));
 router.get("/admin/pedidos/:id", verifyAdmin, asyncHandler(orderAdminController.getOrderById));
 router.patch("/admin/pedidos/:id/estado", verifyAdmin, asyncHandler(orderAdminController.updateOrderStatus));
-router.put("/api/admin/orders/:id/status", verifyAdmin, asyncHandler(orderAdminController.updateOrderStatus));
 router.post("/admin/pedidos/:id/seguimiento", verifyAdmin, asyncHandler(orderAdminController.addTrackingInfo));
 
 // === RUTAS DE ANALYTICS ADMIN ===
@@ -35,26 +34,10 @@ router.get("/admin/dashboard/top-products", verifyAdmin, asyncHandler(dashboardC
 router.get("/admin/dashboard/sales-evolution", verifyAdmin, asyncHandler(dashboardController.getSalesEvolution));
 router.get("/admin/dashboard/orders-by-status", verifyAdmin, asyncHandler(dashboardController.getOrdersByStatus));
 
-// === RUTAS DE PRODUCTOS ADMIN ===
+// === RUTAS DE DASHBOARD ADMIN ===
 router.get("/admin", verifyAdmin, asyncHandler(AdminController.getDashboardMetrics));
 
-router.get("/admin/productos", verifyAdmin, (req, res) => {
-  res.status(501).json({ message: "Listado de productos admin no implementado" });
-});
-
-router.post("/admin/productos", verifyAdmin, (req, res) => {
-  res.status(501).json({ message: "Creación de producto admin no implementada" });
-});
-
-router.put("/admin/productos/:id", verifyAdmin, (req, res) => {
-  const { id } = req.params;
-  res.status(501).json({ message: `Actualización de producto admin ${id} no implementada` });
-});
-
-router.delete("/admin/productos/:id", verifyAdmin, (req, res) => {
-  const { id } = req.params;
-  res.status(501).json({ message: `Eliminación de producto admin ${id} no implementada` });
-});
+// Nota: Las rutas CRUD de productos admin están en productsRoutes.js
 
 // === RUTAS DE USUARIOS ADMIN ===
 router.get("/admin/usuarios", verifyAdmin, asyncHandler(AdminController.getUsers));

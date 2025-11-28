@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient } from '@shared/lib/react-query-lite'
-import { QueryClientProvider } from '@/lib/react-query-lite'
+import { QueryClientProvider } from '@config/react-query'
 import { handleAuthError } from '@/utils/handleAuthError.js'
 import { AuthProvider } from "@/context/AuthContext.jsx"
 import { CartProvider } from "@/context/CartContext.jsx"

@@ -4,7 +4,7 @@ import WishlistSection from '../components/WishlistSection.jsx';
 import MyOrdersSection from '../components/MyOrdersSection.jsx';
 import { AddressesSection } from '../components/AddressesSection.jsx';
 import { useUserOrders } from '../../../hooks/useUserOrders.js';
-import { useQueryClient } from '@/lib/react-query-lite';
+import { useQueryClient } from '@config/react-query';
 import { useWishlistQuery } from '../hooks/useWishlistQuery.js';
 import { useErrorHandler } from '@/hooks/useErrorHandler.js';
 

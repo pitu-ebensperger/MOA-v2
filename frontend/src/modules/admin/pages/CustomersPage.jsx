@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { useQuery } from "@/lib/react-query-lite";
+import { useQuery } from "@config/react-query";
 import { Mail, Phone, Calendar, RefreshCw, UserPlus, MoreHorizontal, Eye, Edit3, ShoppingBag, LayoutGrid, Rows } from "lucide-react";
 import { toast } from '@/components/ui';
 import { useDebounce } from '@/hooks/useDebounce.js';
@@ -8,13 +8,13 @@ import OrdersDrawer from "@/modules/admin/components/OrdersDrawer.jsx"
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx";
 import { TableToolbar, TableSearch } from "@/components/data-display/TableToolbar.jsx";
 import { Button, IconButton } from "@/components/ui/Button.jsx"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/radix/DropdownMenu.jsx";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/primitives";
 import { USER_STATUS_MAP } from "@/config/status-maps.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js"
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
 import { StatusPill } from "@/components/ui/StatusPill.jsx"
 import { TooltipNeutral } from "@/components/ui/Tooltip.jsx";
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/radix/Dialog.jsx";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/primitives";
 import { Input } from "@/components/ui/Input.jsx";
 import { Select } from "@/components/ui/Select.jsx";
 import { customersAdminApi } from "@/services/customersAdmin.api.js";

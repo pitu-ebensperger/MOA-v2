@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
-import { createStrictContext } from '@/context/createStrictContext'
+import { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext.jsx'
 import {
   getAddresses,
@@ -9,10 +8,28 @@ import {
   deleteAddress,
 } from '@/services/address.api';
 
-// ============================================
-// CONTEXTO Y HOOK
-// ============================================
+// Contexto estricto inline
+const CONTEXT_NOT_SET = Symbol("STRICT_CONTEXT_NOT_SET");
 
+const createStrictContext = (
+  label = "Context",
+  { displayName = `${label}Context`, errorMessage } = {},
+) => {
+  const Context = createContext(CONTEXT_NOT_SET);
+  Context.displayName = displayName;
+
+  const useStrictContext = () => {
+    const ctx = useContext(Context);
+    if (ctx === CONTEXT_NOT_SET) {
+      throw new Error(errorMessage ?? `use${label} debe usarse dentro de ${label}Provider`);
+    }
+    return ctx;
+  };
+
+  return [Context, useStrictContext];
+};
+
+// Contexto y Hook
 const [AddressContext, useAddressesStrict] = createStrictContext('Address', {
   displayName: 'AddressContext',
   errorMessage: 'useAddresses debe usarse dentro de AddressProvider',
@@ -20,10 +37,7 @@ const [AddressContext, useAddressesStrict] = createStrictContext('Address', {
 
 export { AddressContext, useAddressesStrict as useAddresses };
 
-// ============================================
-// PROVIDER
-// ============================================
-
+// Provider
 const getAddressId = (address) => address?.direccion_id ?? address?.id ?? address?.address_id ?? null;
 const isDefaultAddress = (address) => Boolean(address?.predeterminada ?? address?.es_predeterminada ?? address?.isDefault);
 const isSameAddress = (address, id) => {

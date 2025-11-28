@@ -4,7 +4,7 @@ import { SelectSm, SelectGhost } from "@/components/ui/Select.jsx"
 import { Button, IconButton } from "@/components/ui/Button.jsx"
 import { cn } from "@/utils/cn.js";
 import { Search, ListFilter, LayoutGrid, Rows, ChevronDown, Columns as ColumnsIcon, X } from "lucide-react";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/radix/DropdownMenu.jsx"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/primitives"
 
 export function TableToolbar({ children, className }) {
   return (

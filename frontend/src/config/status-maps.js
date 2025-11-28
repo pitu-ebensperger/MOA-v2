@@ -42,7 +42,3 @@ export const USER_STATUS_MAP = {
   suspendido:  { variant: "error",   label: "Suspendido" },
   eliminado:   { variant: "neutral", label: "Eliminado" },
 };
-
-// Re-export explícito para compatibilidad con bundlers que validan exports estáticamente
-// NOTE: Exports are declared inline above. Keep named exports to allow
-// static analysis by bundlers. Do not re-export the same names again.

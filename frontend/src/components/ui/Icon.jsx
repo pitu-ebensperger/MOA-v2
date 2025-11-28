@@ -1,9 +1,7 @@
 import React from "react";
 import { cn } from "@/utils/cn.js";
 
-/* -------------------------------------------------------------------------- */
-/* Icon Component - Wrapper para lucide-react con tokens CSS                 */
-/* -------------------------------------------------------------------------- */
+/* Icono reutilizable */
 
 const SIZE_MAP = {
   xs: "0.875rem",   // 14px
@@ -27,9 +25,7 @@ const COLOR_MAP = {
   inherit: "currentColor",
 };
 
-/**
- * Icon - Wrapper para iconos de lucide-react con sizing y coloring consistente
- * 
+/** Icono 
  * @param {React.ReactElement} icon - Componente de ícono de lucide-react
  * @param {string} size - Tamaño: xs, sm, md (default), lg, xl
  * @param {string} color - Color del token CSS
@@ -76,9 +72,7 @@ export function Icon({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Variantes derivadas para uso común                                        */
-/* -------------------------------------------------------------------------- */
+/* Variantes -------------------------------------------------------------------------- */
 
 export const IconXs = (props) => <Icon {...props} size="xs" />;
 export const IconSm = (props) => <Icon {...props} size="sm" />;
@@ -93,9 +87,7 @@ export const IconSuccess = (props) => <Icon {...props} color="success" />;
 export const IconWarning = (props) => <Icon {...props} color="warning" />;
 export const IconError = (props) => <Icon {...props} color="error" />;
 
-/* -------------------------------------------------------------------------- */
-/* IconButton wrapper (si no se quiere usar el IconButton del Button.jsx)    */
-/* -------------------------------------------------------------------------- */
+/* IconButton wrapper ------------------------------------------------------------------------- */
 
 export function IconWrapper({
   children,

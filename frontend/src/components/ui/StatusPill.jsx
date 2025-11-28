@@ -9,7 +9,7 @@ import {
   USER_STATUS_MAP,
 } from "../../config/status-maps.js";
 
-/* domain = "product" | "order" | "payment" | "shipment" | "user" */
+// domain = "product" | "order" | "payment" | "shipment" | "user" 
 const DOMAIN_MAP = {
   product: PRODUCT_STATUS_MAP,
   order: ORDER_STATUS_MAP,

@@ -3,9 +3,51 @@ import { createPortal } from "react-dom";
 import { AlertTriangle, HelpCircle, Trash2 } from "lucide-react";
 import { cn } from "@/utils/cn.js";
 import { Button } from "./Button";
-import { confirmDialogManager } from "./confirmDialogService.js";
 
-/* Confirm Dialog Component -------------------------------------------------------------------------- */
+class ConfirmDialogManager {
+  constructor() {
+    this.dialog = null;
+    this.listeners = [];
+  }
+
+  subscribe(listener) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter((l) => l !== listener);
+    };
+  }
+
+  notify() {
+    for (const listener of this.listeners) {
+      listener(this.dialog);
+    }
+  }
+
+  show(config) {
+    return new Promise((resolve) => {
+      this.dialog = {
+        ...config,
+        onConfirm: () => {
+          resolve(true);
+          this.hide();
+        },
+        onCancel: () => {
+          resolve(false);
+          this.hide();
+        },
+      };
+      this.notify();
+    });
+  }
+
+  hide() {
+    this.dialog = null;
+    this.notify();
+  }
+}
+
+export const confirmDialogManager = new ConfirmDialogManager();
+
 
 const VARIANT_CONFIG = {
   danger: {
@@ -137,8 +179,7 @@ function ConfirmDialogContent({ dialog }) {
   );
 }
 
-/* Confirm Dialog Container -------------------------------------------------------------------------- */
-
+//Contenedor --------------------------------------------------------------------
 export function ConfirmDialogContainer() {
   const [dialog, setDialog] = useState(null);
 
@@ -151,4 +192,38 @@ export function ConfirmDialogContainer() {
   return createPortal(<ConfirmDialogContent dialog={dialog} />, document.body);
 }
 
-/* Confirm Dialog API moved to confirmDialogService.js */
+export const confirm = {
+  delete: (title, description = "Esta acción no se puede deshacer") => {
+    return confirmDialogManager.show({
+      variant: "danger",
+      title: title || "¿Eliminar elemento?",
+      description,
+      confirmText: "Sí, eliminar",
+      cancelText: "Cancelar",
+    });
+  },
+
+  warning: (title, description, options = {}) => {
+    return confirmDialogManager.show({
+      variant: "warning",
+      title,
+      description,
+      confirmText: "Continuar",
+      cancelText: "Cancelar",
+      ...options,
+    });
+  },
+
+  info: (title, description, options = {}) => {
+    return confirmDialogManager.show({
+      variant: "info",
+      title,
+      description,
+      confirmText: "Aceptar",
+      showCancel: false,
+      ...options,
+    });
+  },
+
+  custom: (options) => confirmDialogManager.show(options),
+};

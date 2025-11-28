@@ -73,7 +73,7 @@ async function seedOrders() {
       let fechaEntrega = order.fecha_entrega_real ? new Date(order.fecha_entrega_real) : new Date(fechaEnvio.getTime() + (24 + Math.floor(Math.random() * 6 * 24)) * 60 * 60 * 1000);
       if (fechaEntrega < fechaEnvio) fechaEntrega = new Date(fechaEnvio.getTime() + 24 * 60 * 60 * 1000);
 
-      // normalize strings for insertion
+      // normalize
       const createdAtIso = orderCreated.toISOString();
       const fechaPagoIso = fechaPago ? fechaPago.toISOString() : null;
       const fechaEnvioIso = fechaEnvio ? fechaEnvio.toISOString() : null;

@@ -3,9 +3,7 @@ import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react";
 import { alerts } from '@/utils/alerts.js';
 import { observability } from '@/services/observability.js';
 
-// Serialización defensiva: evita que React DevTools (override de console.error)
-// intente convertir a primitivo objetos Proxy / complejos que disparan
-// "Cannot convert object to primitive value".
+
 const safeSerializeError = (err) => {
   if (!err) return null;
   if (err instanceof Error) {

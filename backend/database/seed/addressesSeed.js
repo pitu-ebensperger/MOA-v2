@@ -103,7 +103,7 @@ async function seedAddresses() {
             address.isDefault ?? false,
           ],
         );
-        console.log(`✓ Dirección insertada para ${address.email} (${address.label})`);
+        console.log(`Dirección insertada para ${address.email} (${address.label})`);
       }
     }
 

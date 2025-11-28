@@ -134,7 +134,7 @@ export function Alert({
   );
 }
 
-/* Variantes derivadas  -------------------------------------------------------------------------- */
+/* Variantes  -------------------------------------------------------------------------- */
 
 export const AlertInfo = (props) => (
   <Alert {...props} variant="info" />

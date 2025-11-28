@@ -1,4 +1,3 @@
-/* UI Components */
 // Buttons
 export {
   Button,
@@ -61,8 +60,7 @@ export { Skeleton } from "./Skeleton.jsx";
 export { ToastContainer } from "./Toast.jsx";
 export { toast } from "./toastService.js";
 export { useToast } from "./useToast.js";
-export { ConfirmDialogContainer } from "./ConfirmDialog.jsx";
-export { confirm } from "./confirmDialogService.js";
+export { ConfirmDialogContainer, confirm } from "./ConfirmDialog.jsx";
 export { useConfirm } from "./useConfirm.js";
 export { MessageProvider } from "./MessageProvider.jsx";
 

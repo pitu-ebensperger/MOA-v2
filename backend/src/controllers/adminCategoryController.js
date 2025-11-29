@@ -148,6 +148,8 @@ export async function getProductCount(req, res, next) {
   }
 }
 
+export { getProductCount as getCategoryProductCount };
+
 export default {
   createCategory,
   updateCategory,

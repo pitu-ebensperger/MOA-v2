@@ -4,10 +4,14 @@ import compression from "compression";
 import dotenv from "dotenv";
 import { errorHandler, NotFoundError } from "./src/utils/error.utils.js";
 import rateLimit from "express-rate-limit";
-import { validateEnv, IS_PRODUCTION, NODE_ENV } from "./src/utils/env.js";
+import { validateEnv, IS_PRODUCTION, NODE_ENV, IS_TEST } from "./src/utils/env.js";
 
 dotenv.config();
-validateEnv();
+
+// Solo validar env en producción y desarrollo (no en tests)
+if (!IS_TEST) {
+  validateEnv();
+}
 
 const app = express();
 

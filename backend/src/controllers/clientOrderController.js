@@ -3,8 +3,8 @@ import orderAdminModel from "../models/orderAdminModel.js";
 import { getCartItems } from "../models/cartModel.js";
 import { sendOrderConfirmationEmail } from "../services/emailService.js";
 import { pool } from "../../database/config.js";
-import { handleError } from "../utils/error.utils.js";
-import { METODOS_PAGO_VALIDOS } from "../../../shared/constants/metodos-pago.js";
+import { handleError, ValidationError } from "../utils/error.utils.js";
+import { IS_DEVELOPMENT } from "../utils/env.js";
 
 const getRequestUserId = (req) => req.user?.usuario_id ?? req.user?.id;
 
@@ -37,7 +37,7 @@ const buildOrderStatusPayload = (order, status) => ({
   status,
 });
 
-const createOrderFromCart = async (req, res) => {
+const createOrderFromCart = async (req, res, next) => {
   try {
     const usuarioId = getRequestUserId(req);
     const { 
@@ -48,27 +48,11 @@ const createOrderFromCart = async (req, res) => {
       contacto // { nombre, email, telefono }
     } = req.body;
 
-    // Validación: método de pago válido
-    if (!METODOS_PAGO_VALIDOS.includes(metodo_pago)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: `Método de pago inválido: "${metodo_pago}". Valores permitidos: ${METODOS_PAGO_VALIDOS.join(', ')}`,
-        field: 'metodo_pago'
-      });
-    }
-
-    // Validación: dirección obligatoria para métodos de envío
-    if (!direccion_id && metodo_despacho !== 'retiro') {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'La dirección de envío es obligatoria para órdenes con despacho' 
-      });
-    }
-
-    // Obtener items del carrito
     const cartData = await getCartItems(usuarioId);
     if (!cartData.items || cartData.items.length === 0) {
-      return res.status(400).json({ success: false, message: 'El carrito está vacío' });
+      throw new ValidationError('El carrito está vacío', [
+        { field: 'carrito', message: 'Debe agregar productos al carrito antes de crear una orden' }
+      ]);
     }
 
     // Validar stock disponible para cada producto
@@ -91,15 +75,12 @@ const createOrderFromCart = async (req, res) => {
 
     const insufficientStock = stockValidation.filter(v => !v.valid);
     if (insufficientStock.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Stock insuficiente para algunos productos',
-        details: insufficientStock.map(item => ({
-          producto: item.nombre,
-          solicitado: item.requested,
-          disponible: item.available
+      throw new ValidationError('Stock insuficiente para algunos productos', 
+        insufficientStock.map(item => ({
+          field: 'stock',
+          message: `${item.nombre}: solicitado ${item.requested}, disponible ${item.available}`
         }))
-      });
+      );
     }
 
     // Calcular subtotal desde los items del carrito
@@ -152,11 +133,11 @@ const createOrderFromCart = async (req, res) => {
 
   } catch (error) {
     console.error('Error creando orden:', error);
-    return handleError(res, error, 'Error al crear orden');
+    next(error);
   }
 };
 
-const getUserOrders = async (req, res) => {
+const getUserOrders = async (req, res, next) => {
   try {
     const usuarioId = getRequestUserId(req);
     const { limit = 20, offset = 0, estado_pago, estado_envio } = req.query;
@@ -175,15 +156,11 @@ const getUserOrders = async (req, res) => {
 
   } catch (error) {
     console.error('Error obteniendo órdenes:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener órdenes',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 
-const getOrderById = async (req, res) => {
+const getOrderById = async (req, res, next) => {
   try {
     const usuarioId = getRequestUserId(req);
     const { id } = req.params;
@@ -191,18 +168,14 @@ const getOrderById = async (req, res) => {
     const order = await orderModel.getOrderById(id);
 
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      const { NotFoundError } = await import('../utils/error.utils.js');
+      throw new NotFoundError('Orden');
     }
 
     // Verificar que la orden pertenezca al usuario
     if (order.usuario_id !== usuarioId) {
-      return res.status(403).json({
-        success: false,
-        message: 'No tienes permiso para ver esta orden',
-      });
+      const { ForbiddenError } = await import('../utils/error.utils.js');
+      throw new ForbiddenError('No tienes permiso para ver esta orden');
     }
 
     res.status(200).json({
@@ -212,15 +185,11 @@ const getOrderById = async (req, res) => {
 
   } catch (error) {
     console.error('Error obteniendo orden:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res, next) => {
   try {
     const usuarioId = getRequestUserId(req);
     const { id } = req.params;
@@ -228,33 +197,26 @@ const cancelOrder = async (req, res) => {
     const order = await orderModel.getOrderById(id);
 
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      const { NotFoundError } = await import('../utils/error.utils.js');
+      throw new NotFoundError('Orden');
     }
 
     if (order.usuario_id !== usuarioId) {
-      return res.status(403).json({
-        success: false,
-        message: 'No tienes permiso para cancelar esta orden',
-      });
+      const { ForbiddenError } = await import('../utils/error.utils.js');
+      throw new ForbiddenError('No tienes permiso para cancelar esta orden');
     }
 
     if (order.estado_pago === 'pagado') {
-      return res.status(400).json({
-        success: false,
-        message: 'No se puede cancelar una orden ya pagada. Solicita un reembolso.',
-      });
+      throw new ValidationError(
+        'No se puede cancelar una orden ya pagada. Solicita un reembolso.',
+        [{ field: 'estado_pago', message: 'La orden ya fue pagada' }]
+      );
     }
 
     const canceledOrder = await orderModel.cancelOrder(id, usuarioId);
 
     if (!canceledOrder) {
-      return res.status(400).json({
-        success: false,
-        message: 'No se pudo cancelar la orden',
-      });
+      throw new ValidationError('No se pudo cancelar la orden');
     }
 
     res.status(200).json({
@@ -265,42 +227,35 @@ const cancelOrder = async (req, res) => {
 
   } catch (error) {
     console.error('Error cancelando orden:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al cancelar orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 
-const updateOrderStatus = async (req, res) => {
+const updateOrderStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
     if (!status) {
-      return res.status(400).json({
-        success: false,
-        message: 'El campo status es requerido',
-      });
+      throw new ValidationError('El campo status es requerido', [
+        { field: 'status', message: 'Este campo es obligatorio' }
+      ]);
     }
 
     const normalizedStatus = String(status).trim().toLowerCase();
     const builder = ORDER_STATUS_TRANSITIONS[normalizedStatus];
     if (!builder) {
       const allowedStatuses = Object.keys(ORDER_STATUS_TRANSITIONS).join(', ');
-      return res.status(400).json({
-        success: false,
-        message: `Status inválido. Valores permitidos: ${allowedStatuses}`,
-      });
+      throw new ValidationError(
+        `Status inválido: "${status}"`,
+        [{ field: 'status', message: `Valores permitidos: ${allowedStatuses}` }]
+      );
     }
 
     const existingOrder = await orderAdminModel.getOrderByIdAdmin(id);
     if (!existingOrder) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      const { NotFoundError } = await import('../utils/error.utils.js');
+      throw new NotFoundError('Orden');
     }
 
     await orderAdminModel.updateOrderStatus(id, builder());
@@ -313,12 +268,8 @@ const updateOrderStatus = async (req, res) => {
       data: buildOrderStatusPayload(orderToReturn, normalizedStatus),
     });
   } catch (error) {
-    console.error('Error actualizando estado de orden:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al actualizar estado de orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    console.error('Error actualizando orden:', error);
+    next(error);
   }
 };
 

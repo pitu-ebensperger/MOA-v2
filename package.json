@@ -27,7 +27,5 @@
     "call-bound": "^1.0.4",
     "gh-pages": "^5.0.0",
     "vercel": "^48.10.11"
-  },
-  "dependencies": {
   }
 }

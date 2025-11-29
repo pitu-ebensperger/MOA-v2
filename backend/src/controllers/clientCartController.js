@@ -5,10 +5,11 @@ import {
   clearCart,
   updateCartItemQuantity,
 } from "../models/cartModel.js";
+import { ValidationError } from "../utils/error.utils.js";
 
 const getRequestUserId = (req) => req.user?.usuario_id ?? req.user?.id;
 
-export const getCart = async (req, res) => {
+export const getCart = async (req, res, next) => {
   try {
     const userId = getRequestUserId(req);
 
@@ -20,17 +21,19 @@ export const getCart = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en getCart:", error);
-    return res.status(500).json({ error: "Error al obtener el carrito" });
+    next(error);
   }
 };
 
-export const addToCart = async (req, res) => {
+export const addToCart = async (req, res, next) => {
   try {
     const userId = getRequestUserId(req);
     const { producto_id, cantidad = 1 } = req.body;
 
     if (!producto_id) {
-      return res.status(400).json({ error: "Falta producto_id" });
+      throw new ValidationError('producto_id es requerido', [
+        { field: 'producto_id', message: 'Debe proporcionar el ID del producto' }
+      ]);
     }
 
     const item = await addItemToCart(userId, producto_id, cantidad);
@@ -38,17 +41,19 @@ export const addToCart = async (req, res) => {
     return res.status(201).json({ item });
   } catch (error) {
     console.error("Error en addToCart:", error);
-    return res.status(500).json({ error: "Error al agregar producto" });
+    next(error);
   }
 };
 
-export const removeFromCart = async (req, res) => {
+export const removeFromCart = async (req, res, next) => {
   try {
     const userId = getRequestUserId(req);
     const { productId } = req.params;
 
     if (!productId) {
-      return res.status(400).json({ error: "Falta productId" });
+      throw new ValidationError('productId es requerido', [
+        { field: 'productId', message: 'Debe proporcionar el ID del producto en la URL' }
+      ]);
     }
 
     const removed = await removeItemFromCart(userId, productId);
@@ -59,22 +64,26 @@ export const removeFromCart = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en removeFromCart:", error);
-    return res.status(500).json({ error: "Error al eliminar producto" });
+    next(error);
   }
 };
 
-export const updateCartItem = async (req, res) => {
+export const updateCartItem = async (req, res, next) => {
   try {
     const userId = getRequestUserId(req);
     const { producto_id, cantidad } = req.body;
 
     if (!producto_id) {
-      return res.status(400).json({ error: "Falta producto_id" });
+      throw new ValidationError('producto_id es requerido', [
+        { field: 'producto_id', message: 'Debe proporcionar el ID del producto' }
+      ]);
     }
 
     const parsedQuantity = Number(cantidad);
     if (Number.isNaN(parsedQuantity)) {
-      return res.status(400).json({ error: "Cantidad inválida" });
+      throw new ValidationError('Cantidad inválida', [
+        { field: 'cantidad', message: 'La cantidad debe ser un número válido' }
+      ]);
     }
 
     if (parsedQuantity <= 0) {
@@ -91,11 +100,11 @@ export const updateCartItem = async (req, res) => {
     return res.json({ item: updated });
   } catch (error) {
     console.error("Error en updateCartItem:", error);
-    return res.status(500).json({ error: "Error al actualizar cantidad" });
+    next(error);
   }
 };
 
-export const emptyCart = async (req, res) => {
+export const emptyCart = async (req, res, next) => {
   try {
     const userId = getRequestUserId(req);
 
@@ -104,6 +113,6 @@ export const emptyCart = async (req, res) => {
     return res.json({ message: "Carrito vaciado" });
   } catch (error) {
     console.error("Error en emptyCart:", error);
-    return res.status(500).json({ error: "Error al vaciar carrito" });
+    next(error);
   }
 };

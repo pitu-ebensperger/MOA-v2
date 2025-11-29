@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext.jsx'
 import {
@@ -72,7 +73,7 @@ export const AddressProvider = ({ children }) => {
       const defaultAddr = data.find((addr) => isDefaultAddress(addr));
       setDefaultAddressState(defaultAddr || null);
     } catch (err) {
-      console.error('Error cargando direcciones:', err);
+      if (import.meta.env.DEV) console.error('Error cargando direcciones:', err);
       setError(err.response?.data?.message || 'Error al cargar direcciones');
     } finally {
       setLoading(false);
@@ -104,7 +105,7 @@ export const AddressProvider = ({ children }) => {
 
       return newAddress;
     } catch (err) {
-      console.error('Error agregando dirección:', err);
+      if (import.meta.env.DEV) console.error('Error agregando dirección:', err);
       setError(err.response?.data?.message || 'Error al agregar dirección');
       throw err;
     }
@@ -130,7 +131,7 @@ export const AddressProvider = ({ children }) => {
 
       return updatedAddress;
     } catch (err) {
-      console.error('Error actualizando dirección:', err);
+      if (import.meta.env.DEV) console.error('Error actualizando dirección:', err);
       setError(err.response?.data?.message || 'Error al actualizar dirección');
       throw err;
     }
@@ -158,7 +159,7 @@ export const AddressProvider = ({ children }) => {
 
       return newDefault;
     } catch (err) {
-      console.error('Error estableciendo dirección predeterminada:', err);
+      if (import.meta.env.DEV) console.error('Error estableciendo dirección predeterminada:', err);
       setError(err.response?.data?.message || 'Error al establecer dirección predeterminada');
       throw err;
     }
@@ -171,7 +172,7 @@ export const AddressProvider = ({ children }) => {
       await deleteAddress(direccionId);
       await loadAddresses();
     } catch (err) {
-      console.error('Error eliminando dirección:', err);
+      if (import.meta.env.DEV) console.error('Error eliminando dirección:', err);
       setError(err.response?.data?.message || 'Error al eliminar dirección');
       throw err;
     }

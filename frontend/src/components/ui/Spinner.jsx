@@ -2,8 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { cn } from "@/utils/cn.js";
 
-/* Spinner -------------------------------------------------------------------------- */
-
+// SPINNER
 const SIZE_MAP = {
   xs: "w-3 h-3 border-[1.5px]",
   sm: "w-4 h-4 border-2",
@@ -19,14 +18,6 @@ const COLOR_MAP = {
   current: "border-current",
 };
 
-/**
- * Spinner
- * 
- * @param {string} size - Tamaño: xs, sm, md, lg, xl
- * @param {string} color - Color: primary, secondary, white, current
- * @param {string} label - Label de accesibilidad
- * @param {string} className - Clases adicionales
- */
 export function Spinner({
   size = "md",
   color = "primary",
@@ -68,8 +59,7 @@ Spinner.propTypes = {
   className: PropTypes.string,
 };
 
-/* Variantes derivadas  -------------------------------------------------------------------------- */
-
+// VARIANTES
 export const SpinnerXs = (props) => <Spinner {...props} size="xs" />;
 export const SpinnerSm = (props) => <Spinner {...props} size="sm" />;
 export const SpinnerMd = (props) => <Spinner {...props} size="md" />;
@@ -80,8 +70,7 @@ export const SpinnerPrimary = (props) => <Spinner {...props} color="primary" />;
 export const SpinnerSecondary = (props) => <Spinner {...props} color="secondary" />;
 export const SpinnerWhite = (props) => <Spinner {...props} color="white" />;
 
-/* Spinner con overlay para pantalla completa  -------------------------------------------------------------------------- */
-
+// OVERLAY
 export function SpinnerOverlay({
   message = "Cargando...",
   size = "lg",
@@ -115,8 +104,7 @@ SpinnerOverlay.propTypes = {
   className: PropTypes.string,
 };
 
-/* Dots Loader  -------------------------------------------------------------------------- */
-
+// DOTS LOADER
 export function DotsLoader({
   size = "md",
   color = "primary",

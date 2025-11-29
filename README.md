@@ -1,29 +1,25 @@
 # Proyecto MOA - Marketplace E-commerce
-# MOA
-Marketplace full-stack 
 
-- **Frontend:** React 19.1.1 + Vite 7.1.7
-- **Backend:** Express 5.1.0 + PostgreSQL
+- **Frontend:** React + Vite 
+- **Backend:** Express + PostgreSQL
 
 
-### Usuarios de Prueba
+### Usuario Admin
 
-| Usuario | Email | Contraseña | Rol |
-|---------|-------|------------|-----|
-| Admin | `admin@moa.cl` | `admin123`| Administrador |
+`admin@moa.cl` | `admin123`
 
-### Instalación rápida
+### Instalación
 
 1. **Instalar dependencias**
    ```bash
    npm install
    ```
-2. **Configurar base de datos**
+2. **Base de datos**
    ```bash
    npm run -w backend db
    npm run -w backend seed:all
    ```
-3. **Levantar servicios**
+3. **Levantar**
    ```bash
    npm run -w frontend dev   # http://localhost:5174
    npm run -w backend dev    # http://localhost:4000
@@ -104,27 +100,6 @@ Marketplace full-stack
 
 -----------------------------------
 
-## Instalación manual de base de datos (setup local)
-
-Si necesitas crear y poblar la base de datos localmente sin scripts automáticos, sigue estos pasos:
-
-1. **Crear la base de datos:**
-   ```bash
-   psql -U postgres -c "CREATE DATABASE moa;"
-   ```
-2. **Aplicar el schema:**
-   ```bash
-   psql -U postgres -d moa -f backend/database/schema/DDL_base.sql
-   psql -U postgres -d moa -f backend/database/schema/DDL_admin.sql
-   ```
-3. **Poblar datos iniciales:**
-   ```bash
-   npm run -w backend seed:all
-   ```
-
-Esto dejará la base de datos lista con datos de ejemplo para desarrollo y pruebas.
-
-> Nota: No se recomienda resetear la base de datos en producción. Usa migraciones o scripts específicos para cambios estructurales en ambientes productivos.
 
 ## Testing (jest)
 

@@ -66,11 +66,7 @@ export function useAdminProducts({ page, limit, search, status, categoryId, only
   };
 }
 
-/**
- * Función independiente para fetch completo sin paginación (útil para exportación)
- * @param {Object} filters - Filtros de búsqueda
- * @returns {Promise<{items: Array, total: number}>}
- */
+// Fetch completo sin paginación para exportación
 export async function fetchAllAdminProducts({ search = "", status = "", categoryId = "", onlyLowStock = false }) {
   const params = {
     scope: "admin",

@@ -91,13 +91,13 @@ export const ProductDetailPage = () => {
         try {
           const s = v.toString();
           if (typeof s === 'string') return s;
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
       try {
         return JSON.stringify(v);
-      } catch (e) {
+      } catch {
         return String(v);
       }
     }
@@ -116,7 +116,7 @@ export const ProductDetailPage = () => {
           return typeof str === 'string' ? str : null;
         }
         return null;
-      } catch (_e) {
+      } catch {
         return null;
       }
     };

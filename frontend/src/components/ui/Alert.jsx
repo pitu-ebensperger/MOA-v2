@@ -2,8 +2,7 @@ import React from "react";
 import { cn } from "@/utils/cn.js";
 import { Info, CheckCircle, AlertTriangle, XCircle, X } from "lucide-react";
 
-/* Alert Component -------------------------------------------------------------------------- */
-
+// ALERT
 const VARIANT_CONFIG = {
   info: {
     icon: Info,
@@ -35,17 +34,6 @@ const VARIANT_CONFIG = {
   },
 };
 
-/**
- * Alert 
- * 
- * @param {string} variant - Variante: info, success, warning, error
- * @param {string} title - Título de la alerta
- * @param {React.ReactNode} children - Mensaje o contenido
- * @param {boolean} dismissible - Si puede cerrarse
- * @param {function} onDismiss - Callback al cerrar
- * @param {React.ReactNode} icon - Ícono customizado (opcional)
- * @param {string} className - Clases adicionales
- */
 export function Alert({
   variant = "info",
   title,
@@ -134,8 +122,7 @@ export function Alert({
   );
 }
 
-/* Variantes  -------------------------------------------------------------------------- */
-
+// VARIANTES
 export const AlertInfo = (props) => (
   <Alert {...props} variant="info" />
 );

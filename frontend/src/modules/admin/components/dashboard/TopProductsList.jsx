@@ -6,9 +6,6 @@ import { useTopProducts } from '@/modules/admin/hooks/useDashboardStats';
 import { Price } from '@/components/data-display/Price';
 import ChartCard from './ChartCard';
 
-/**
- * Lista de top productos más vendidos
- */
 export default function TopProductsList({ periodo = 30, limit = 5, periodLabel }) {
   const rangeLabel = periodLabel || `Últimos ${periodo} días`;
   const { data, isLoading, isError } = useTopProducts(periodo, limit);

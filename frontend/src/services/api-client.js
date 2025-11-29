@@ -194,7 +194,7 @@ async function request(path, {
   if (res.status === 401 && onUnauthorized) {
     const isAuthEndpoint = path.includes('/login') || path.includes('/register');
     if (!isAuthEndpoint) {
-      console.warn(`[api-client] 401 Unauthorized en ${path}, disparando logout...`);
+      if (import.meta.env.DEV) console.warn(`[api-client] 401 Unauthorized en ${path}, disparando logout...`);
       try {
         onUnauthorized();
       } catch (handlerError) {

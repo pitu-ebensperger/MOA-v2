@@ -67,7 +67,7 @@ async function seedAddresses() {
           address.isDefault ?? false,
           existing.rows[0].direccion_id,
         ]);
-        console.log(`✓ Dirección actualizada para ${address.email} (${address.label})`);
+        console.log(`Dirección actualizada para ${address.email} (${address.label})`);
       } else {
         await pool.query(
           `

@@ -6,12 +6,6 @@ import {
   USER_STATUS_MAP,
 } from "./status-maps.js";
 
-/**
- * STATUS_MAP pasa a ser un array de opciones para <select> o filtros.
- * @param {Object} statusMap - Mapa de estados { key: { variant, label } }
- * @param {boolean} includeAll - Si incluir la opción "Todos" al inicio
- * @returns {Array<{value: string, label: string}>}
- */
 function mapToOptions(statusMap, includeAll = true) {
   const entries = Object.entries(statusMap).map(([value, config]) => ({
     value,
@@ -38,7 +32,6 @@ export const SHIPPING_STATUS_OPTIONS = mapToOptions(SHIPPING_STATUS_MAP);
 // Opciones de usuario
 export const USER_STATUS_OPTIONS = mapToOptions(USER_STATUS_MAP);
 
-//Helper Genérico
 export function getStatusOptions(statusMap, includeAll = true) {
   return mapToOptions(statusMap, includeAll);
 }

@@ -18,59 +18,6 @@ import {
   PopoverContent,
 } from "@/components/ui/primitives";
 
-/**
- * UnifiedTableToolbar - Toolbar all-in-one para tablas MOA
- * 
- * Incluye TODAS las features configurables:
- * - 🔍 Search bar (buscador global)
- * - 🔽 Column visibility selector
- * - 📊 Sort/Order by dropdown
- * - 📤 Export menu (CSV, JSON, XLSX)
- * - 🎚️ Density toggle (compact, normal, comfortable)
- * - 🔲 Layout toggle (table/grid/list)
- * - 🔄 Refresh button
- * - 🏷️ Quick filter pills/buttons
- * - 🎛️ Advanced filters popover
- * - ➕ Add new button
- * - 🧹 Clear filters
- * - 📌 Active filter badges
- * 
- * Solo activa las features que necesites con props booleanos:
- * 
- * @example
- * // Toolbar básico (solo search + refresh)
- * <UnifiedTableToolbar
- *   search
- *   searchValue={search}
- *   onSearchChange={setSearch}
- *   refresh
- *   onRefresh={refetch}
- * />
- * 
- * @example
- * // Toolbar completo con todas las features
- * <UnifiedTableToolbar
- *   search
- *   columnVisibility
- *   sortBy
- *   export
- *   density
- *   layoutToggle
- *   refresh
- *   quickFilters
- *   advancedFilters
- *   addNew
- *   clearFilters
- *   table={table} // TanStack Table instance
- *   searchValue={search}
- *   onSearchChange={setSearch}
- *   onRefresh={refetch}
- *   onAddNew={handleAddNew}
- *   onExport={handleExport}
- *   quickFilterOptions={[...]}
- *   activeFilters={[...]}
- * />
- */
 export function UnifiedTableToolbar({
   table,
 

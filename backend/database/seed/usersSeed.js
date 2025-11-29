@@ -19,8 +19,6 @@ const ADMIN_PROFILE = {
   rol_code: "ADMIN",
 };
 
-const DUAL_PASSWORD = process.env.DUAL_PASSWORD;
-
 async function cleanupNonAdminUsers() {
   const { rows: extraUsers } = await pool.query(
     "SELECT usuario_id FROM usuarios WHERE email <> $1",

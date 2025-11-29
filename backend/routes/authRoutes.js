@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { loginUser, getUser, refreshToken } from "../src/controllers/authController.js";
+import { loginUser, getUser, refreshToken } from "../src/controllers/publicAuthController.js";
 import { 
   requestPasswordReset, 
   resetPassword 
-} from "../src/controllers/passwordResetController.js";
+} from "../src/controllers/publicPasswordResetController.js";
 import { verifyToken } from "../src/middleware/tokenMiddleware.js";
 import { checkLoginCredentials } from "../src/middleware/credentialsMiddleware.js";
 
@@ -21,7 +21,7 @@ router.get("/usuario", verifyToken, getUser);
 // Renovar token JWT (extender sesión)
 router.post("/auth/refresh-token", verifyToken, refreshToken);
 
-// Password reset endpoints
+// Endpoints de reset de contraseña
 router.post("/api/auth/request-password-reset", requestPasswordReset);
 router.post("/api/auth/reset-password", resetPassword);
 

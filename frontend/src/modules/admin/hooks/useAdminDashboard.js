@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQueries } from "@config/react-query";
 import { analyticsApi } from "@/services/analytics.api.js";
-import { ordersApi } from "@/services/orders.api.js";
+import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 
 const DASHBOARD_STALE_TIME = 1000 * 60 * 5; // 5 minutes
 
@@ -51,8 +51,8 @@ export function useAdminDashboard() {
       },
       {
         queryKey: ["admin-recent-orders"],
-        queryFn: () => ordersApi.list({ limit: 4, page: 1 }),
-        staleTime: DASHBOARD_STALE_TIME * 0.5, // More frequent updates for recent orders
+        queryFn: () => ordersAdminApi.getAll({ limit: 4, offset: 0 }),
+        staleTime: DASHBOARD_STALE_TIME * 0.5,
       },
     ],
   });

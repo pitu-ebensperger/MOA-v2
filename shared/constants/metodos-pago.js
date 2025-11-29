@@ -1,8 +1,3 @@
-/**
- * Constantes compartidas para métodos de pago
- * Usadas en frontend y backend para garantizar consistencia
- */
-
 export const METODOS_PAGO = {
   TRANSFERENCIA: 'transferencia',
   WEBPAY: 'webpay',
@@ -55,30 +50,15 @@ export const METODOS_PAGO_OPTIONS = [
   }
 ];
 
-/**
- * Valida si un método de pago es válido
- * @param {string} metodoPago - Método de pago a validar
- * @returns {boolean} True si es válido
- */
 export function isValidPaymentMethod(metodoPago) {
   return METODOS_PAGO_VALIDOS.includes(metodoPago);
 }
 
-/**
- * Obtiene el label de un método de pago
- * @param {string} metodoPago - Valor del método de pago
- * @returns {string} Label legible
- */
 export function getPaymentMethodLabel(metodoPago) {
   const method = METODOS_PAGO_OPTIONS.find(m => m.value === metodoPago);
   return method?.label || metodoPago;
 }
 
-/**
- * Obtiene el ícono de un método de pago
- * @param {string} metodoPago - Valor del método de pago
- * @returns {string} Nombre del ícono
- */
 export function getPaymentMethodIcon(metodoPago) {
   const method = METODOS_PAGO_OPTIONS.find(m => m.value === metodoPago);
   return method?.icon || 'CreditCard';

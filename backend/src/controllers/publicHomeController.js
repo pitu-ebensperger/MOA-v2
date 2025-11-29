@@ -35,7 +35,6 @@ export async function getHome(req, res) {
       ORDER BY producto_id;
     `);
 
-    // Obtener configuración de la tienda
     const { rows: storeConfig } = await pool.query(`
       SELECT 
         nombre_tienda AS "nombreTienda",

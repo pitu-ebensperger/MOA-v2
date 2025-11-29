@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import { motion as Motion } from 'framer-motion';
 
-/**
- * ChartCard - Wrapper para gráficos con header, filtros y acciones
- */
 export default function ChartCard({
   title,
   subtitle,

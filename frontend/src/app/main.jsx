@@ -24,7 +24,9 @@ if (typeof document !== 'undefined' && document.body) {
   document.body.style.overflow = '';
   document.body.style.removeProperty('overflow');
   document.body.classList.remove('overflow-hidden');
-  console.log('[MOA] Limpieza inicial de overflow del body');
+  if (import.meta.env.DEV) {
+    console.log('[MOA] Limpieza inicial de overflow del body');
+  }
 }
 
 const queryClient = new QueryClient({
@@ -72,13 +74,17 @@ const queryClient = new QueryClient({
 // 🌐 NETWORK OFFLINE DETECTION
 if (typeof globalThis.window !== 'undefined') {
   window.addEventListener('online', () => {
-    console.log('[Network] Conexión restaurada');
+    if (import.meta.env.DEV) {
+      console.log('[Network] Conexión restaurada');
+    }
     // Refetch queries automáticamente
     queryClient.refetchQueries();
   });
 
   window.addEventListener('offline', () => {
-    console.warn('[Network] Sin conexión a internet');
+    if (import.meta.env.DEV) {
+      console.warn('[Network] Sin conexión a internet');
+    }
     if (import.meta.env.PROD) {
       observability.captureMessage('network_offline', { level: 'warning' });
     }

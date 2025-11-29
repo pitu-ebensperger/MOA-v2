@@ -11,15 +11,6 @@ import {
 } from '@/components/ui/Dialog.jsx';
 import { Button } from '@/components/ui/Button.jsx';
 
-/**
- * Modal que se muestra cuando la sesión está por expirar
- * @param {Object} props
- * @param {boolean} props.open - Si el modal está abierto
- * @param {number} props.minutesRemaining - Minutos restantes
- * @param {Function} props.onExtend - Callback para extender sesión
- * @param {Function} props.onLogout - Callback para hacer logout
- * @param {Function} [props.onDismiss] - Callback para cerrar sin acciones
- */
 export const SessionExpirationDialog = ({ 
   open, 
   minutesRemaining, 

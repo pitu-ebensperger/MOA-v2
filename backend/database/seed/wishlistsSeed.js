@@ -76,7 +76,7 @@ async function seedWishlists() {
           [wishlistId, productId],
         );
       }
-      console.log(`✓ Wishlist insertada/actualizada para ${list.email}`);
+      console.log(`Wishlist insertada/actualizada para ${list.email}`);
     }
 
     console.log("Seed de wishlists completado.");

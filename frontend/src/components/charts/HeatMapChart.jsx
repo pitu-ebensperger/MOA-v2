@@ -2,10 +2,6 @@ import PropTypes from "prop-types";
 import { motion as Motion } from "framer-motion";
 import { useMemo } from "react";
 
-/**
- * HeatMapChart - Mapa de calor para visualizar actividad por día/hora
- * Perfecto para mostrar patrones de comportamiento de usuarios
- */
 export const HeatMapChart = ({
   data = [],
   xLabels = [],

@@ -43,7 +43,7 @@ export default function LoginPage() {
     if (sessionExpired) {
       setShowExpiredModal(true);
       setExpiredFromPath(fromPath || '');
-      console.log('🔍 [LoginPage] Modal de sesión expirada disparado', { fromPath });
+      if (import.meta.env.DEV) console.log('🔍 [LoginPage] Modal de sesión expirada disparado', { fromPath });
     }
     
     if (authRequired) {
@@ -97,7 +97,7 @@ export default function LoginPage() {
     const token = localStorage.getItem('moa.accessToken');
     const user = localStorage.getItem('moa.user');
     if (token && !user) {
-      console.warn('[LoginPage] Token sin usuario detectado, limpiando...');
+      if (import.meta.env.DEV) console.warn('[LoginPage] Token sin usuario detectado, limpiando...');
       localStorage.clear();
     }
   }, []);
@@ -164,7 +164,7 @@ export default function LoginPage() {
     try {
       setSubmitting(true);
       setServerError('');
-      console.log('[LoginPage] Intentando login con:', { email: cleanEmail, passwordLength: cleanPassword.length });
+      if (import.meta.env.DEV) console.log('[LoginPage] Intentando login con:', { email: cleanEmail, passwordLength: cleanPassword.length });
       const profile = await login({ email: cleanEmail, password: cleanPassword }); // AuthContext guarda token+user
       redirect({ adminOverride: isAdminRole(profile) });                        // redirige por rol
     } catch (err) {

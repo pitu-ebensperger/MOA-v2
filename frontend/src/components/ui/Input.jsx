@@ -2,8 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { cn } from "@/utils/cn.js";
 
-/* Tamaños & Variantes  -------------------------------------------------------------------------- */
-
+// CONFIGURACIÓN
 const SIZE_CLASSES = {
   sm: "h-9 px-3 text-xs rounded-[10px]",
   md: "h-10 px-3 text-sm rounded-[12px]",
@@ -11,21 +10,18 @@ const SIZE_CLASSES = {
 };
 
 const VARIANT_CLASSES = {
-  // Estilo neutral con fondo claro
   neutral: cn(
     "bg-[color:var(--color-neutral2)]",
     "border border-[color:var(--color-neutral3)]",
     "text-[color:var(--color-text)]"
   ),
 
-  // Estilo primario con borde accent
   primary: cn(
     "bg-[color:var(--color-neutral2)]",
     "border border-[color:var(--color-primary3)]",
     "text-[color:var(--color-text)]"
   ),
 
-  // Estilo ghost sin fondo
   ghost: cn(
     "bg-transparent",
     "border border-[color:var(--color-neutral3)]",
@@ -38,8 +34,7 @@ const ERROR_CLASSES = cn(
   "text-[color:var(--color-error)]"
 );
 
-/* Componente Base ------------------------------------------------------------------------- */
-
+// INPUT
 export function Input({
   id,
   label,
@@ -197,8 +192,7 @@ Input.propTypes = {
   className: PropTypes.string,
 };
 
-/* Variantes derivadas  -------------------------------------------------------------------------- */
-
+// VARIANTES
 export const InputPrimary = (props) => (
   <Input {...props} variant="primary" />
 );
@@ -215,8 +209,7 @@ export const InputLg = (props) => (
   <Input {...props} size="lg" />
 );
 
-/* Textarea (similar estructura) -------------------------------------------------------------------------- */
-
+// TEXTAREA
 export function Textarea({
   id,
   label,

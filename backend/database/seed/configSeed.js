@@ -54,9 +54,9 @@ async function seedConfig() {
     ];
 
     await pool.query(query, values);
-    console.log("✅ Configuración de tienda insertada/actualizada correctamente.");
+    console.log("Configuración de tienda insertada/actualizada correctamente.");
   } catch (error) {
-    console.error("❌ Error al insertar configuración de tienda:", error);
+    console.error("Error al insertar configuración de tienda:", error);
     process.exitCode = 1;
   } finally {
     await pool.end();

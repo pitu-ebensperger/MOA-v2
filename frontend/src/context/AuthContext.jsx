@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useLayoutEffect, useRef } from "react";
 import { useQueryClient } from '@config/react-query';
 import PropTypes from "prop-types";
@@ -37,10 +38,7 @@ export const [AuthContext, useAuth] = createStrictContext("Auth", {
   errorMessage: "useAuth debe usarse dentro de AuthProvider",
 });
 
-// ============================================
 // UTILIDADES
-// ============================================
-
 const normalizeRoleValue = (value) =>
   typeof value === "string" ? value.trim().toLowerCase() : ""
 
@@ -52,7 +50,6 @@ export const isAdminRole = (user) => {
   return ADMIN_ROLE_ALIASES.has(roleValue);
 };
 
-// ---- Constantes y utilidades ----------------------------------
 const TOKEN_KEY = "moa.accessToken";
 const USER_KEY  = "moa.user";
 const STATUS = { IDLE: "idle", LOADING: "loading", AUTH: "authenticated" };
@@ -107,10 +104,7 @@ const removeSuspiciousOverlays = () => {
   }
 };
 
-// ============================================
 // PROVIDER
-// ============================================
-
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = usePersistentState(TOKEN_KEY, {
@@ -309,13 +303,15 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       pendingLoginRef.current = true;
       try {
-        console.log('[AuthContext] Iniciando login...');
+        if (import.meta.env.DEV) console.log('[AuthContext] Iniciando login...');
         const response = await authApi.login(credentials);
-        console.log('[AuthContext] Respuesta recibida:', { 
-          hasToken: !!response?.token, 
-          hasUser: !!response?.user,
-          userId: response?.user?.id || response?.user?.usuario_id 
-        });
+        if (import.meta.env.DEV) {
+          console.log('[AuthContext] Respuesta recibida:', { 
+            hasToken: !!response?.token, 
+            hasUser: !!response?.user,
+            userId: response?.user?.id || response?.user?.usuario_id 
+          });
+        }
         
         const { token: nextToken, user: profile } = response;
         
@@ -326,15 +322,17 @@ export const AuthProvider = ({ children }) => {
         syncUser(profile);
         syncToken(nextToken);
         setStatus(STATUS.AUTH);
-        console.log('[AuthContext] Login exitoso');
+        if (import.meta.env.DEV) console.log('[AuthContext] Login exitoso');
         return profile;
       } catch (err) {
-        console.error('[AuthContext] Error en login:', err);
-        console.error('[AuthContext] Error details:', {
-          status: err?.status,
-          message: err?.message,
-          data: err?.data
-        });
+        if (import.meta.env.DEV) {
+          console.error('[AuthContext] Error en login:', err);
+          console.error('[AuthContext] Error details:', {
+            status: err?.status,
+            message: err?.message,
+            data: err?.data
+          });
+        }
         setError(err);
         setStatus(STATUS.IDLE);
         throw err;

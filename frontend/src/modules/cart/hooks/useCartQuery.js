@@ -44,9 +44,6 @@ const fetchCart = async () => {
   return enriched;
 };
 
-/**
- * Hook para obtener carrito
- */
 export const useCartQuery = () => {
   const { token, status } = useAuth();
   const isAuthenticated = Boolean(token) && status === 'authenticated';
@@ -68,9 +65,6 @@ export const useCartQuery = () => {
   };
 };
 
-/**
- * Hook para agregar producto al carrito
- */
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
 
@@ -115,9 +109,6 @@ export const useAddToCart = () => {
   });
 };
 
-/**
- * Hook para actualizar cantidad
- */
 export const useUpdateCartQuantity = () => {
   const queryClient = useQueryClient();
 
@@ -156,9 +147,6 @@ export const useUpdateCartQuantity = () => {
   });
 };
 
-/**
- * Hook para remover del carrito
- */
 export const useRemoveFromCart = () => {
   const queryClient = useQueryClient();
 
@@ -185,9 +173,6 @@ export const useRemoveFromCart = () => {
   });
 };
 
-/**
- * Hook para limpiar carrito
- */
 export const useClearCart = () => {
   const queryClient = useQueryClient();
 

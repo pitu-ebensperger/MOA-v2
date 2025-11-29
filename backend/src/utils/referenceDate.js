@@ -15,9 +15,6 @@ const envReferenceDate = parseDate(process.env.ANALYTICS_REFERENCE_DATE);
 
 const resolveOverrideDate = (value) => {
   const parsed = parseDate(value);
-  if (!parsed && value) {
-    console.warn(`[analytics] referenceDate inválida: "${value}". Se ignora y se usa fallback.`);
-  }
   return parsed;
 };
 

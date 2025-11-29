@@ -11,9 +11,6 @@ import { UserShape } from "@/utils/propTypes.js";
 const safeText = (v) => (v == null || v === "" ? "–" : v);
 const safeDate = (value) => (value ? formatDate_ddMMyyyy(value) : "–");
 
-/**
- * Componente Accordion simple para organizar secciones
- */
 function Accordion({ sections, className = "" }) {
   const [openKeys, setOpenKeys] = React.useState(() => {
     return sections.filter((s) => s.defaultOpen).map((s) => s.key);

@@ -69,7 +69,7 @@ async function seedCarts() {
           [carritoId, product.producto_id, item.quantity, product.precio_cents],
         );
       }
-      console.log(`✓ Carrito insertado/actualizado para ${cart.email}`);
+      console.log(`Carrito insertado/actualizado para ${cart.email}`);
     }
 
     console.log("Seed de carritos completado.");

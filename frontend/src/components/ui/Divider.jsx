@@ -1,16 +1,6 @@
 import React from "react";
 import { cn } from "@/utils/cn.js";
 
-/**
- * Divider
- * 
- * @param {string} orientation - Orientación: horizontal o vertical
- * @param {string} variant - Variante visual: solid, dashed, dotted
- * @param {string} color - Color: primary, secondary, neutral, light
- * @param {string} spacing - Espaciado: none, sm, md, lg
- * @param {React.ReactNode} label - Texto opcional en el medio (solo horizontal)
- * @param {string} className - Clases adicionales
- */
 export function Divider({
   orientation = "horizontal",
   variant = "solid",
@@ -22,7 +12,6 @@ export function Divider({
 }) {
   const isVertical = orientation === "vertical";
 
-  // Colores
   const colorClasses = {
     primary: "border-[color:var(--color-primary1)]",
     secondary: "border-[color:var(--color-secondary1)]",
@@ -31,14 +20,12 @@ export function Divider({
     muted: "border-[color:var(--color-text-muted)]/20",
   };
 
-  // Variantes de estilo
   const variantClasses = {
     solid: "border-solid",
     dashed: "border-dashed",
     dotted: "border-dotted",
   };
 
-  // Espaciado
   const spacingClasses = {
     horizontal: {
       none: "my-0",
@@ -62,7 +49,7 @@ export function Divider({
     ? spacingClasses.vertical[spacing] ?? spacingClasses.vertical.md
     : spacingClasses.horizontal[spacing] ?? spacingClasses.horizontal.md;
 
-  // Con label (solo horizontal)
+  // Label solo disponible en modo horizontal
   if (label && !isVertical) {
     return (
       <div

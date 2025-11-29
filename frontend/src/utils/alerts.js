@@ -203,11 +203,15 @@ export const alerts = {
   }
 };
 
-// Legacy API (deprecated - use alerts.* instead)  ---------------------------------
+// LEGACY API
+// Funciones mantenidas por compatibilidad - migrar a alerts.*
 
 export const alertInfo = (text, title = 'Información') => alerts.info(title, text);
+
 export const alertWarning = (text, title = 'Atención') => alerts.warning(title, text);
+
 export const alertSuccess = (html, title = 'Éxito') => moaSwal.fire({ icon: 'success', title, html });
+
 export const alertError = (text, title = 'Error') => alerts.error(title, text);
 
 export const alertOrderError = (detail, supportEmail = 'contacto@moa.cl') => moaSwal.fire({

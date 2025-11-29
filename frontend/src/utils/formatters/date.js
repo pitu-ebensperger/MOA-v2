@@ -27,7 +27,6 @@ function partsRecord(date) {
   return out;
 }
 
-/** dd/MM/yyyy (ej: 30/10/2025) */
 function formatDate_ddMMyyyy(dateLike, fallback = '') {
   const d = toDate(dateLike);
   if (!d) return fallback;
@@ -35,7 +34,6 @@ function formatDate_ddMMyyyy(dateLike, fallback = '') {
   return `${p.day}/${p.month}/${p.year}`;
 }
 
-/** dd/MM/yyyy HH:mm (ej: 30/10/2025 14:30) */
 function formatDateTime(dateLike, fallback = '') {
   const d = toDate(dateLike);
   if (!d) return fallback;
@@ -53,7 +51,6 @@ function formatDateTime(dateLike, fallback = '') {
   return dateFormatter.format(d);
 }
 
-/** Relative time ("hace X días") */
 function relativeTime(fromDateLike, toDateLike = new Date(), fallback = '') {
   const from = toDate(fromDateLike);
   const to = toDate(toDateLike);

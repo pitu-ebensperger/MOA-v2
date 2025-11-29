@@ -10,6 +10,16 @@ dotenv.config({ path: join(__dirname, "..", "..", ".env") });
 import pool from "../config.js";
 import { ORDER_HISTORY } from "./ordersData.js";
 
+// Importar constantes de validación
+import { METODOS_PAGO_VALIDOS } from "../../../shared/constants/metodos-pago.js";
+import { METODOS_DESPACHO_VALIDOS } from "../../../shared/constants/metodos-despacho.js";
+import { 
+  ESTADOS_ORDEN_VALIDOS, 
+  ESTADOS_PAGO_VALIDOS, 
+  ESTADOS_ENVIO_VALIDOS 
+} from "../../../shared/constants/estados-orden.js";
+import { EMPRESAS_ENVIO_VALIDOS } from "../../../shared/constants/empresas-envio.js";
+
 async function seedOrders() {
   try {
     const emails = [...new Set(ORDER_HISTORY.map((order) => order.email))];
@@ -35,6 +45,38 @@ async function seedOrders() {
     }
 
     for (const order of ORDER_HISTORY) {
+      // Validar enums antes de procesar
+      if (order.metodo_pago && !METODOS_PAGO_VALIDOS.includes(order.metodo_pago)) {
+        console.warn(`⚠️ Orden ${order.order_code}: método de pago inválido '${order.metodo_pago}'. Saltando...`);
+        continue;
+      }
+      if (order.metodo_despacho && !METODOS_DESPACHO_VALIDOS.includes(order.metodo_despacho)) {
+        console.warn(`⚠️ Orden ${order.order_code}: método de despacho inválido '${order.metodo_despacho}'. Saltando...`);
+        continue;
+      }
+      if (order.estado_orden && !ESTADOS_ORDEN_VALIDOS.includes(order.estado_orden)) {
+        console.warn(`⚠️ Orden ${order.order_code}: estado de orden inválido '${order.estado_orden}'. Saltando...`);
+        continue;
+      }
+      if (order.estado_pago && !ESTADOS_PAGO_VALIDOS.includes(order.estado_pago)) {
+        console.warn(`⚠️ Orden ${order.order_code}: estado de pago inválido '${order.estado_pago}'. Saltando...`);
+        continue;
+      }
+      if (order.estado_envio && !ESTADOS_ENVIO_VALIDOS.includes(order.estado_envio)) {
+        console.warn(`⚠️ Orden ${order.order_code}: estado de envío inválido '${order.estado_envio}'. Saltando...`);
+        continue;
+      }
+      if (order.empresa_envio && !EMPRESAS_ENVIO_VALIDOS.includes(order.empresa_envio)) {
+        console.warn(`⚠️ Orden ${order.order_code}: empresa de envío inválida '${order.empresa_envio}'. Saltando...`);
+        continue;
+      }
+
+      // Validar precios (cents deben ser >= 0)
+      if (order.shipping_cents != null && order.shipping_cents < 0) {
+        console.warn(`⚠️ Orden ${order.order_code}: shipping_cents negativo (${order.shipping_cents}). Usando 0.`);
+        order.shipping_cents = 0;
+      }
+
       const usuarioId = userMap.get(order.email);
       if (!usuarioId) {
         console.warn(`Usuario no encontrado para orden ${order.order_code}: ${order.email}`);
@@ -54,26 +96,26 @@ async function seedOrders() {
         return new Date(a.getTime() + Math.floor(Math.random() * (b.getTime() - a.getTime() + 1)));
       }
 
-      // Normalize order dates so they are within last 24 months and after user's created_at
+      // Normalizar fechas de órdenes dentro de últimos 24 meses y después de created_at del usuario
       let orderCreated = order.created_at ? new Date(order.created_at) : randBetween(userCreatedAt || twoYearsAgo, now);
       if (orderCreated < (userCreatedAt || twoYearsAgo)) {
         orderCreated = randBetween(userCreatedAt || twoYearsAgo, now);
       }
       if (orderCreated < twoYearsAgo) orderCreated = randBetween(twoYearsAgo, now);
 
-      // fecha_pago should be >= orderCreated
+      // fecha_pago debe ser >= orderCreated
       let fechaPago = order.fecha_pago ? new Date(order.fecha_pago) : new Date(orderCreated.getTime() + 30 * 60 * 1000);
       if (fechaPago < orderCreated) fechaPago = new Date(orderCreated.getTime() + 30 * 60 * 1000);
 
-      // fecha_envio occurs after fecha_pago (0-3 days)
+      // fecha_envio ocurre después de fecha_pago (0-3 días)
       let fechaEnvio = order.fecha_envio ? new Date(order.fecha_envio) : new Date(fechaPago.getTime() + (24 + Math.floor(Math.random() * 48)) * 60 * 60 * 1000);
       if (fechaEnvio < fechaPago) fechaEnvio = new Date(fechaPago.getTime() + 24 * 60 * 60 * 1000);
 
-      // fecha_entrega_real after fecha_envio (1-7 days)
+      // fecha_entrega_real después de fecha_envio (1-7 días)
       let fechaEntrega = order.fecha_entrega_real ? new Date(order.fecha_entrega_real) : new Date(fechaEnvio.getTime() + (24 + Math.floor(Math.random() * 6 * 24)) * 60 * 60 * 1000);
       if (fechaEntrega < fechaEnvio) fechaEntrega = new Date(fechaEnvio.getTime() + 24 * 60 * 60 * 1000);
 
-      // normalize
+      // Normalizar timestamps
       const createdAtIso = orderCreated.toISOString();
       const fechaPagoIso = fechaPago ? fechaPago.toISOString() : null;
       const fechaEnvioIso = fechaEnvio ? fechaEnvio.toISOString() : null;

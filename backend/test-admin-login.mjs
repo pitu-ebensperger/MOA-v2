@@ -7,7 +7,7 @@ async function testAdminLogin() {
   
   try {
     // 1. Login como admin
-    console.log('1️⃣  Intentando login con admin@moa.cl...');
+    console.log('[1] Intentando login con admin@moa.cl...');
     const loginRes = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,7 +22,7 @@ async function testAdminLogin() {
     }
     
     const loginData = await loginRes.json();
-    console.log('✅ Login exitoso');
+    console.log('Login exitoso');
     console.log('   Token recibido:', loginData.token.substring(0, 20) + '...');
     console.log('   Usuario:', loginData.user);
     console.log('   rol_code:', loginData.user.rol_code);
@@ -36,10 +36,10 @@ async function testAdminLogin() {
       throw new Error(`❌ FALLO: rol_code es "${loginData.user.rol_code}", esperaba "ADMIN"`);
     }
     
-    console.log('✅ rol_code es ADMIN correctamente\n');
+    console.log('rol_code es ADMIN correctamente\n');
     
     // 2. Probar endpoint de perfil
-    console.log('2️⃣  Probando GET /usuario con token admin...');
+    console.log('[2] Probando GET /usuario con token admin...');
     const profileRes = await fetch(`${API_URL}/usuario`, {
       headers: { 
         'Authorization': `Bearer ${loginData.token}`
@@ -51,7 +51,7 @@ async function testAdminLogin() {
     }
     
     const profile = await profileRes.json();
-    console.log('✅ Perfil obtenido');
+    console.log('Perfil obtenido');
     console.log('   Perfil:', profile);
     console.log('   rol_code en perfil:', profile.rol_code);
     
@@ -59,10 +59,10 @@ async function testAdminLogin() {
       throw new Error(`❌ FALLO: rol_code en perfil es "${profile.rol_code}"`);
     }
     
-    console.log('✅ rol_code en perfil es ADMIN correctamente\n');
+    console.log('rol_code en perfil es ADMIN correctamente\n');
     
     // 3. Probar endpoint admin protegido
-    console.log('3️⃣  Probando endpoint admin GET /admin/categorias...');
+    console.log('[3] Probando endpoint admin GET /admin/categorias...');
     const adminRes = await fetch(`${API_URL}/admin/categorias`, {
       headers: { 
         'Authorization': `Bearer ${loginData.token}`
@@ -79,13 +79,13 @@ async function testAdminLogin() {
       throw new Error(`Admin endpoint falló: ${adminRes.status}`);
     }
     
-    console.log('✅ Acceso admin autorizado correctamente\n');
+    console.log('Acceso admin autorizado correctamente\n');
     
     console.log('🎉 TODAS LAS PRUEBAS PASARON - FIX EXITOSO!\n');
     console.log('Resumen:');
-    console.log('- Login devuelve rol_code: ADMIN ✅');
-    console.log('- Perfil devuelve rol_code: ADMIN ✅');
-    console.log('- Middleware verifyAdmin autoriza correctamente ✅');
+    console.log('- Login devuelve rol_code: ADMIN [OK]');
+    console.log('- Perfil devuelve rol_code: ADMIN [OK]');
+    console.log('- Middleware verifyAdmin autoriza correctamente [OK]');
     
   } catch (error) {
     console.error('\n❌ ERROR EN TEST:', error.message);

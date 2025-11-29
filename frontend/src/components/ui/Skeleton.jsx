@@ -1,9 +1,6 @@
 import * as React from "react";
 import { cn } from "@/utils/cn.js"
 
-/**
- * Skeleton placeholder inspired by shadcn/ui.
- */
 export const Skeleton = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}

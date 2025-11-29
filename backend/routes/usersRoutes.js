@@ -3,7 +3,7 @@ import {
   registerUser,
   getUserById,
   updateUser,
-} from "../src/controllers/usersController.js";
+} from "../src/controllers/clientUsersController.js";
 import { checkRegisterCredentials } from "../src/middleware/credentialsMiddleware.js";
 import { verifyToken } from "../src/middleware/tokenMiddleware.js";
 

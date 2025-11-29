@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { motion as Motion, useSpring, useTransform } from "framer-motion";
 
-/**
- * AnimatedKPICard - Card con número animado que cuenta hasta el valor final
- * Muestra indicador de tendencia, comparación con período anterior, y animación de entrada
- */
 export const AnimatedKPICard = ({
   title,
   value,

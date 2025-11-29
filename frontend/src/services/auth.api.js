@@ -9,15 +9,19 @@ const buildProfilePath = (userId) =>
 // Auth API agrupada
 export const authApi = {
   async login(payload = {}) {
-    console.log('[authApi.login] Enviando petición con:', { 
-      email: payload.email, 
-      passwordLength: payload.password?.length 
-    });
+    if (import.meta.env.DEV) {
+      console.log('[authApi.login] Enviando petición con:', { 
+        email: payload.email, 
+        passwordLength: payload.password?.length 
+      });
+    }
     const res = await apiClient.post(API_PATHS.auth.login, payload)
-    console.log('[authApi.login] Respuesta recibida:', { 
-      hasToken: !!res?.token, 
-      hasUser: !!res?.user 
-    });
+    if (import.meta.env.DEV) {
+      console.log('[authApi.login] Respuesta recibida:', { 
+        hasToken: !!res?.token, 
+        hasUser: !!res?.user 
+      });
+    }
     return res
   },
 

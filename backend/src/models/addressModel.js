@@ -1,9 +1,6 @@
 import pool from "../../database/config.js";
 
 export const addressModel = {
-  /**
-   * Obtener todas las direcciones de un usuario
-   */
   async getUserAddresses(usuarioId) {
     const query = `
       SELECT 
@@ -31,9 +28,6 @@ export const addressModel = {
     return rows;
   },
 
-  /**
-   * Obtener una dirección por ID
-   */
   async getById(direccionId, usuarioId = null) {
     let query = `
       SELECT 
@@ -67,9 +61,6 @@ export const addressModel = {
     return rows[0] || null;
   },
 
-  /**
-   * Obtener la dirección predeterminada de un usuario
-   */
   async getDefaultAddress(usuarioId) {
     const query = `
       SELECT 
@@ -97,9 +88,6 @@ export const addressModel = {
     return rows[0] || null;
   },
 
-  /**
-   * Crear nueva dirección
-   */
   async create(addressData) {
     const {
       usuario_id,
@@ -152,9 +140,6 @@ export const addressModel = {
     return await this.getById(direccionId);
   },
 
-  /**
-   * Actualizar dirección existente
-   */
   async update(direccionId, usuarioId, addressData) {
     const fields = [];
     const values = [direccionId, usuarioId];
@@ -203,9 +188,6 @@ export const addressModel = {
     return await this.getById(direccionId, usuarioId);
   },
 
-  /**
-   * Establecer dirección como predeterminada
-   */
   async setAsDefault(direccionId, usuarioId) {
     const client = await pool.connect();
     
@@ -242,9 +224,6 @@ export const addressModel = {
     }
   },
 
-  /**
-   * Eliminar dirección
-   */
   async delete(direccionId, usuarioId) {
     const query = `
       DELETE FROM direcciones

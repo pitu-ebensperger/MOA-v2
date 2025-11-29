@@ -15,11 +15,14 @@ async function seedCategorias() {
       await pool.query(
         `INSERT INTO categorias (nombre, slug, descripcion, cover_image)
             VALUES ($1, $2, $3, $4)
-            ON CONFLICT (slug) DO NOTHING`,
+            ON CONFLICT (slug) DO UPDATE SET
+              nombre = EXCLUDED.nombre,
+              descripcion = EXCLUDED.descripcion,
+              cover_image = EXCLUDED.cover_image`,
         [cat.nombre, cat.slug, cat.descripcion, cat.cover_image]
       );
     }
-    console.log("Categorías insertadas correctamente");
+    console.log("Categorías insertadas/actualizadas correctamente");
     process.exit(0);
   } catch (error) {
     console.error("Error al insertar categorías:", error);

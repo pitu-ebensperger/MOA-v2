@@ -1,7 +1,26 @@
+/**
+ * Utilidades de validación y constantes de entorno para el BACKEND
+ * 
+ * IMPORTANTE: Estas constantes son SOLO para Node.js (backend)
+ * - Backend usa: process.env.NODE_ENV
+ * - Frontend usa: import.meta.env.DEV / import.meta.env.PROD (Vite)
+ * 
+ * NO importar estas constantes en el frontend
+ */
+
 const MIN_PASSWORD_RESET_INTERVAL_MINUTES = 5;
 const MIN_IDLE_TIMEOUT_MS = 1000;
 const MIN_CONNECTION_TIMEOUT_MS = 100;
 const ALLOWED_NODE_ENVS = ['development', 'production', 'test'];
+
+/**
+ * Constantes de entorno derivadas de process.env.NODE_ENV
+ * Solo para uso en backend (Node.js)
+ */
+export const NODE_ENV = (process.env.NODE_ENV || 'development').trim();
+export const IS_PRODUCTION = NODE_ENV === 'production';
+export const IS_DEVELOPMENT = NODE_ENV === 'development';
+export const IS_TEST = NODE_ENV === 'test';
 
 function ensureBooleanString(value, key) {
   if (value === undefined) return;
@@ -62,10 +81,8 @@ function parseCorsOrigins(env) {
 
 export function validateEnv() {
   const env = process.env;
-  const nodeEnv = (env.NODE_ENV || 'development').trim();
-  const isProd = nodeEnv === 'production';
 
-  if (!ALLOWED_NODE_ENVS.includes(nodeEnv)) {
+  if (!ALLOWED_NODE_ENVS.includes(NODE_ENV)) {
     throw new Error(`NODE_ENV debe ser uno de: ${ALLOWED_NODE_ENVS.join(', ')}`);
   }
 
@@ -86,12 +103,12 @@ export function validateEnv() {
     throw new Error('DB_PORT debe ser numérico');
   }
 
-  if (isProd && env.JWT_SECRET && env.JWT_SECRET.length < 32) {
+  if (IS_PRODUCTION && env.JWT_SECRET && env.JWT_SECRET.length < 32) {
     throw new Error('JWT_SECRET debe tener al menos 32 caracteres en producción');
   }
 
   const corsOrigins = parseCorsOrigins(env);
-  if (isProd && corsOrigins.length === 0) {
+  if (IS_PRODUCTION && corsOrigins.length === 0) {
     throw new Error('En producción debes definir al menos un origen permitido en CORS_ORIGIN o CORS_ORIGINS');
   }
   ensureHttpUrl(env.FRONTEND_URL, 'FRONTEND_URL');

@@ -3,8 +3,9 @@ import {
   addWishlistItemModel,
   deleteWishlistItemModel,
 } from "../models/wishlistModel.js";
+import { ValidationError } from "../utils/error.utils.js";
 
-export const getWishlist = async (req, res) => {
+export const getWishlist = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
@@ -12,11 +13,11 @@ export const getWishlist = async (req, res) => {
     return res.json({ items });
   } catch (error) {
     console.error("Error en getWishlist:", error);
-    return res.status(500).json({ error: "Error al obtener wishlist" });
+    next(error);
   }
 };
 
-export const addWishlistItem = async (req, res) => {
+export const addWishlistItem = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
@@ -24,9 +25,9 @@ export const addWishlistItem = async (req, res) => {
     const realId = producto_id ?? productId;
 
     if (!realId) {
-      return res.status(400).json({
-        error: "Debes enviar producto_id o productId en el body",
-      });
+      throw new ValidationError('producto_id es requerido', [
+        { field: 'producto_id', message: 'Debe proporcionar el ID del producto' }
+      ]);
     }
 
     const item = await addWishlistItemModel(userId, realId);
@@ -34,19 +35,19 @@ export const addWishlistItem = async (req, res) => {
     return res.status(201).json({ item });
   } catch (error) {
     console.error("Error en addWishlistItem:", error);
-    return res.status(500).json({ error: "Error al agregar item" });
+    next(error);
   }
 };
 
-export const deleteWishlistItem = async (req, res) => {
+export const deleteWishlistItem = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { productId } = req.params;
 
     if (!productId) {
-      return res.status(400).json({
-        error: "Debes enviar productId en la URL",
-      });
+      throw new ValidationError('productId es requerido', [
+        { field: 'productId', message: 'Debe proporcionar el ID del producto en la URL' }
+      ]);
     }
 
     await deleteWishlistItemModel(userId, productId);
@@ -54,6 +55,6 @@ export const deleteWishlistItem = async (req, res) => {
     return res.json({ message: "Producto eliminado" });
   } catch (error) {
     console.error("Error en deleteWishlistItem:", error);
-    return res.status(500).json({ error: "Error al eliminar" });
+    next(error);
   }
 };

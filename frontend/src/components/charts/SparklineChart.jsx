@@ -1,10 +1,6 @@
 import PropTypes from "prop-types";
 import { motion as Motion } from "framer-motion";
 
-/**
- * SparklineChart - Mini gráfico de línea para mostrar tendencias inline
- * Perfecto para KPI cards o tablas con visualización rápida
- */
 export const SparklineChart = ({
   data = [],
   width = 100,

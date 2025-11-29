@@ -146,18 +146,11 @@ export const updateAdminCustomerModel = async ({
   return response.rows[0];
 };
 
-/**
- * Actualizar contraseña de usuario
- * @param {number} usuarioId - ID del usuario
- * @param {string} passwordHash - Hash de la nueva contraseña
- * @returns {Promise<Object>} Usuario actualizado
- */
 export const updateUserPasswordModel = async (usuarioId, passwordHash) => {
   const query = {
     text: `
       UPDATE usuarios
-      SET password_hash = $1,
-          actualizado_en = NOW()
+      SET password_hash = $1
       WHERE usuario_id = $2
       RETURNING usuario_id, nombre, email
     `,

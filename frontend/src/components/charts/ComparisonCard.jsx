@@ -2,10 +2,6 @@ import PropTypes from "prop-types";
 import { motion as Motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
-/**
- * ComparisonCard - Comparación visual entre dos períodos
- * Muestra valor actual vs anterior con barras de progreso y tendencia
- */
 export const ComparisonCard = ({
   title,
   currentLabel = "Actual",

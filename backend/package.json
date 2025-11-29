@@ -21,8 +21,7 @@
     "seed:orders": "node database/seed/ordersSeed.js",
     "seed:carts": "node database/seed/cartsSeed.js",
     "seed:wishlists": "node database/seed/wishlistsSeed.js",
-    "seed:all": "npm run seed:users && npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify"
-    ,
+    "seed:all": "npm run seed:users && npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
     "seed:append": "npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
     "seed:clients:append": "npm run seed:clients && npm run seed:orders && npm run seed:verify"
   },
@@ -37,9 +36,7 @@
     "morgan": "^1.10.1",
     "nanoid": "^3.3.11",
     "nodemailer": "^7.0.10",
-    "pg": "^8.16.3",
-    "pg-format": "^1.0.4",
-    "stripe": "^19.3.1"
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",

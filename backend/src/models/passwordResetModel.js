@@ -1,11 +1,7 @@
 import pool from '../../database/config.js';
 import crypto from 'crypto';
 
-/**
- * Crear token de reset de contraseña
- * @param {number} usuarioId - ID del usuario
- * @returns {Promise<Object>} Token creado
- */
+// CREAR TOKEN
 export const createResetToken = async (usuarioId) => {
   const token = crypto.randomBytes(32).toString('hex');
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
@@ -26,11 +22,7 @@ export const createResetToken = async (usuarioId) => {
   }
 };
 
-/**
- * Buscar token válido (no usado y no expirado)
- * @param {string} token - Token a buscar
- * @returns {Promise<Object|null>} Token si es válido, null si no
- */
+// BUSCAR Y VALIDAR
 export const findValidToken = async (token) => {
   const query = `
     SELECT 
@@ -57,11 +49,7 @@ export const findValidToken = async (token) => {
   }
 };
 
-/**
- * Marcar token como usado
- * @param {string} token - Token a marcar
- * @returns {Promise<Object>} Token actualizado
- */
+// USAR TOKEN
 export const markTokenAsUsed = async (token) => {
   const query = `
     UPDATE password_reset_tokens
@@ -79,11 +67,8 @@ export const markTokenAsUsed = async (token) => {
   }
 };
 
-/**
- * Limpiar tokens expirados o usados
- * Para ejecutar en cron job
- * @returns {Promise<number>} Cantidad de tokens eliminados
- */
+// LIMPIEZA
+// Limpieza periódica para cron job
 export const cleanExpiredTokens = async () => {
   const query = `
     DELETE FROM password_reset_tokens
@@ -100,11 +85,6 @@ export const cleanExpiredTokens = async () => {
   }
 };
 
-/**
- * Invalidar todos los tokens de un usuario
- * @param {number} usuarioId - ID del usuario
- * @returns {Promise<number>} Cantidad de tokens invalidados
- */
 export const invalidateUserTokens = async (usuarioId) => {
   const query = `
     UPDATE password_reset_tokens

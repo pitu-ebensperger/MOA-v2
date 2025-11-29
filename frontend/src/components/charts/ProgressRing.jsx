@@ -1,10 +1,6 @@
 import PropTypes from "prop-types";
 import { motion as Motion } from "framer-motion";
 
-/**
- * ProgressRing - Anillo de progreso circular animado
- * Ideal para mostrar porcentajes, completitud, o métricas circulares
- */
 export const ProgressRing = ({
   progress = 0,
   size = 120,

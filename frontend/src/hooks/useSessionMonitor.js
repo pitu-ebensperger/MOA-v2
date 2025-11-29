@@ -1,15 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
-/**
- * Hook para monitorear la expiración del JWT y mostrar alertas
- * @param {Object} options
- * @param {string} options.token - Token JWT
- * @param {Function} options.onExpired - Callback cuando el token expira
- * @param {Function} options.onWarning - Callback cuando faltan X minutos para expirar
- * @param {number} options.warningMinutes - Minutos antes de expirar para mostrar warning (default: 5)
- * @returns {Object} Estado del monitor
- */
 export const useSessionMonitor = ({ 
   token, 
   onExpired, 

@@ -1,9 +1,6 @@
 import { useQueryClient } from '@config/react-query';
 import { QUERY_KEYS } from '@config/react-query.config.js';
 
-/**
- * Hook para gestionar invalidación de cache
- */
 export const useCacheManager = () => {
   const queryClient = useQueryClient();
 
@@ -84,9 +81,6 @@ export const useCacheManager = () => {
   };
 };
 
-/**
- * Hook para obtener estado del cache
- */
 export const useCacheStatus = () => {
   const queryClient = useQueryClient();
 
@@ -109,9 +103,7 @@ export const useCacheStatus = () => {
   };
 };
 
-/**
- * Utilidad para configurar optimistic updates
- */
+// Utilidad para configurar optimistic updates
 export const createOptimisticUpdate = (queryClient, queryKey) => {
   return {
     async onMutate(newData) {
@@ -141,9 +133,6 @@ export const createOptimisticUpdate = (queryClient, queryKey) => {
   };
 };
 
-/**
- * Hook para debugging de React Query
- */
 export const useQueryDebug = () => {
   const queryClient = useQueryClient();
 

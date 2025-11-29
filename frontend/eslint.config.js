@@ -26,8 +26,8 @@ export default defineConfig([
       'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]+' }],
-      // Allow path aliases like '@/...' and '@components/...'
-      // If you later enable import/no-unresolved, configure its resolver for Vite aliases.
+      // Permitir path aliases como '@/...' y '@components/...'
+      // Si habilitas import/no-unresolved, configura su resolver para aliases de Vite.
     },
   },
 ])

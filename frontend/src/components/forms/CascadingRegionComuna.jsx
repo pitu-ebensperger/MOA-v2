@@ -1,16 +1,6 @@
 import { useState } from 'react';
 import { REGIONES, getComunasByRegion } from '../../../../shared/constants/ubicaciones.js';
 
-/**
- * @param {Object} props
- * @param {string} props.regionValue - Código de región seleccionado
- * @param {string} props.comunaValue - Nombre de comuna seleccionada
- * @param {function} props.onRegionChange - Callback cuando cambia región (regionCode, regionName)
- * @param {function} props.onComunaChange - Callback cuando cambia comuna (comunaName)
- * @param {boolean} props.disabled - Deshabilitar los selects
- * @param {boolean} props.required - Marcar campos como requeridos
- * @param {Object} props.errors - Errores de validación { region, comuna }
- */
 export function CascadingRegionComuna({
   regionValue = '',
   comunaValue = '',

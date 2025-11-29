@@ -14,7 +14,10 @@ export default {
     "^.+\\.m?js$": ["babel-jest", { presets: ["@babel/preset-env"] }]
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  testMatch: ["**/__tests__/**/*.test.js"],
+  testMatch: [
+    "**/__tests__/**/*.test.js",
+    "**/tests/**/*.test.js"
+  ],
   testPathIgnorePatterns: [
     "/node_modules/",
     ...httpTestIgnorePatterns

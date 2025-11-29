@@ -36,10 +36,6 @@ const orderShape = PropTypes.shape({
   timeline: PropTypes.arrayOf(timelineEntryShape),
 });
 
-/**
- * Componente de Timeline de Estado de Orden
- * Muestra el progreso visual de una orden con estados y fechas estimadas
- */
 export default function OrderStatusTimeline({ order }) {
   const { config } = useStoreConfig();
   // Si no hay orden, no mostrar nada

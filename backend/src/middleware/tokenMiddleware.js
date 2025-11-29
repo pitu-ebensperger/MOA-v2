@@ -23,7 +23,7 @@ export const verifyToken = async (req, res, next) => {
       id: decoded.id,
       usuario_id: decoded.id,
       email: decoded.email,
-      role_code: decoded.role_code,
+      rol_code: decoded.rol_code,
     };
     next();
   } catch (error) {

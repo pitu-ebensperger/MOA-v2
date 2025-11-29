@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext } from "react";
 import { useOrders } from "@/hooks/state/useOrders"
 
@@ -28,10 +29,7 @@ export const [OrderContext, useOrderContext] = createStrictContext("Order", {
   errorMessage: "useOrderContext debe usarse dentro de OrderProvider",
 });
 
-// ============================================
 // PROVIDER
-// ============================================
-
 export const OrderProvider = ({ children }) => {
   const orderState = useOrders();
   return (

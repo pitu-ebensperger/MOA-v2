@@ -73,7 +73,6 @@ export const categoriesModel = {
   },
 
   async update(id, categoryData) {
-    // Construir query dinámicamente solo con campos presentes
     const fields = [];
     const values = [id];
     let paramIndex = 2;
@@ -94,7 +93,6 @@ export const categoriesModel = {
     });
 
     if (fields.length === 0) {
-      // No hay campos para actualizar, devolver la categoría actual
       return await this.getById(id);
     }
 

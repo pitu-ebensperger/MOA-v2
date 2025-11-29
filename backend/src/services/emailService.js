@@ -1,18 +1,12 @@
 import nodemailer from 'nodemailer';
 import 'dotenv/config';
+import { IS_TEST, IS_PRODUCTION } from '../utils/env.js';
 
-// Variable global para el transporter
 let transporter = null;
 
-/**
- * Inicializar transporter de nodemailer
- * Si no hay configuración SMTP, usa Ethereal (emails de prueba)
- */
 const createTransporter = async () => {
-  // Si ya existe un transporter, reutilizarlo
   if (transporter) return transporter;
 
-  // Si hay configuración SMTP, usarla
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
     transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -26,7 +20,6 @@ const createTransporter = async () => {
     return transporter;
   }
 
-  // Si no hay configuración, usar Ethereal (testing)
   const testAccount = await nodemailer.createTestAccount();
   
   transporter = nodemailer.createTransport({
@@ -42,17 +35,9 @@ const createTransporter = async () => {
   return transporter;
 };
 
-/**
- * Enviar email de reset de contraseña
- * @param {Object} params
- * @param {string} params.email - Email del destinatario
- * @param {string} params.nombre - Nombre del usuario
- * @param {string} params.token - Token de reset
- * @returns {Promise<Object>} Resultado del envío
- */
+// ENVIAR EMAIL DE RESET DE CONTRASEÑA
 export const sendPasswordResetEmail = async ({ email, nombre, token }) => {
-  // En modo test o si está deshabilitado, no enviar correos reales
-  if (process.env.NODE_ENV === 'test' || process.env.DISABLE_EMAILS === 'true') {
+  if (IS_TEST || process.env.DISABLE_EMAILS === 'true') {
     return {
       success: true,
       messageId: `mock-${Date.now()}`,
@@ -62,7 +47,6 @@ export const sendPasswordResetEmail = async ({ email, nombre, token }) => {
     };
   }
 
-  // Inicializar transporter (Ethereal si no hay config)
   const emailTransporter = await createTransporter();
   
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -179,7 +163,6 @@ Este es un correo automático, por favor no respondas.
   try {
     const info = await emailTransporter.sendMail(mailOptions);
     
-    // Si es Ethereal, mostrar URL para ver el email
     if (info.envelope && nodemailer.getTestMessageUrl(info)) {
       const previewUrl = nodemailer.getTestMessageUrl(info);
       return { 
@@ -203,10 +186,6 @@ Este es un correo automático, por favor no respondas.
   }
 };
 
-/**
- * Verificar configuración de email
- * @returns {Promise<boolean>}
- */
 export const verifyEmailConfig = async () => {
   try {
     const emailTransporter = await createTransporter();
@@ -218,15 +197,9 @@ export const verifyEmailConfig = async () => {
   }
 };
 
-/**
- * Enviar email de confirmación de orden
- * @param {Object} params
- * @param {Object} params.order - Datos de la orden
- * @param {Object} params.user - Datos del usuario
- * @returns {Promise<Object>} Resultado del envío
- */
+// ENVIAR EMAIL DE CONFIRMACIÓN DE ORDEN
 export const sendOrderConfirmationEmail = async ({ order, user }) => {
-  if (process.env.NODE_ENV === 'test' || process.env.DISABLE_EMAILS === 'true') {
+  if (IS_TEST || process.env.DISABLE_EMAILS === 'true') {
     return {
       success: true,
       messageId: `mock-order-${order?.orden_id || Date.now()}`,
@@ -241,7 +214,6 @@ export const sendOrderConfirmationEmail = async ({ order, user }) => {
   const orderUrl = `${frontendUrl}/perfil/ordenes/${order.orden_id}`;
   const currentYear = new Date().getFullYear();
   
-  // Formatear precio
   const formatPrice = (cents) => {
     const clp = cents / 100;
     return new Intl.NumberFormat('es-CL', {
@@ -387,12 +359,9 @@ Este es un correo automático, por favor no respondas.
   }
 };
 
-/**
- * Enviar email de prueba
- * Solo para desarrollo
- */
+// ENVIAR EMAIL DE PRUEBA (solo desarrollo)
 export const sendTestEmail = async (to) => {
-  if (process.env.NODE_ENV === 'production') {
+  if (IS_PRODUCTION) {
     throw new Error('Test email solo disponible en desarrollo');
   }
 
@@ -408,7 +377,6 @@ export const sendTestEmail = async (to) => {
   try {
     const info = await emailTransporter.sendMail(mailOptions);
     
-    // Si es Ethereal, mostrar URL
     if (nodemailer.getTestMessageUrl(info)) {
       const previewUrl = nodemailer.getTestMessageUrl(info);
       return { success: true, messageId: info.messageId, previewUrl };

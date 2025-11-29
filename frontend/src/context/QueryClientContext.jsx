@@ -1,5 +1,6 @@
-import { createContext, useContext } from "react";
-import PropTypes from "prop-types";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext } from 'react';
+import PropTypes from 'prop-types';
 
 // Contexto
 export const QueryClientContext = createContext(null);

@@ -3,11 +3,6 @@ import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import { cn } from "@/utils/cn.js";
 
-/**
- * Modal Component - Sistema unificado de modales
- * 
- * Diseñado para mantener consistencia visual con Alert, Toast y ConfirmDialog
- */
 export function Modal({
   open,
   onClose,

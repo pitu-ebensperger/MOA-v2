@@ -1,5 +1,6 @@
 import pool from "../../database/config.js";
 import { NotFoundError, ValidationError, ForbiddenError } from "../utils/error.utils.js";
+import { isValidEmail, isValidUrl } from "../utils/validacion.utils.js";
 import { createAdminCustomerModel, updateAdminCustomerModel } from "../models/usersModel.js";
 import configModel from "../models/configModel.js";
 import { getReferenceDate, getLastNDaysWindow } from "../utils/referenceDate.js";
@@ -943,19 +944,13 @@ export class AdminController {
         throw new ValidationError("Debe proporcionar al menos un campo para actualizar");
       }
 
-      if (config.email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(config.email)) {
-          throw new ValidationError("Formato de email inválido");
-        }
+      if (config.email && !isValidEmail(config.email)) {
+        throw new ValidationError("Formato de email inválido");
       }
 
       const socialFields = ["instagram_url", "facebook_url", "twitter_url"];
       for (const field of socialFields) {
-        if (!config[field]) continue;
-        try {
-          new URL(config[field]);
-        } catch {
+        if (config[field] && !isValidUrl(config[field])) {
           throw new ValidationError(`URL inválida en el campo ${field}`);
         }
       }

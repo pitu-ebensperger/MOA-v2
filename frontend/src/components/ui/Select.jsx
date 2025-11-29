@@ -10,21 +10,18 @@ const SIZE_CLASSES = {
 };
 
 const VARIANT_CLASSES = {
-  // borde suave, fondo claro
   neutral: cn(
     "bg-[color:var(--color-neutral2)]",
     "border border-[color:var(--color-neutral3)]",
     "text-[color:var(--color-text)]"
   ),
 
-  // borde y foco con acento
   primary: cn(
     "bg-[color:var(--color-neutral2)]",
     "border border-[color:var(--color-primary3)]",
     "text-[color:var(--color-text)]"
   ),
 
-  // sin fondo, solo borde sutil
   ghost: cn(
     "bg-transparent",
     "border border-[color:var(--color-neutral3)]",
@@ -95,13 +92,13 @@ const internalId = React.useId();
           onChange={onChange}
           disabled={disabled}
           className={cn(
-            "block w-full appearance-none",           // full width + sin flecha nativa
-            "outline-none",                          // sacamos outline por defecto
-            "leading-snug",                          // texto apretado
-            "shadow-sm",                             // ligera sombra
-            "transition-colors duration-150",        // animaciones suaves
-            sizeClass,                               // tamaño
-            variantClass,                            // variante visual
+            "block w-full appearance-none",
+            "outline-none",
+            "leading-snug",
+            "shadow-sm",
+            "transition-colors duration-150",
+            sizeClass,
+            variantClass,
             disabled &&
               "opacity-60 cursor-not-allowed bg-[color:var(--color-neutral1)]",
             hasError && ERROR_CLASSES,

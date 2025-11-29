@@ -17,10 +17,6 @@ export const addressKeys = {
   detail: (id) => [...addressKeys.details(), id],
 };
 
-/**
- * Hook para obtener todas las direcciones del usuario
- * @returns {Object} Query result con addresses, defaultAddress, isLoading, error
- */
 export function useAddresses() {
   const { user, token } = useAuth();
   const userId = user?.usuario_id || user?.id;
@@ -47,10 +43,6 @@ export function useAddresses() {
   };
 }
 
-/**
- * Hook para crear nueva dirección
- * @returns {Object} Mutation object
- */
 export function useCreateAddress() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -103,10 +95,6 @@ export function useCreateAddress() {
   });
 }
 
-/**
- * Hook para actualizar dirección existente
- * @returns {Object} Mutation object
- */
 export function useUpdateAddress() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -141,10 +129,6 @@ export function useUpdateAddress() {
   });
 }
 
-/**
- * Hook para establecer dirección predeterminada
- * @returns {Object} Mutation object
- */
 export function useSetDefaultAddress() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -180,10 +164,6 @@ export function useSetDefaultAddress() {
   });
 }
 
-/**
- * Hook para eliminar dirección
- * @returns {Object} Mutation object
- */
 export function useDeleteAddress() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -217,11 +197,6 @@ export function useDeleteAddress() {
   });
 }
 
-/**
- * Helper para formatear dirección como string
- * @param {Object} address - Objeto dirección
- * @returns {string} Dirección formateada
- */
 export function formatAddress(address) {
   if (!address) return '';
   

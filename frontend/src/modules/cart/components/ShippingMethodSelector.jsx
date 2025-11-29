@@ -5,10 +5,6 @@ import { Label } from "@/components/ui/primitives";
 import { Card } from "@/components/ui/primitives";
 import { Check } from "lucide-react";
 
-/**
- * Selector de método de despacho para checkout
- * Muestra opciones con precios, iconos y descripciones
- */
 export default function ShippingMethodSelector({ 
   value, 
   onChange, 

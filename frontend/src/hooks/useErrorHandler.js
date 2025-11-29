@@ -2,24 +2,6 @@ import { useCallback, useState } from 'react';
 import { alerts } from '@/utils/alerts.js';
 import { observability } from '@/services/observability.js';
 
-/**
- * Hook para manejo consistente de errores en componentes
- * 
- * @param {Object} options - Opciones de configuración
- * @param {boolean} options.showAlert - Mostrar alerta automática (default: true)
- * @param {Function} options.onError - Callback adicional cuando ocurre un error
- * @param {string} options.defaultMessage - Mensaje por defecto si no hay mensaje específico
- * @returns {Object} - { error, setError, handleError, clearError, isError }
- * 
- * @example
- * const { handleError, clearError } = useErrorHandler();
- * 
- * try {
- *   await someApiCall();
- * } catch (err) {
- *   handleError(err);
- * }
- */
 export function useErrorHandler({
   showAlert = true,
   onError,
@@ -106,19 +88,6 @@ export function useErrorHandler({
   };
 }
 
-/**
- * Hook para manejo de errores de formularios
- * Similar a useErrorHandler pero específico para validación de formularios
- * 
- * @returns {Object} - { fieldErrors, setFieldError, setFieldErrors, clearFieldError, clearAllErrors, hasErrors }
- * 
- * @example
- * const { fieldErrors, setFieldError, clearAllErrors } = useFormErrorHandler();
- * 
- * if (!email) {
- *   setFieldError('email', 'El email es requerido');
- * }
- */
 export function useFormErrorHandler() {
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -150,24 +119,7 @@ export function useFormErrorHandler() {
   };
 }
 
-/**
- * Hook para retry logic en operaciones asíncronas
- * 
- * @param {Function} asyncFn - Función asíncrona a ejecutar
- * @param {Object} options - Opciones de retry
- * @param {number} options.maxRetries - Número máximo de reintentos (default: 3)
- * @param {number} options.retryDelay - Delay entre reintentos en ms (default: 1000)
- * @param {Function} options.shouldRetry - Función para determinar si se debe reintentar (default: solo errores de red)
- * @returns {Object} - { execute, isLoading, error, retryCount }
- * 
- * @example
- * const { execute, isLoading } = useRetry(
- *   () => api.getData(),
- *   { maxRetries: 3, retryDelay: 2000 }
- * );
- * 
- * await execute();
- */
+// Hook para retry logic con backoff exponencial (por defecto reintenta errores de red y 5xx)
 export function useRetry(asyncFn, {
   maxRetries = 3,
   retryDelay = 1000,

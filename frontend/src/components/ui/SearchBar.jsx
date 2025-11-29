@@ -16,12 +16,12 @@ export function SearchBar({
   const bodyOverflowRef = useRef('');
   const portalTarget = typeof document !== 'undefined' ? document.body : null;
 
-  // Auto-close after 30 seconds as safety measure
+  // Auto-cerrar después de 30 segundos como medida de seguridad
   useEffect(() => {
     if (!isOpen) return;
     
     const timeoutId = setTimeout(() => {
-      console.warn('🕐 SearchBar auto-closed after 30 seconds for safety');
+      if (import.meta.env.DEV) console.warn('🕐 SearchBar auto-closed after 30 seconds for safety');
       onClose?.();
     }, 30000); // 30 segundos
     

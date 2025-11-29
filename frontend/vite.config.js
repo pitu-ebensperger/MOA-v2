@@ -129,7 +129,7 @@ export default defineConfig(({ mode }) => {
         'react',
         'react-dom',
         'react-router-dom',
-        // Force pre-bundling of local shared lib used via alias
+        // Forzar pre-bundling de librería shared local usada vía alias
         '@shared/lib/react-query-lite',
       ],
     },

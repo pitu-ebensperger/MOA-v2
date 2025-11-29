@@ -5,13 +5,7 @@ import ProductCard from '@/modules/products/components/ProductCard.jsx';
 import { useWishlistQuery, useToggleWishlist } from '@/modules/profile/hooks/useWishlistQuery.js';
 import { ProductShape } from '@/utils/propTypes.js';
 
-/** ProductGalleryVirtualized 
- * Renderiza solo los visibles en pantalla para mejorar rendimiento
- * @param {Array} products - Lista de productos a mostrar
- * @param {Function} onAddToCart - Callback para agregar al carrito
- * @param {number} itemHeight - Altura estimada de cada ProductCard (default: 450px)
- * @param {number} overscan - Número de items extra a renderizar arriba/abajo (default: 3)
- */
+// Renderiza solo productos visibles en pantalla (virtualización)
 export function ProductGalleryVirtualized({ 
   products = [], 
   onAddToCart,

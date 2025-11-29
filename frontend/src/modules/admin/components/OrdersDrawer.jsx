@@ -13,7 +13,7 @@ import { CalendarDays, PackageCheck, Truck, ChevronRight, Edit, Save, X, AlertCi
 import OrderStatusTimeline from "@/components/data-display/OrderStatusTimeline.jsx";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 import { OrderShape } from "@/utils/propTypes.js";
-import { SHIPPING_COMPANIES } from "@config/shipping-companies.js";
+import { EMPRESAS_ENVIO_OPTIONS } from "@config/shipping-companies.js";
 import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/status-maps.js';
 
 // Convertir maps a arrays de opciones para Select
@@ -351,9 +351,9 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
                               <SelectValue placeholder="Seleccionar courier" />
                             </SelectTrigger>
                             <SelectContent>
-                              {SHIPPING_COMPANIES.map((company) => (
-                                <SelectItem key={company.id} value={company.label}>
-                                  {company.label}
+                              {EMPRESAS_ENVIO_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>

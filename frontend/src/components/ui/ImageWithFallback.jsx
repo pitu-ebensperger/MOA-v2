@@ -1,24 +1,5 @@
 import { useState } from 'react';
 
-/**
- * Componente de imagen con fallback automático para imágenes rotas
- * 
- * @param {Object} props
- * @param {string} props.src - URL de la imagen
- * @param {string} props.fallback - URL de imagen de respaldo (opcional)
- * @param {string} props.alt - Texto alternativo
- * @param {string} props.className - Clases CSS
- * @param {Function} props.onError - Callback cuando falla la carga
- * @returns {JSX.Element}
- * 
- * @example
- * <ImageWithFallback 
- *   src={product.image} 
- *   fallback="/placeholder.png"
- *   alt={product.name}
- *   className="w-full h-64 object-cover"
- * />
- */
 export function ImageWithFallback({ 
   src, 
   fallback = '/placeholder.png', 
@@ -32,7 +13,7 @@ export function ImageWithFallback({
 
   const handleError = (event) => {
     if (!hasError && fallback && imgSrc !== fallback) {
-      console.warn(`[ImageWithFallback] Error cargando imagen: ${imgSrc}, usando fallback`);
+      if (import.meta.env.DEV) console.warn(`[ImageWithFallback] Error cargando imagen: ${imgSrc}, usando fallback`);
       setImgSrc(fallback);
       setHasError(true);
     }
@@ -60,9 +41,6 @@ export function ImageWithFallback({
   );
 }
 
-/**
- * Componente de imagen con placeholder mientras carga
- */
 export function ImageWithLoader({ 
   src, 
   fallback = '/placeholder.png',

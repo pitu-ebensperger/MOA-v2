@@ -2,30 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@config/react-query';
 import { useAuth } from '@/context/AuthContext.jsx';
 import { apiClient } from '@/services/api-client.js';
 
-/**
- * Hook para manejar perfil de usuario con TanStack Query
- * ✅ Reemplaza useUser.js (useState + useEffect)
- * ✅ Caché automático del perfil
- * ✅ Invalidación automática al actualizar
- */
-
 const PROFILE_QUERY_KEY = ['user', 'profile'];
 
-// Fetch perfil del usuario
 const fetchUserProfile = async (userId) => {
   const { data } = await apiClient.get(`/api/users/${userId}`);
   return data;
 };
 
-// Actualizar perfil del usuario
 const updateUserProfile = async ({ userId, updatedData }) => {
   const { data } = await apiClient.put(`/api/users/${userId}`, updatedData);
   return data;
 };
 
-/**
- * Hook principal para obtener perfil
- */
 export const useUserProfile = () => {
   const { user: authUser } = useAuth();
   const userId = authUser?.id || authUser?.usuario_id;
@@ -46,9 +34,6 @@ export const useUserProfile = () => {
   };
 };
 
-/**
- * Hook para actualizar perfil (mutation)
- */
 export const useUpdateProfile = () => {
   const { user: authUser } = useAuth();
   const userId = authUser?.id || authUser?.usuario_id;
@@ -66,9 +51,6 @@ export const useUpdateProfile = () => {
   });
 };
 
-/**
- * Hook para invalidar caché de perfil (útil después de login/logout)
- */
 export const useInvalidateProfile = () => {
   const queryClient = useQueryClient();
   

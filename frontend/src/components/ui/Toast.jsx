@@ -4,8 +4,7 @@ import { CheckCircle, AlertTriangle, XCircle, Info, X } from "lucide-react";
 import { cn } from "@/utils/cn.js";
 import { toastManager } from "./toastService.js";
 
-/* Toast Component -------------------------------------------------------------------------- */
-
+// TOAST
 const VARIANT_CONFIG = {
   success: {
     icon: CheckCircle,
@@ -113,8 +112,7 @@ function ToastItem({ toast, onDismiss }) {
   );
 }
 
-/* Toast Container -------------------------------------------------------------------------- */
-
+// TOAST CONTAINER
 export function ToastContainer() {
   const [toasts, setToasts] = useState([]);
 

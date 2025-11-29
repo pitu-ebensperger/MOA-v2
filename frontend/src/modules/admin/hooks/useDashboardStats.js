@@ -17,9 +17,6 @@ const withReferenceDate = (params = {}) => {
   return { ...params, referenceDate };
 };
 
-/**
- * Hook para obtener estadísticas generales del dashboard
- */
 export function useDashboardStats(periodo = 30) {
   return useQuery({
     queryKey: ['dashboard', 'stats', periodo, referenceKey],
@@ -34,9 +31,6 @@ export function useDashboardStats(periodo = 30) {
   });
 }
 
-/**
- * Hook para obtener estadísticas por método de pago
- */
 export function usePaymentMethodStats(periodo = 30) {
   return useQuery({
     queryKey: ['dashboard', 'payment-methods', periodo, referenceKey],
@@ -51,9 +45,6 @@ export function usePaymentMethodStats(periodo = 30) {
   });
 }
 
-/**
- * Hook para obtener estadísticas por método de envío
- */
 export function useShippingMethodStats(periodo = 30) {
   return useQuery({
     queryKey: ['dashboard', 'shipping-methods', periodo, referenceKey],
@@ -68,9 +59,6 @@ export function useShippingMethodStats(periodo = 30) {
   });
 }
 
-/**
- * Hook para obtener KPIs principales del dashboard
- */
 export function useDashboardKPIs(periodo = 30) {
   return useQuery({
     queryKey: ['dashboard', 'kpis', periodo, referenceKey],
@@ -85,9 +73,6 @@ export function useDashboardKPIs(periodo = 30) {
   });
 }
 
-/**
- * Hook para obtener top productos más vendidos
- */
 export function useTopProducts(periodo = 30, limit = 5) {
   return useQuery({
     queryKey: ['dashboard', 'top-products', periodo, limit, referenceKey],
@@ -102,9 +87,6 @@ export function useTopProducts(periodo = 30, limit = 5) {
   });
 }
 
-/**
- * Hook para obtener evolución de ventas
- */
 export function useSalesEvolution(periodo = 30) {
   return useQuery({
     queryKey: ['dashboard', 'sales-evolution', periodo, referenceKey],
@@ -119,9 +101,6 @@ export function useSalesEvolution(periodo = 30) {
   });
 }
 
-/**
- * Hook para obtener distribución de órdenes por estado
- */
 export function useOrdersByStatus() {
   return useQuery({
     queryKey: ['dashboard', 'orders-by-status', referenceKey],

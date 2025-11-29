@@ -1,16 +1,15 @@
 import { Router } from "express";
 import {
   getCategories,
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  getCategoryProductCount
-} from "../src/controllers/categoriesController.js";
+  getCategoryById
+} from "../src/controllers/publicCategoriesController.js";
+import adminCategoryController from "../src/controllers/adminCategoryController.js";
 import { verifyToken } from "../src/middleware/tokenMiddleware.js";
 import { verifyAdmin } from "../src/middleware/verifyAdmin.js";
 
 const router = Router();
+
+const { createCategory, updateCategory, deleteCategory, getCategoryProductCount } = adminCategoryController;
 
 ///public
 router.get("/categorias", getCategories);

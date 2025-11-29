@@ -1,4 +1,5 @@
 import { cleanExpiredTokens } from '../models/passwordResetModel.js';
+import { IS_TEST } from '../utils/env.js';
 
 const MIN_INTERVAL_MINUTES = 5;
 let cleanupTimer = null;
@@ -7,10 +8,7 @@ const shouldLogCleanup = () => process.env.PASSWORD_RESET_CLEANUP_LOGS === 'true
 
 const runCleanup = async () => {
   try {
-    const deleted = await cleanExpiredTokens();
-    if (shouldLogCleanup()) {
-      console.info(`[PasswordResetCleanup] Tokens eliminados: ${deleted}`);
-    }
+    await cleanExpiredTokens();
   } catch (error) {
     if (shouldLogCleanup()) {
       console.error('[PasswordResetCleanup] Error limpiando tokens:', error);
@@ -25,7 +23,7 @@ export const startPasswordResetCleanupJob = () => {
   }
 
   // No iniciar job en modo test para evitar timers que impiden el cierre de procesos
-  if (process.env.NODE_ENV === 'test') {
+  if (IS_TEST) {
     return;
   }
 

@@ -23,9 +23,6 @@ const STATUS_CONFIG = {
   }
 };
 
-/**
- * Gráfico de distribución de órdenes por estado de envío
- */
 export default function OrderStatusDistribution() {
   const { data, isLoading, isError } = useOrdersByStatus();
 

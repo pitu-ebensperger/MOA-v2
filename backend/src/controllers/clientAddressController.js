@@ -149,7 +149,7 @@ export const updateAddress = async (req, res, next) => {
     const { id } = req.params;
     const updateData = { ...req.body };
 
-    // Si se está actualizando región o comuna, validar
+    // Validar región/comuna si se actualizan
     if (updateData.region || updateData.comuna) {
       const currentAddress = await addressModel.getById(parseInt(id), usuarioId);
       if (!currentAddress) {
@@ -178,7 +178,6 @@ export const updateAddress = async (req, res, next) => {
         );
       }
 
-      // Actualizar con región normalizada
       if (updateData.region) {
         updateData.region = normalizedRegion;
       }

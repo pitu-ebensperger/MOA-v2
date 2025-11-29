@@ -1,8 +1,7 @@
 import { jest } from '@jest/globals';
 
-// Prevent real SMTP attempts during tests; override the email service globally.
-// Use ESM-aware API when available (jest.unstable_mockModule) and fall back to
-// the classic jest.mock for older runtimes.
+// Prevenir intentos SMTP reales durante tests
+// Usar API ESM cuando esté disponible (jest.unstable_mockModule)
 const mockFactory = () => ({
   sendOrderConfirmationEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
@@ -10,9 +9,9 @@ const mockFactory = () => ({
 });
 
 if (typeof jest.unstable_mockModule === 'function') {
-  // ESM-aware mock (works with --experimental-vm-modules)
+  // Mock ESM (funciona con --experimental-vm-modules)
   jest.unstable_mockModule('./src/services/emailService.js', () => mockFactory());
 } else {
-  // Fallback for environments where jest.mock is sufficient
+  // Fallback para entornos donde jest.mock es suficiente
   jest.mock('./src/services/emailService.js', () => mockFactory());
 }

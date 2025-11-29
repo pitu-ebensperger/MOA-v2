@@ -156,7 +156,6 @@ export const Button = forwardRef(function Button(
     children,
     "aria-label": ariaLabel,
 
-    // Props legacy ------------------------------------------------------
     variant: legacyVariant,
     tone: legacyTone,
 

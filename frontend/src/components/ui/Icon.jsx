@@ -1,8 +1,7 @@
 import React from "react";
 import { cn } from "@/utils/cn.js";
 
-/* Icono reutilizable */
-
+// ICON
 const SIZE_MAP = {
   xs: "0.875rem",   // 14px
   sm: "1rem",       // 16px
@@ -25,12 +24,6 @@ const COLOR_MAP = {
   inherit: "currentColor",
 };
 
-/** Icono 
- * @param {React.ReactElement} icon - Componente de ícono de lucide-react
- * @param {string} size - Tamaño: xs, sm, md (default), lg, xl
- * @param {string} color - Color del token CSS
- * @param {string} className - Clases adicionales
- */
 export function Icon({
   icon,
   size = "md",
@@ -72,8 +65,7 @@ export function Icon({
   );
 }
 
-/* Variantes -------------------------------------------------------------------------- */
-
+// VARIANTES
 export const IconXs = (props) => <Icon {...props} size="xs" />;
 export const IconSm = (props) => <Icon {...props} size="sm" />;
 export const IconMd = (props) => <Icon {...props} size="md" />;
@@ -86,8 +78,6 @@ export const IconMuted = (props) => <Icon {...props} color="muted" />;
 export const IconSuccess = (props) => <Icon {...props} color="success" />;
 export const IconWarning = (props) => <Icon {...props} color="warning" />;
 export const IconError = (props) => <Icon {...props} color="error" />;
-
-/* IconButton wrapper ------------------------------------------------------------------------- */
 
 export function IconWrapper({
   children,

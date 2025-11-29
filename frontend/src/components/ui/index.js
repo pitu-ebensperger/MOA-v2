@@ -1,4 +1,4 @@
-// Buttons
+// BUTTONS
 export {
   Button,
   IconButton,
@@ -9,11 +9,11 @@ export {
   AnimatedCTAButton,
 } from "./Button.jsx";
 
-// Form Controls
+// FORM CONTROLS
 export { Input, InputPrimary, InputGhost, InputSm, InputLg, Textarea } from "./Input.jsx";
 export { Select, SelectPrimary, SelectGhost, SelectSm, SelectLg } from "./Select.jsx";
 
-// Icons
+// ICONS
 export {
   Icon,
   IconXs,
@@ -30,7 +30,7 @@ export {
   IconWrapper,
 } from "./Icon.jsx";
 
-// Feedback
+// FEEDBACK
 export { Badge } from "./Badge.jsx";
 export { Pill } from "./Pill.jsx";
 export { StatusPill } from "./StatusPill.jsx";
@@ -56,7 +56,7 @@ export {
 } from "./Spinner.jsx";
 export { Skeleton } from "./Skeleton.jsx";
 
-// Messaging System (Toast, Confirm, etc.)
+// MESSAGING
 export { ToastContainer } from "./Toast.jsx";
 export { toast } from "./toastService.js";
 export { useToast } from "./useToast.js";
@@ -64,7 +64,7 @@ export { ConfirmDialogContainer, confirm } from "./ConfirmDialog.jsx";
 export { useConfirm } from "./useConfirm.js";
 export { MessageProvider } from "./MessageProvider.jsx";
 
-// Layout & Structure
+// LAYOUT
 export {
   Card,
   CardHeader,
@@ -89,12 +89,12 @@ export {
   DividerWithLabel,
 } from "./Divider.jsx";
 
-// Disclosure
+// DISCLOSURE
 export { Accordion, AccordionItem } from "./Accordion.jsx";
 export { Modal } from "./Modal.jsx";
 export { Dropdown } from "./DropdownMenu.jsx";
 export { Tooltip, TooltipDark, TooltipNeutral, TooltipLight, TooltipPrimary } from "./Tooltip.jsx";
 
-// Navigation
+// NAVIGATION
 export { Pagination } from "./Pagination.jsx";
 export { SearchBar } from "./SearchBar.jsx";

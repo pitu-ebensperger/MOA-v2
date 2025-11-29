@@ -45,7 +45,6 @@ import OrderStatusDistribution from "@/modules/admin/components/dashboard/OrderS
 import { useDashboardKPIs } from "@/modules/admin/hooks/useDashboardStats.js";
 import { ROUTES } from "@/routes/routes.js";
 
-// Icon mapping outside component to prevent recreation
 const CATEGORY_ICON_MAP = {
   muebles: Sofa,
   sillas: Armchair,

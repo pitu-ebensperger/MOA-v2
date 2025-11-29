@@ -1,9 +1,6 @@
 import { apiClient } from '@/services/api-client.js'
 
 export const wishlistApi = {
-  /**
-   * GET /wishlist
-   */
   get: async () => {
     try {
       const response = await apiClient.private.get('/wishlist')
@@ -14,10 +11,6 @@ export const wishlistApi = {
     }
   },
 
-  /**
-   * POST /wishlist/add
-   * @param {number} productId - ID del producto
-   */
   add: async (productId) => {
     try {
       const response = await apiClient.private.post('/wishlist/add', {
@@ -30,10 +23,6 @@ export const wishlistApi = {
     }
   },
 
-  /**
-   * DELETE /wishlist/remove/:productId
-   * @param {number} productId r
-   */
   remove: async (productId) => {
     try {
       const response = await apiClient.private.delete(`/wishlist/remove/${productId}`)
@@ -44,10 +33,6 @@ export const wishlistApi = {
     }
   },
 
-  /**
-   * (Implementado del lado cliente comparando con la lista completa)
-   * @param {number} productId 
-   */
   contains: async (productId) => {
     try {
       const data = await wishlistApi.get()
@@ -61,10 +46,6 @@ export const wishlistApi = {
     }
   },
 
-  /**
-   * Toggle producto en wishlist (agregar si no está, quitar si está)
-   * @param {number} productId 
-   */
   toggle: async (productId) => {
     try {
       const isInWishlist = await wishlistApi.contains(productId)
@@ -80,17 +61,3 @@ export const wishlistApi = {
     }
   }
 }
-
-// Alias de compatibilidad para código legacy (evita TypeError wishlistApi.getWishlist ...)
-wishlistApi.getWishlist = wishlistApi.get
-wishlistApi.addToWishlist = wishlistApi.add
-wishlistApi.removeFromWishlist = wishlistApi.remove
-wishlistApi.isInWishlist = wishlistApi.contains
-wishlistApi.toggleWishlist = wishlistApi.toggle
-
-// Exports individuales opcionales (manteniendo ambos nombres)
-export const getWishlist = wishlistApi.get
-export const addToWishlist = wishlistApi.add
-export const removeFromWishlist = wishlistApi.remove
-export const isInWishlist = wishlistApi.contains
-export const toggleWishlist = wishlistApi.toggle

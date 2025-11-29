@@ -15,50 +15,6 @@ import { IconButton } from "@/components/ui/Button.jsx";
 import { InputSm } from "@/components/ui/Input.jsx";
 import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx";
 
-/**
- * UnifiedDataTable - Componente de tabla unificado para MOA
- * 
- * Combina las mejores características de DataTableV2, TanstackDataTable y VirtualizedTable:
- * - TanStack Table v8 como base
- * - Virtualización OPCIONAL para grandes datasets (+100 rows)
- * - Diseño consistente con estética MOA
- * - Todas las features: sorting, filtering, pagination, selection, inline editing, actions
- * - Toolbar integrado opcional
- * - Soporte para paginación manual (backend) o automática (client-side)
- * - Densidad ajustable (compact, normal, comfortable)
- * 
- * @example
- * // Tabla básica con paginación
- * <UnifiedDataTable
- *   columns={columns}
- *   data={data}
- *   loading={loading}
- * />
- * 
- * @example
- * // Tabla virtualizada para grandes datasets
- * <UnifiedDataTable
- *   columns={columns}
- *   data={largeData}
- *   virtualized
- *   estimatedRowHeight={60}
- * />
- * 
- * @example
- * // Tabla con todas las features
- * <UnifiedDataTable
- *   columns={columns}
- *   data={data}
- *   selectable
- *   editable
- *   rowActions={actions}
- *   toolbar={<UnifiedTableToolbar />}
- *   onPageChange={handlePageChange}
- *   page={page}
- *   pageSize={pageSize}
- *   total={total}
- * />
- */
 export function UnifiedDataTable({
   // Data & Columns
   columns,

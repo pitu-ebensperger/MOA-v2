@@ -3,8 +3,9 @@ import {
   getUserByIdModel,
   updateUserModel,
 } from "../models/usersModel.js";
+import { ValidationError, NotFoundError } from "../utils/error.utils.js";
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { name, email, phone, password } = req.body;
     const user = await createUserModel(name, email, phone, password);
@@ -16,37 +17,41 @@ export const registerUser = async (req, res) => {
     console.error("Error al registrar el usuario:", error);
 
     if (error.code === "23505") {
-      return res.status(409).json({ message: "El correo ya está registrado" });
+      return next(new ValidationError('El correo ya está registrado', [
+        { field: 'email', message: 'Este email ya existe en el sistema' }
+      ]));
     }
 
-    res.status(500).json({ message: "Error al crear usuario" });
+    next(error);
   }
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const user = await getUserByIdModel(id);
 
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      throw new NotFoundError('Usuario');
     }
 
     return res.json(user);
   } catch (error) {
     console.error("Error al obtener usuario:", error);
-    res.status(500).json({ message: "Error al obtener usuario" });
+    next(error);
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { nombre, telefono } = req.body;
 
     if (!nombre || nombre.trim() === "") {
-      return res.status(400).json({ message: "El nombre es obligatorio" });
+      throw new ValidationError('El nombre es obligatorio', [
+        { field: 'nombre', message: 'Este campo no puede estar vacío' }
+      ]);
     }
 
     const updatedUser = await updateUserModel({
@@ -61,6 +66,6 @@ export const updateUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
-    res.status(500).json({ message: "Error al actualizar usuario" });
+    next(error);
   }
 };

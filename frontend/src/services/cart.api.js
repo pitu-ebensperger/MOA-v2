@@ -1,8 +1,5 @@
 import { apiClient } from '@/services/api-client.js'
 
-// Nota: Se migró de métodos getCart/addToCart/etc. a get/add/remove/updateQuantity/clear.
-// Para mantener compatibilidad con código legacy (evitar TypeError en builds antiguos)
-// se añaden alias luego de definir el objeto principal.
 export const cartApi = {
   /*GET /cart*/
   get: async () => {
@@ -12,7 +9,7 @@ export const cartApi = {
     } catch (error) {
       // Si es 401, el usuario no está autenticado - retornar carrito vacío
       if (error?.status === 401) {
-        console.warn('[cartApi.get] Usuario no autenticado, retornando carrito vacío');
+        if (import.meta.env.DEV) console.warn('[cartApi.get] Usuario no autenticado, retornando carrito vacío');
         return { items: [], total: 0 };
       }
       console.error('[cartApi.get] Error obteniendo carrito:', error);
@@ -20,10 +17,6 @@ export const cartApi = {
     }
   },
 
-  /**POST /cart/add
-   * @param {number} productId - ID del producto
-   * @param {number} quantity - Cantidad (default: 1)
-   */
   add: async (productId, quantity = 1) => {
     try {
       const response = await apiClient.private.post('/cart/add', {
@@ -38,9 +31,6 @@ export const cartApi = {
     }
   },
 
-  /** DELETE /cart/remove/:productId
-   * @param {number} productId - ID del producto a eliminar
-   */
   remove: async (productId) => {
     try {
       const response = await apiClient.private.delete(`/cart/remove/${productId}`)
@@ -62,11 +52,6 @@ export const cartApi = {
     }
   },
 
-  /**
-   * Actualizar cantidad de un item (implementado via remove + add)
-   * @param {number} productId - ID del producto
-   * @param {number} newQuantity - Nueva cantidad
-   */
   updateQuantity: async (productId, newQuantity) => {
     try {
       // Primero eliminar el item
@@ -82,18 +67,3 @@ export const cartApi = {
     }
   }
 }
-
-// Compatibilidad retroactiva (para código que aún llama cartApi.getCart / addToCart / etc.)
-// Evita TypeError: cartApi.getCart is not a function
-cartApi.getCart = cartApi.get
-cartApi.addToCart = cartApi.add
-cartApi.removeFromCart = cartApi.remove
-cartApi.clearCart = cartApi.clear
-cartApi.updateCartItemQuantity = cartApi.updateQuantity
-
-// Exports individuales (manteniendo ambos nombres)
-export const getCart = cartApi.get
-export const addToCart = cartApi.add
-export const removeFromCart = cartApi.remove
-export const clearCart = cartApi.clear
-export const updateCartItemQuantity = cartApi.updateQuantity

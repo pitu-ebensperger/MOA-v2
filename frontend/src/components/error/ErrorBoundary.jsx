@@ -17,17 +17,17 @@ const safeSerializeError = (err) => {
   if (typeof err === 'object') {
     try {
       return JSON.parse(JSON.stringify(err));
-    } catch (_) {
+    } catch {
       try {
         return { stringified: String(err) };
-      } catch (_) {
+      } catch {
         return { stringified: '[Unserializable Error Object]' };
       }
     }
   }
   try {
     return { value: String(err) };
-  } catch (_) {
+  } catch {
     return { value: '[Unserializable]' };
   }
 };
@@ -44,7 +44,6 @@ class ErrorBoundary extends Component {
   }
 
   static getDerivedStateFromError() {
-    // Actualiza el state para mostrar la UI de error
     return { 
       hasError: true,
       errorId: Math.random().toString(36).substring(2, 9)
@@ -52,13 +51,11 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Captura detalles del error
     this.setState({
       error: error,
       errorInfo: errorInfo
     });
 
-    // Log del error para debugging - MÁS VISIBLE
     const safe = safeSerializeError(error);
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('🔴 ErrorBoundary caught an error (sanitized):');

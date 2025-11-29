@@ -4,10 +4,6 @@ import { motion as Motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import CountUp from 'react-countup';
 
-/**
- * Componente de tarjeta para mostrar estadísticas clave (KPIs)
- * con animación, ícono y comparativa de período
- */
 export default function StatCard({
   label,
   value,

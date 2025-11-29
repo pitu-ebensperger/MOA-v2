@@ -2,7 +2,7 @@ import pool from "../../database/config.js";
 import { fetchOrderById } from "./orders.shared.js";
 import { ValidationError } from "../utils/error.utils.js";
 
-const ORDER_CODE_LOCK_NAMESPACE = 42; // Consistent namespace for advisory locks
+const ORDER_CODE_LOCK_NAMESPACE = 42; // Namespace consistente para advisory locks
 
 const generateOrderCode = async (client = pool) => {
   const date = new Date();
@@ -12,13 +12,12 @@ const generateOrderCode = async (client = pool) => {
   const datePrefix = `MOA-${year}${month}${day}`;
   const dateKey = parseInt(`${year}${month}${day}`, 10);
 
-  // Serialize code generation per day to avoid duplicate order_code under concurrency
+  // Lock para evitar duplicados bajo concurrencia
   await client.query(
     'SELECT pg_advisory_xact_lock($1, $2)',
     [ORDER_CODE_LOCK_NAMESPACE, dateKey]
   );
 
-  // Buscar el último número del día
   const query = `
     SELECT order_code 
     FROM ordenes 
@@ -57,10 +56,9 @@ const createOrder = async (orderData) => {
       notas_cliente,
     } = orderData;
 
-    // Generar código de orden (usando el client para consistencia en la transacción)
     let order_code = await generateOrderCode(client);
 
-    // Validar y descontar stock con row-level locks (previene race conditions)
+    // Row-level locks previenen race conditions en stock
     if (items && items.length > 0) {
       for (const item of items) {
         const stockResult = await client.query(
@@ -77,7 +75,6 @@ const createOrder = async (orderData) => {
           throw new ValidationError(`Stock insuficiente para ${product.nombre}. Disponible: ${product.stock}, solicitado: ${item.cantidad}`);
         }
         
-        // Descontar stock
         await client.query(
           'UPDATE productos SET stock = stock - $1::int WHERE producto_id = $2',
           [item.cantidad, item.producto_id]
@@ -85,7 +82,6 @@ const createOrder = async (orderData) => {
       }
     }
 
-    // Crear orden con estado_orden='confirmado' para órdenes exitosas
     const insertOrderQuery = `
       INSERT INTO ordenes (
         order_code,
@@ -102,7 +98,6 @@ const createOrder = async (orderData) => {
       RETURNING *
     `;
 
-    // Intentar insertar la orden con reintentos si hay conflicto en order_code
     const maxAttempts = 5;
     let orden;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -122,10 +117,9 @@ const createOrder = async (orderData) => {
         orden = result.rows[0];
         break;
       } catch (err) {
-        // Si hay violación de unicidad en order_code, regenerar y reintentar
+        // Violación de unicidad: regenerar order_code
         if (err?.code === '23505' && String(err.detail || '').includes('order_code')) {
           if (attempt === maxAttempts) throw err;
-          // Regenerar un nuevo código y reintentar
           order_code = await generateOrderCode(client);
           continue;
         }
@@ -133,7 +127,6 @@ const createOrder = async (orderData) => {
       }
     }
 
-    // Insertar items de la orden
     if (items && items.length > 0) {
       const insertItemsQuery = `
         INSERT INTO orden_items (orden_id, producto_id, cantidad, precio_unit)
@@ -150,7 +143,6 @@ const createOrder = async (orderData) => {
       }
     }
 
-    // Limpiar carrito DESPUÉS de que todo lo anterior fue exitoso
     await client.query(
       'DELETE FROM carrito_items WHERE carrito_id IN (SELECT carrito_id FROM carritos WHERE usuario_id = $1)',
       [usuario_id]
@@ -158,7 +150,6 @@ const createOrder = async (orderData) => {
 
     await client.query('COMMIT');
 
-    // Retornar orden completa con items
     return getOrderById(orden.orden_id);
 
   } catch (error) {
@@ -193,8 +184,6 @@ const getOrdersByUserId = async (usuarioId, options = {}) => {
 };
 
 const cancelOrder = async (ordenId, usuarioId) => {
-  // Por ahora solo verifica que la orden existe y pertenece al usuario
-  // Cuando agregues estado_pago, podrás agregar lógica de cancelación
   const query = `
     SELECT * FROM ordenes 
     WHERE orden_id = $1 AND usuario_id = $2

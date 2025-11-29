@@ -5,7 +5,7 @@ import {
   removeFromCart,
   emptyCart,
   updateCartItem,
-} from "../src/controllers/cartController.js";
+} from "../src/controllers/clientCartController.js";
 import { verifyToken } from "../src/middleware/tokenMiddleware.js";
 
 const router = Router();

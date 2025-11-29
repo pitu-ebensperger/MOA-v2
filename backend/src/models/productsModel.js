@@ -31,8 +31,6 @@ export const productsModel = {
     const currentPage = Math.floor(offsetValue / safeLimit) + 1;
     const values = [];
     let paramIndex = 1;
-
-    // Construir WHERE clause dinámicamente
     const whereConditions = [];
 
     if (search) {
@@ -73,7 +71,7 @@ export const productsModel = {
       ? `WHERE ${whereConditions.join(' AND ')}`
       : '';
 
-    // Validar sortBy para evitar SQL injection
+    // Prevenir SQL injection
     const allowedSortFields = ['nombre', 'precio_cents', 'stock', 'created_at', 'updated_at'];
     const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'created_at';
     const safeSortOrder = ['ASC', 'DESC'].includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
@@ -110,7 +108,6 @@ export const productsModel = {
 
     values.push(safeLimit, offsetValue);
 
-    // Consulta para el total
     const countQuery = `
       SELECT COUNT(*)::int as total
       FROM productos p
@@ -119,7 +116,7 @@ export const productsModel = {
 
     const [productsResult, countResult] = await Promise.all([
       pool.query(query, values),
-      pool.query(countQuery, values.slice(0, -2)) // Remover limit y offset
+      pool.query(countQuery, values.slice(0, -2))
     ]);
 
     const products = productsResult.rows;
@@ -280,12 +277,10 @@ export const productsModel = {
     const { rows } = await pool.query(query, values);
     const productId = rows[0].id;
 
-    // Retornar el producto creado
     return await this.getById(productId);
   },
 
   async update(id, productData) {
-    // Construir query dinámicamente solo con campos presentes
     const fields = [];
     const values = [id];
     let paramIndex = 2;
@@ -318,11 +313,9 @@ export const productsModel = {
     });
 
     if (fields.length === 0) {
-      // No hay campos para actualizar, devolver el producto actual
       return await this.getById(id);
     }
 
-    // Agregar updated_at
     fields.push(`updated_at = NOW()`);
 
     const query = `
@@ -338,7 +331,6 @@ export const productsModel = {
       return null;
     }
 
-    // Retornar el producto actualizado
     return await this.getById(id);
   },
 
@@ -355,7 +347,6 @@ export const productsModel = {
   },
 
   async hardDelete(id) {
-    // Verificar si hay órdenes asociadas
     const checkQuery = `
       SELECT COUNT(*)::int as count 
       FROM orden_items 

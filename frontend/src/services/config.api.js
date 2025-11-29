@@ -1,14 +1,11 @@
 import { apiClient } from './api-client.js';
 
-/**
- * @returns {Promise<Object>} Configuración de la tienda
- */
 export const getStoreConfig = async () => {
   try {
     const response = await apiClient.get('/api/config');
     return response?.data ?? response;
   } catch (error) {
-    // Solo loguear en desarrollo - la app tiene valores por defecto
+    // Solo loguear en desarrollo. app tiene valores por defecto
     if (import.meta.env.DEV) {
       console.warn('[configApi.get] No se pudo obtener configuración del servidor:', error.message);
     }
@@ -16,10 +13,6 @@ export const getStoreConfig = async () => {
   }
 };
 
-/**
- * @param {Object} configData - Datos de configuración a actualizar
- * @returns {Promise<Object>} Configuración actualizada
- */
 export const updateStoreConfig = async (configData) => {
   try {
     const response = await apiClient.private.put('/api/config', configData);
@@ -30,9 +23,6 @@ export const updateStoreConfig = async (configData) => {
   }
 };
 
-/**
- * @returns {Promise<Object>} Configuración inicializada
- */
 export const initializeStoreConfig = async () => {
   try {
     const response = await apiClient.private.post('/api/config/init');

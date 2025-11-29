@@ -3,13 +3,13 @@ import dotenv from 'dotenv'
 import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { IS_TEST } from '../src/utils/env.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 dotenv.config({ path: join(__dirname, '..', '.env') })
 
-const isTestEnv = process.env.NODE_ENV === 'test'
 // Valores pensados para desarrollo; sobreescríbelos con DB_POOL_* en producción
 const DEFAULT_POOL_MAX = 20
 const DEFAULT_IDLE_TIMEOUT = 30000
@@ -22,7 +22,7 @@ const toNumber = (value, fallback) => {
 }
 let pool
 
-if (isTestEnv) {
+if (IS_TEST) {
   const { newDb, DataType } = await import('pg-mem')
 
   const db = newDb({
@@ -112,7 +112,7 @@ if (isTestEnv) {
     connectionTimeoutMillis: toNumber(DB_POOL_CONNECTION_TIMEOUT_MS, DEFAULT_CONNECTION_TIMEOUT),
   }
 
-  // Producción suele necesitar SSL; mantener opcional para entornos locales
+  // Producción suele requerir SSL; mantener opcional para entornos locales
   if (typeof DB_SSL === 'string' && DB_SSL.toLowerCase() === 'true') {
     const rejectUnauthorized = DB_SSL_REJECT_UNAUTHORIZED?.toLowerCase() !== 'false'
     poolConfig.ssl = { rejectUnauthorized }

@@ -46,20 +46,20 @@ export const WishlistPage = () => {
     (async () => {
       try {
         setIsEnriching(true);
-        console.log('[WishlistPage] Enrichment start. Missing IDs:', missingIds);
+        if (import.meta.env.DEV) console.log('[WishlistPage] Enrichment start. Missing IDs:', missingIds);
         const fetched = [];
         for (const id of missingIds) {
           try {
             const data = await productsApi.getById(id);
             if (data) fetched.push(data);
           } catch (err) {
-            console.warn('[WishlistPage] Failed to enrich product id', id, err);
+            if (import.meta.env.DEV) console.warn('[WishlistPage] Failed to enrich product id', id, err);
           }
         }
         if (cancelled) return;
         const merged = [...wishlistProducts, ...fetched];
         setEnrichedWishlistProducts(merged);
-        console.log('[WishlistPage] Enrichment done. Added', fetched.length, 'products');
+        if (import.meta.env.DEV) console.log('[WishlistPage] Enrichment done. Added', fetched.length, 'products');
       } finally {
         if (!cancelled) setIsEnriching(false);
       }

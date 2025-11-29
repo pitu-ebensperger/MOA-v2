@@ -1,19 +1,5 @@
 import { useCallback, useRef } from 'react'
 
-/**
- * Hook para precargar componentes lazy antes de la navegación
- * Útil para mejorar la percepción de velocidad al hacer hover en links
- * 
- * @example
- * const prefetch = usePrefetch()
- * 
- * <Link 
- *   to="/products" 
- *   onMouseEnter={() => prefetch(() => import('@/modules/products/pages/ProductsPage.jsx'))}
- * >
- *   Productos
- * </Link>
- */
 export const usePrefetch = () => {
   const prefetchedModulesRef = useRef(new Set())
 

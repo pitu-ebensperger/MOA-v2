@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, HelpCircle, Trash2 } from "lucide-react";
@@ -179,7 +180,6 @@ function ConfirmDialogContent({ dialog }) {
   );
 }
 
-//Contenedor --------------------------------------------------------------------
 export function ConfirmDialogContainer() {
   const [dialog, setDialog] = useState(null);
 

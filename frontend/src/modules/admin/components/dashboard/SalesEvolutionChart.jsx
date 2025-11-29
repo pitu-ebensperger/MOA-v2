@@ -38,9 +38,6 @@ const formatButtonLabel = (days) => {
   return `${days}d`;
 };
 
-/**
- * Gráfico de evolución de ventas (línea + área)
- */
 export default function SalesEvolutionChart({ periodo = 30 }) {
   const [activePeriod, setActivePeriod] = useState(periodo);
   const { data, isLoading, isError } = useSalesEvolution(activePeriod);

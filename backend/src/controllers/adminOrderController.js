@@ -1,8 +1,11 @@
 import orderAdminModel from "../models/orderAdminModel.js";
 import {
-  SHIPPING_COMPANY_LABELS,
-  normalizeShippingCompany,
+  EMPRESAS_ENVIO_VALIDOS,
+  isValidEmpresaEnvio,
 } from "../../../shared/constants/empresas-envio.js";
+import { IS_DEVELOPMENT } from "../utils/env.js";
+import { ValidationError, NotFoundError } from "../utils/error.utils.js";
+import { ESTADOS_PAGO_VALIDOS, ESTADOS_ENVIO_VALIDOS } from "../../../shared/constants/estados-orden.js";
 
 const CSV_COLUMNS = [
   { label: "Orden ID", key: "orden_id" },
@@ -47,7 +50,7 @@ function serializeCsvValue(value) {
   return `"${escaped}"`;
 }
 
-const getAllOrders = async (req, res) => {
+const getAllOrders = async (req, res, next) => {
   try {
     const {
       limit = 20,
@@ -84,17 +87,14 @@ const getAllOrders = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error obteniendo órdenes (admin):', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener órdenes',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    console.error('Error obteniendo órdenes admin:', error);
+    next(error);
   }
 };
 
 const CSV_BOM = "\uFEFF";
 
+// EXPORTAR ÓRDENES CSV
 const exportOrdersCSV = async (req, res) => {
   try {
     const params = {
@@ -119,27 +119,23 @@ const exportOrdersCSV = async (req, res) => {
     res.status(200).send(`${CSV_BOM}${csvContent}`);
 
   } catch (error) {
-    console.error('Error exportando órdenes:', error);
+    console.error('Error eliminando orden:', error);
     res.status(500).json({
       success: false,
-      message: 'Error al exportar órdenes',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      message: 'Error al eliminar la orden',
+      error: IS_DEVELOPMENT ? error.message : undefined,
     });
   }
 };
 
-/*GET /admin/pedidos/:id */
-const getOrderById = async (req, res) => {
+const getOrderById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const order = await orderAdminModel.getOrderByIdAdmin(id);
 
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      throw new NotFoundError('Orden');
     }
 
     res.status(200).json({
@@ -148,19 +144,12 @@ const getOrderById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error obteniendo orden (admin):', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    console.error('Error obteniendo orden admin:', error);
+    next(error);
   }
 };
 
-/*PATCH /admin/pedidos/:id/estado
-PUT /api/admin/orders/:id/status
- */
-const updateOrderStatus = async (req, res) => {
+const updateOrderStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -173,51 +162,36 @@ const updateOrderStatus = async (req, res) => {
       empresa_envio,
     } = req.body;
 
-    // Validar que al menos un campo esté presente
     if (!estado_pago && !estado_envio && !fecha_pago && !fecha_envio && !fecha_entrega_real && !numero_seguimiento && !empresa_envio) {
-      return res.status(400).json({
-        success: false,
-        message: 'Debe proporcionar al menos un campo para actualizar',
-      });
+      throw new ValidationError('Debe proporcionar al menos un campo para actualizar');
     }
 
-    // Validar valores de estados si están presentes
-    const validEstadosPago = ['pendiente', 'pagado', 'rechazado', 'reembolsado'];
-    if (estado_pago && !validEstadosPago.includes(estado_pago)) {
-      return res.status(400).json({
-        success: false,
-        message: `Estado de pago inválido. Valores permitidos: ${validEstadosPago.join(', ')}`,
-      });
+    if (estado_pago && !ESTADOS_PAGO_VALIDOS.includes(estado_pago)) {
+      throw new ValidationError(
+        `Estado de pago inválido: "${estado_pago}"`,
+        [{ field: 'estado_pago', message: `Valores permitidos: ${ESTADOS_PAGO_VALIDOS.join(', ')}` }]
+      );
     }
 
-    const validEstadosEnvio = ['preparacion', 'enviado', 'en_transito', 'entregado', 'cancelado'];
-    if (estado_envio && !validEstadosEnvio.includes(estado_envio)) {
-      return res.status(400).json({
-        success: false,
-        message: `Estado de envío inválido. Valores permitidos: ${validEstadosEnvio.join(', ')}`,
-      });
+    if (estado_envio && !ESTADOS_ENVIO_VALIDOS.includes(estado_envio)) {
+      throw new ValidationError(
+        `Estado de envío inválido: "${estado_envio}"`,
+        [{ field: 'estado_envio', message: `Valores permitidos: ${ESTADOS_ENVIO_VALIDOS.join(', ')}` }]
+      );
     }
 
-    const normalizedEmpresaEnvio = empresa_envio ? normalizeShippingCompany(empresa_envio) : undefined;
-
-    // Validar empresas de envío válidas
-    if (empresa_envio && !normalizedEmpresaEnvio) {
-      return res.status(400).json({
-        success: false,
-        message: `Empresa de envío inválida. Valores permitidos: ${SHIPPING_COMPANY_LABELS.join(', ')}`,
-      });
+    if (empresa_envio && !isValidEmpresaEnvio(empresa_envio)) {
+      throw new ValidationError(
+        `Empresa de envío inválida: "${empresa_envio}"`,
+        [{ field: 'empresa_envio', message: `Valores permitidos: ${EMPRESAS_ENVIO_VALIDOS.join(', ')}` }]
+      );
     }
 
-    // Verificar que la orden existe
     const existingOrder = await orderAdminModel.getOrderByIdAdmin(id);
     if (!existingOrder) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      throw new NotFoundError('Orden');
     }
 
-    // Establecer fechas automáticamente si no vienen en el request
     const updateData = {
       estado_pago,
       estado_envio,
@@ -225,25 +199,21 @@ const updateOrderStatus = async (req, res) => {
       fecha_envio,
       fecha_entrega_real,
       numero_seguimiento,
-      empresa_envio: normalizedEmpresaEnvio,
+      empresa_envio,
     };
 
-    // Auto-establecer fecha_pago si estado_pago cambia a 'pagado'
     if (estado_pago === 'pagado' && !fecha_pago) {
       updateData.fecha_pago = new Date().toISOString();
     }
 
-    // Auto-establecer fecha_envio si estado_envio cambia a 'enviado'
     if (estado_envio === 'enviado' && !fecha_envio) {
       updateData.fecha_envio = new Date().toISOString();
     }
 
-    // Auto-establecer fecha_entrega_real si estado_envio cambia a 'entregado'
     if (estado_envio === 'entregado' && !fecha_entrega_real) {
       updateData.fecha_entrega_real = new Date().toISOString();
     }
 
-    // Actualizar
     const updatedOrder = await orderAdminModel.updateOrderStatus(id, updateData);
 
     res.status(200).json({
@@ -254,16 +224,11 @@ const updateOrderStatus = async (req, res) => {
 
   } catch (error) {
     console.error('Error actualizando estado de orden:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al actualizar estado de orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 
-/*POST /admin/pedidos/:id/seguimiento */
-const addTrackingInfo = async (req, res) => {
+const addTrackingInfo = async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -272,36 +237,31 @@ const addTrackingInfo = async (req, res) => {
       fecha_envio,
     } = req.body;
 
-    // Validar campos requeridos
     if (!numero_seguimiento || !empresa_envio) {
-      return res.status(400).json({
-        success: false,
-        message: 'numero_seguimiento y empresa_envio son requeridos',
-      });
+      throw new ValidationError(
+        'Número de seguimiento y empresa de envío son obligatorios',
+        [
+          ...(!numero_seguimiento ? [{ field: 'numero_seguimiento', message: 'Este campo es obligatorio' }] : []),
+          ...(!empresa_envio ? [{ field: 'empresa_envio', message: 'Este campo es obligatorio' }] : [])
+        ]
+      );
     }
 
-    // Validar empresa de envío
-    const normalizedEmpresaEnvio = normalizeShippingCompany(empresa_envio);
-    if (!normalizedEmpresaEnvio) {
-      return res.status(400).json({
-        success: false,
-        message: `Empresa de envío inválida. Valores permitidos: ${SHIPPING_COMPANY_LABELS.join(', ')}`,
-      });
+    if (!isValidEmpresaEnvio(empresa_envio)) {
+      throw new ValidationError(
+        `Empresa de envío inválida: "${empresa_envio}"`,
+        [{ field: 'empresa_envio', message: `Valores permitidos: ${EMPRESAS_ENVIO_VALIDOS.join(', ')}` }]
+      );
     }
 
-    // Verificar que la orden existe
     const existingOrder = await orderAdminModel.getOrderByIdAdmin(id);
     if (!existingOrder) {
-      return res.status(404).json({
-        success: false,
-        message: 'Orden no encontrada',
-      });
+      throw new NotFoundError('Orden');
     }
 
-    // Agregar tracking
     const updatedOrder = await orderAdminModel.addTrackingInfo(id, {
       numero_seguimiento,
-      empresa_envio: normalizedEmpresaEnvio,
+      empresa_envio,
       fecha_envio,
     });
 
@@ -313,15 +273,11 @@ const addTrackingInfo = async (req, res) => {
 
   } catch (error) {
     console.error('Error agregando información de seguimiento:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al agregar información de seguimiento',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 
-const getOrderStats = async (req, res) => {
+const getOrderStats = async (req, res, next) => {
   try {
     const { fecha_desde, fecha_hasta } = req.query;
 
@@ -337,11 +293,7 @@ const getOrderStats = async (req, res) => {
 
   } catch (error) {
     console.error('Error obteniendo estadísticas de órdenes:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener estadísticas',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
+    next(error);
   }
 };
 

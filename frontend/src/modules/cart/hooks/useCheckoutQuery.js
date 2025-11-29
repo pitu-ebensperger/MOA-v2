@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from '@config/react-query';
 import { createOrder as createOrderService } from '@/services/checkout.api.js';
 
-/**
- * Hook para crear orden desde el checkout
- */
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 

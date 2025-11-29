@@ -11,30 +11,25 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop.jsx'
 import { AdminRoute, ProtectedRoute } from '@/modules/auth/hooks/useAuth.jsx'
 import { observability } from '@/services/observability.js';
 
-// Eager load - Componentes críticos que se cargan inmediatamente
 import { HomePage } from '@/modules/home/pages/HomePage.jsx'
 import { CartDrawer } from '@/modules/cart/components/CartDrawer.jsx'
 
-// Lazy load - Páginas principales
 const CategoriesPage = lazy(() => import('@/modules/categories/pages/CategoriesPage.jsx'))
 const ProductsPage = lazy(() => import('@/modules/products/pages/ProductsPage.jsx'))
 const ProductDetailPage = lazy(() => import('@/modules/products/pages/ProductDetailPage.jsx'))
 const CartPage = lazy(() => import('@/modules/cart/pages/CartPage.jsx'))
 const CheckoutPage = lazy(() => import('@/modules/cart/pages/CheckoutPage.jsx'))
 
-// Lazy load - Autenticación
 const RegisterPage = lazy(() => import('@/modules/auth/pages/RegisterPage.jsx'))
 const LoginPage = lazy(() => import('@/modules/auth/pages/LoginPage.jsx'))
 const ForgotPasswordPage = lazy(() => import('@/modules/auth/pages/ForgotPasswordPage.jsx'))
 const ResetPasswordPage = lazy(() => import('@/modules/auth/pages/ResetPasswordPage.jsx'))
 
-// Lazy load - Perfil de usuario
 const ProfilePage = lazy(() => import('@/modules/profile/pages/ProfilePage.jsx'))
 const WishlistPage = lazy(() => import('@/modules/profile/pages/WishlistPage.jsx'))
 const MyOrdersPage = lazy(() => import('@/modules/profile/pages/MyOrdersPage.jsx'))
 const OrderConfirmationPage = lazy(() => import('@/modules/orders/pages/OrderConfirmationPage.jsx'))
 
-// Lazy load - Soporte
 const ContactPage = lazy(() => import('@/modules/support/pages/ContactPage.jsx'))
 const FAQPage = lazy(() => import('@/modules/support/pages/FAQPage.jsx'))
 const PrivacyPage = lazy(() => import('@/modules/support/pages/PrivacyPage.jsx'))
@@ -44,7 +39,6 @@ const LegalNoticePage = lazy(() => import('@/modules/support/pages/LegalNoticePa
 const NotFoundPage = lazy(() => import('@/modules/support/pages/NotFoundPage.jsx'))
 const ServerErrorPage = lazy(() => import('@/modules/support/pages/ServerErrorPage.jsx'))
 
-// Lazy load - Admin (chunk separado grande)
 const EntornoAdmin = lazy(() => import('@/modules/admin/components/EntornoAdmin.jsx'))
 const OrdersAdminPage = lazy(() => import('@/modules/admin/pages/orders/OrdersAdminPageV2.jsx'))
 const OrderDetailPage = lazy(() => import('@/modules/admin/pages/orders/OrderDetailPage.jsx'))
@@ -58,7 +52,6 @@ import '@/styles/tokens.css'
 import '@/styles/components/buttons.css'
 import '@/styles/sweetalert.css'
 
-// Componente de loading para páginas
 const PageLoader = () => (
   <div className="flex min-h-[60vh] items-center justify-center">
     <div className="text-center space-y-4">
@@ -126,10 +119,10 @@ export const App = () => {
       try {
         // Attempt structured clone via JSON.
         return JSON.parse(JSON.stringify(err));
-      } catch (_) {
+      } catch {
         try {
           return String(err);
-        } catch (_) {
+        } catch {
           return '[Unserializable Error]';
         }
       }

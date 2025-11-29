@@ -64,11 +64,11 @@ async function seedClients() {
       ];
 
       const result = await pool.query(query, values);
-      console.log(`✓ Cliente: ${normalized.email} → ID ${result.rows[0].usuario_id} (${normalized.creado_en ? 'con fecha histórica' : 'fecha actual'})`);
+      console.log(`Cliente: ${normalized.email} - ID ${result.rows[0].usuario_id} (${normalized.creado_en ? 'con fecha histórica' : 'fecha actual'})`);
     }
-    console.log("\n✅ Seed de clientes completado correctamente.");
+    console.log("\n Seed de clientes completado correctamente.");
   } catch (error) {
-    console.error("❌ Error al insertar clientes:", error);
+    console.error("Error al insertar clientes:", error);
     process.exitCode = 1;
   } finally {
     await pool.end();

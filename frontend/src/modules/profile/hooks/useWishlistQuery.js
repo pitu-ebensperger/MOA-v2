@@ -38,9 +38,6 @@ export const useWishlistQuery = () => {
   };
 };
 
-/**
- * Hook para agregar producto a wishlist con optimistic update
- */
 export const useAddToWishlistMutation = () => {
   const queryClient = useQueryClient();
   const { token, status } = useAuth();
@@ -87,9 +84,6 @@ export const useAddToWishlistMutation = () => {
   });
 };
 
-/**
- * Hook para remover producto de wishlist con optimistic update
- */
 export const useRemoveFromWishlistMutation = () => {
   const queryClient = useQueryClient();
   const { token, status } = useAuth();
@@ -129,9 +123,6 @@ export const useRemoveFromWishlistMutation = () => {
   });
 };
 
-/**
- * Hook para verificar si producto está en wishlist
- */
 export const useIsInWishlist = (productId) => {
   const { items } = useWishlistQuery();
   
@@ -141,9 +132,6 @@ export const useIsInWishlist = (productId) => {
   );
 };
 
-/**
- * Hook para toggle wishlist (agregar/remover)
- */
 export const useToggleWishlist = () => {
   const addMutation = useAddToWishlistMutation();
   const removeMutation = useRemoveFromWishlistMutation();
@@ -176,9 +164,6 @@ export const useToggleWishlist = () => {
   };
 };
 
-/**
- * Hook para limpiar wishlist (invalidar cache)
- */
 export const useClearWishlist = () => {
   const queryClient = useQueryClient();
 

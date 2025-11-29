@@ -4,7 +4,7 @@ import compression from "compression";
 import dotenv from "dotenv";
 import { errorHandler, NotFoundError } from "./src/utils/error.utils.js";
 import rateLimit from "express-rate-limit";
-import { validateEnv } from "./src/utils/env.js";
+import { validateEnv, IS_PRODUCTION, NODE_ENV } from "./src/utils/env.js";
 
 dotenv.config();
 validateEnv();
@@ -28,8 +28,7 @@ app.use(compression({
 // Middleware global
 app.use(express.json({ limit: '10mb' })); // Límite de payload
 
-// CORS configuration
-const isProd = (process.env.NODE_ENV || 'development') === 'production';
+// Configuración CORS
 const defaultDevOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
@@ -41,7 +40,7 @@ const envOrigins = (process.env.CORS_ORIGIN || process.env.CORS_ORIGINS || '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
-const allowedOrigins = isProd ? envOrigins : (envOrigins.length ? envOrigins : defaultDevOrigins);
+const allowedOrigins = IS_PRODUCTION ? envOrigins : (envOrigins.length ? envOrigins : defaultDevOrigins);
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -58,16 +57,14 @@ const maxRequests = Number(process.env.RATE_LIMIT_MAX || 200);
 const authMaxRequests = Number(process.env.AUTH_RATE_LIMIT_MAX || 10);
 const rateLimitEnabled = process.env.RATE_LIMIT_ENABLED !== undefined
   ? process.env.RATE_LIMIT_ENABLED === 'true'
-  : isProd;
+  : IS_PRODUCTION;
 
 const generalLimiter = rateLimit({ windowMs, max: maxRequests, standardHeaders: true, legacyHeaders: false });
 const authLimiter = rateLimit({ windowMs, max: authMaxRequests, standardHeaders: true, legacyHeaders: false });
 
-// Apply general limiter to all routes (omit in development unless explicitly enabled)
+// Aplicar rate limiter general a todas las rutas (omitir en desarrollo a menos que se habilite)
 if (rateLimitEnabled) {
   app.use(generalLimiter);
-} else if (!isProd) {
-  console.warn('[RateLimit] General limiter deshabilitado en modo desarrollo');
 }
 
 /* ----------------------------- Rutas ----------------------------- */
@@ -90,7 +87,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ 
     message: "API funcionando",
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: NODE_ENV
   });
 });
 

@@ -1,10 +1,6 @@
 import React from "react";
 import { cn } from "@/utils/cn.js";
 
-/* -------------------------------------------------------------------------- */
-/* Card Component - Tarjeta reutilizable con variantes                       */
-/* -------------------------------------------------------------------------- */
-
 const VARIANT_CLASSES = {
   elevated: cn(
     "bg-[color:var(--color-neutral2)]",
@@ -36,17 +32,6 @@ const PADDING_CLASSES = {
   xl: "p-8",
 };
 
-/**
- * Card - Componente de tarjeta reutilizable
- * 
- * @param {React.ReactNode} children - Contenido de la tarjeta
- * @param {string} variant - Variante visual: elevated, flat, outlined, ghost
- * @param {string} padding - Padding interno: none, sm, md, lg, xl
- * @param {boolean} hoverable - Si debe tener efecto hover
- * @param {boolean} clickable - Si debe verse como clickeable
- * @param {function} onClick - Función onClick opcional
- * @param {string} className - Clases adicionales
- */
 export function Card({
   children,
   variant = "elevated",
@@ -82,10 +67,6 @@ export function Card({
     </Component>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/* Card sub-components para estructura                                       */
-/* -------------------------------------------------------------------------- */
 
 export function CardHeader({ children, className, ...rest }) {
   return (
@@ -158,10 +139,6 @@ export function CardFooter({ children, className, ...rest }) {
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/* Variantes derivadas                                                       */
-/* -------------------------------------------------------------------------- */
 
 export const CardElevated = (props) => (
   <Card {...props} variant="elevated" />

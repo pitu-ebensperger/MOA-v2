@@ -1,19 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@config/react-query';
-import { ordersApi } from '@/services/orders.api.js';
+import { getUserOrders, getOrderById, createOrder, cancelOrder } from '@/services/checkout.api.js';
 
 const ORDERS_QUERY_KEY = ['orders'];
 
-/**
- * Hook para obtener órdenes del usuario
- * Cache: 2 minutos (órdenes pueden cambiar de estado)
- */
 export const useOrders = (options = {}) => {
   const query = useQuery({
     queryKey: ORDERS_QUERY_KEY,
-    queryFn: () => ordersApi.getUserOrders(),
-    staleTime: 2 * 60 * 1000, // 2 minutos
-    cacheTime: 10 * 60 * 1000, // 10 minutos
-    refetchInterval: 5 * 60 * 1000, // Auto-refetch cada 5 min si está montado
+    queryFn: () => getUserOrders(),
+    staleTime: 2 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
     ...options,
   });
 
@@ -26,18 +22,14 @@ export const useOrders = (options = {}) => {
   };
 };
 
-/**
- * Hook para obtener orden individual
- * Cache: 1 minuto (puede cambiar estado/tracking)
- */
 export const useOrder = (orderId, options = {}) => {
   const query = useQuery({
     queryKey: [...ORDERS_QUERY_KEY, 'detail', orderId],
-    queryFn: () => ordersApi.getOrderById(orderId),
+    queryFn: () => getOrderById(orderId),
     enabled: Boolean(orderId),
-    staleTime: 1 * 60 * 1000, // 1 minuto
-    cacheTime: 5 * 60 * 1000, // 5 minutos
-    refetchInterval: 2 * 60 * 1000, // Refetch cada 2 min (tracking updates)
+    staleTime: 1 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
     ...options,
   });
 
@@ -49,46 +41,31 @@ export const useOrder = (orderId, options = {}) => {
   };
 };
 
-/**
- * Hook para crear orden (mutation)
- */
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (orderData) => ordersApi.createOrder(orderData),
+    mutationFn: (orderData) => createOrder(orderData),
     onSuccess: (newOrder) => {
-      // Invalidar lista de órdenes
       queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY });
-      
-      // Agregar orden nueva al cache (optimistic update)
       queryClient.setQueryData([...ORDERS_QUERY_KEY, 'detail', newOrder.orden_id], newOrder);
-      
-      // Limpiar carrito después de crear orden
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
   });
 };
 
-/**
- * Hook para cancelar orden
- */
 export const useCancelOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (orderId) => ordersApi.cancelOrder(orderId),
+    mutationFn: (orderId) => cancelOrder(orderId),
     onSuccess: (_, orderId) => {
-      // Invalidar lista de órdenes y detalle específico
       queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: [...ORDERS_QUERY_KEY, 'detail', orderId] });
     },
   });
 };
 
-/**
- * Hook para invalidar cache de órdenes
- */
 export const useInvalidateOrders = () => {
   const queryClient = useQueryClient();
 

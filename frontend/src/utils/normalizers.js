@@ -37,8 +37,8 @@ export const normalizeProduct = (p = {}) => {
   if (fk_category_id !== null && fk_category_id !== undefined) {
     try {
       fk_category_id = String(fk_category_id);
-    } catch (e) {
-      fk_category_id = fk_category_id;
+    } catch {
+      // Mantener valor original si String() falla
     }
   }
 

@@ -1,13 +1,6 @@
 import { useQuery } from "@config/react-query";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 
-/**
- * Hook para obtener estadísticas de órdenes del admin
- * @param {Object} options - Opciones de filtro
- * @param {string} [options.fecha_desde] - Fecha desde
- * @param {string} [options.fecha_hasta] - Fecha hasta
- * @param {boolean} [options.enabled=true] - Si debe ejecutar la query
- */
 export function useAdminOrderStats(options = {}) {
   const { fecha_desde, fecha_hasta, enabled = true } = options;
 

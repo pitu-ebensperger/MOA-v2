@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -19,17 +19,15 @@ import {
 } from "lucide-react";
 
 import { ordersAdminApi } from '@/services/ordersAdmin.api.js';
-import { Button } from '@/components/ui/Button.jsx';
-import { Select } from '@/components/ui/Select.jsx';
-import { StatusPill } from '@/components/ui/StatusPill.jsx';
+import { Button, Select, StatusPill } from "@/components/ui";
 import { formatCurrencyCLP } from '@/utils/formatters/currency.js';
 import { formatDateTime } from '@/utils/formatters/date.js';
 import AdminPageHeader from '@/modules/admin/components/AdminPageHeader.jsx';
-import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/status-maps.js';
+import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/estados.js';
 
 // Convertir maps a arrays de opciones para el Select
-const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, label]) => ({ value, label }));
-const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, label]) => ({ value, label }));
+const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
+const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
 
 // Estados de pago y envío (importados desde constantes compartidas)
 const ESTADOS_PAGO = ESTADOS_PAGO_OPTIONS;
@@ -192,6 +190,19 @@ export default function OrderDetailPage() {
     estado_envio: '',
   });
 
+  const handleGoBack = useCallback(() => {
+    const canNavigateBack =
+      typeof window !== 'undefined' &&
+      typeof window.history?.state?.idx === 'number' &&
+      window.history.state.idx > 0;
+
+    if (canNavigateBack) {
+      navigate(-1);
+    } else {
+      navigate('/admin/orders');
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -264,7 +275,7 @@ export default function OrderDetailPage() {
               intent="neutral"
               size="sm"
               leadingIcon={<ArrowLeft className="h-4 w-4" />}
-              onClick={() => navigate('/admin/orders')}
+              onClick={handleGoBack}
             >
               Volver
             </Button>
@@ -324,7 +335,7 @@ export default function OrderDetailPage() {
                   intent="neutral"
                   size="sm"
                   leadingIcon={<ArrowLeft className="h-4 w-4" />}
-                  onClick={() => navigate('/admin/orders')}
+                  onClick={handleGoBack}
                 >
                   Volver
                 </Button>

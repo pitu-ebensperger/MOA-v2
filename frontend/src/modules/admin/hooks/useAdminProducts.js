@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQuery } from "@config/react-query";
+import { useQuery } from "@/config/query.client.config.js";
 import { productsApi } from "@/services/products.api.js"
 
 const ADMIN_PRODUCTS_QUERY_KEY = ["admin-products"];

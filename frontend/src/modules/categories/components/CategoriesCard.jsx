@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MoveRight } from "lucide-react";
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 
 const VARIANT_STYLES = {
   hero: {

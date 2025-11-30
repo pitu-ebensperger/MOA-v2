@@ -41,11 +41,11 @@ async function seedOrders() {
 
     if (!products.length) {
       console.error("FATAL: No se encontraron productos en la BD. Ejecuta 'npm run seed:products' primero.");
+      await pool.end();
       process.exit(1);
     }
 
     for (const order of ORDER_HISTORY) {
-      // Validar enums antes de procesar
       if (order.metodo_pago && !METODOS_PAGO_VALIDOS.includes(order.metodo_pago)) {
         console.warn(`⚠️ Orden ${order.order_code}: método de pago inválido '${order.metodo_pago}'. Saltando...`);
         continue;
@@ -83,43 +83,11 @@ async function seedOrders() {
         continue;
       }
 
-      // Obtener la fecha de creación del usuario para asegurar consistencia temporal
-      const { rows: userRows } = await pool.query(
-        `SELECT creado_en FROM usuarios WHERE usuario_id = $1 LIMIT 1`,
-        [usuarioId],
-      );
-      const userCreatedAt = userRows[0]?.creado_en ? new Date(userRows[0].creado_en) : null;
-      const now = new Date();
-      const twoYearsAgo = new Date(now.getTime() - 24 * 30 * 24 * 60 * 60 * 1000);
-
-      function randBetween(a, b) {
-        return new Date(a.getTime() + Math.floor(Math.random() * (b.getTime() - a.getTime() + 1)));
-      }
-
-      // Normalizar fechas de órdenes dentro de últimos 24 meses y después de created_at del usuario
-      let orderCreated = order.created_at ? new Date(order.created_at) : randBetween(userCreatedAt || twoYearsAgo, now);
-      if (orderCreated < (userCreatedAt || twoYearsAgo)) {
-        orderCreated = randBetween(userCreatedAt || twoYearsAgo, now);
-      }
-      if (orderCreated < twoYearsAgo) orderCreated = randBetween(twoYearsAgo, now);
-
-      // fecha_pago debe ser >= orderCreated
-      let fechaPago = order.fecha_pago ? new Date(order.fecha_pago) : new Date(orderCreated.getTime() + 30 * 60 * 1000);
-      if (fechaPago < orderCreated) fechaPago = new Date(orderCreated.getTime() + 30 * 60 * 1000);
-
-      // fecha_envio ocurre después de fecha_pago (0-3 días)
-      let fechaEnvio = order.fecha_envio ? new Date(order.fecha_envio) : new Date(fechaPago.getTime() + (24 + Math.floor(Math.random() * 48)) * 60 * 60 * 1000);
-      if (fechaEnvio < fechaPago) fechaEnvio = new Date(fechaPago.getTime() + 24 * 60 * 60 * 1000);
-
-      // fecha_entrega_real después de fecha_envio (1-7 días)
-      let fechaEntrega = order.fecha_entrega_real ? new Date(order.fecha_entrega_real) : new Date(fechaEnvio.getTime() + (24 + Math.floor(Math.random() * 6 * 24)) * 60 * 60 * 1000);
-      if (fechaEntrega < fechaEnvio) fechaEntrega = new Date(fechaEnvio.getTime() + 24 * 60 * 60 * 1000);
-
-      // Normalizar timestamps
-      const createdAtIso = orderCreated.toISOString();
-      const fechaPagoIso = fechaPago ? fechaPago.toISOString() : null;
-      const fechaEnvioIso = fechaEnvio ? fechaEnvio.toISOString() : null;
-      const fechaEntregaIso = fechaEntrega ? fechaEntrega.toISOString() : null;
+      // Usar las fechas definidas en ordersData.js directamente
+      const createdAtIso = order.created_at || new Date().toISOString();
+      const fechaPagoIso = order.fecha_pago || null;
+      const fechaEnvioIso = order.fecha_envio || null;
+      const fechaEntregaIso = order.fecha_entrega_real || null;
 
       const addressResult = await pool.query(
         `SELECT direccion_id FROM direcciones WHERE usuario_id = $1 ORDER BY es_predeterminada DESC NULLS LAST LIMIT 1`,

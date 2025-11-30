@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useMutation, useQueryClient } from "@config/react-query";
+import { useMutation, useQueryClient } from "@/config/query.client.config.js";
 import { Plus, Edit3, Trash2, Check, X } from "lucide-react";
 
 import { categoriesApi } from "@/services/categories.api.js";
-import { confirm } from '@/components/ui';
-import { Button } from "@/components/ui/Button.jsx";
+import { confirm, Button, Input, Textarea } from '@/components/ui';
 import { validateRequired, validateSlug } from '@/utils/validation';
+import { useToast } from '@/hooks/useToast.js';
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx";
 import {
   Dialog,
@@ -13,10 +13,9 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@/components/ui/primitives";
-import { Input, Textarea } from "@/components/ui/Input.jsx";
 import { buildCategoryColumns } from "@/modules/admin/utils/categoriesColumns.jsx";
 import { useAdminCategories, ADMIN_CATEGORIES_QUERY_KEY } from "@/modules/admin/hooks/useAdminCategories.js";
-import { DEFAULT_PAGE_SIZE } from "@/config/constants.js";
+import { DEFAULT_PAGE_SIZE } from "@/config/app.constants.js";
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";
 
 const sanitizeSlug = (value) =>
@@ -40,12 +39,12 @@ const resolveErrorMessage = (error) =>
 export default function AdminCategoriesPage() {
   const queryClient = useQueryClient();
   const { categories, isLoading, error } = useAdminCategories();
+  const { success, error: showError } = useToast();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const [formValues, setFormValues] = useState(initialFormState);
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState("");
-  const [pageAlert, setPageAlert] = useState(null);
 
   const isEditing = Boolean(activeCategory);
 
@@ -67,10 +66,6 @@ export default function AdminCategoriesPage() {
     return categoriesList.slice(start, start + categoriesPageSize);
   }, [categoriesList, page, categoriesPageSize]);
 
-  const showAlert = useCallback((message, type = "success") => {
-    setPageAlert({ message, type });
-  }, []);
-
   const handleCloseDrawer = useCallback(() => {
     setIsDrawerOpen(false);
     setActiveCategory(null);
@@ -82,7 +77,6 @@ export default function AdminCategoriesPage() {
   const openCreateDrawer = useCallback(() => {
     handleCloseDrawer();
     setIsDrawerOpen(true);
-    setPageAlert(null);
   }, [handleCloseDrawer]);
 
   const openEditDrawer = useCallback(
@@ -97,7 +91,6 @@ export default function AdminCategoriesPage() {
       setFieldErrors({});
       setFormError("");
       setIsDrawerOpen(true);
-      setPageAlert(null);
     },
     [],
   );
@@ -125,7 +118,7 @@ export default function AdminCategoriesPage() {
     mutationFn: (payload) => categoriesApi.create(payload),
     onSuccess: () => {
       invalidateCategories();
-      showAlert("Categoría creada exitosamente");
+      success("Categoría creada exitosamente");
       handleCloseDrawer();
     },
     onError: (mutationError) => {
@@ -137,7 +130,7 @@ export default function AdminCategoriesPage() {
     mutationFn: ({ id, payload }) => categoriesApi.update(id, payload),
     onSuccess: () => {
       invalidateCategories();
-      showAlert("Categoría actualizada exitosamente");
+      success("Categoría actualizada exitosamente");
       handleCloseDrawer();
     },
     onError: (mutationError) => {
@@ -149,10 +142,10 @@ export default function AdminCategoriesPage() {
     mutationFn: (id) => categoriesApi.remove(id),
     onSuccess: () => {
       invalidateCategories();
-      showAlert("Categoría eliminada exitosamente");
+      success("Categoría eliminada exitosamente");
     },
     onError: (mutationError) => {
-      showAlert(resolveErrorMessage(mutationError), "error");
+      showError(resolveErrorMessage(mutationError));
     },
   });
 
@@ -234,7 +227,7 @@ export default function AdminCategoriesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-4">
       <AdminPageHeader
         title="Categorías"
         actions={
@@ -249,18 +242,6 @@ export default function AdminCategoriesPage() {
           </Button>
         }
       />
-
-      {pageAlert && (
-        <div
-          className={`rounded-2xl border px-4 py-3 text-sm ${
-            pageAlert.type === "success"
-              ? "border-(--color-success) bg-(--color-success)/10 text-(--color-success)"
-              : "border-(--color-error) bg-(--color-error)/10 text-(--color-error)"
-          }`}
-        >
-          {pageAlert.message}
-        </div>
-      )}
 
       {error && (
         <div className="rounded-2xl border border-(--color-error) bg-(--color-error)/10 px-4 py-3 text-sm text-(--color-error)">
@@ -283,8 +264,8 @@ export default function AdminCategoriesPage() {
       />
 
       <Dialog open={isDrawerOpen} onOpenChange={(open) => !open && handleCloseDrawer()}>
-        <DialogContent variant="drawer" placement="right" className="max-w-md rounded-tl-3xl rounded-bl-3xl">
-          <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col gap-5 overflow-hidden p-6">
+        <DialogContent variant="drawer" placement="right" className="max-w-lg rounded-tl-3xl rounded-bl-3xl">
+          <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col gap-5 overflow-hidden p-8">
             <DialogHeader>
               <h2 className="text-lg font-semibold text-(--text-strong)">
                 {isEditing ? "Editar categoría" : "Nueva categoría"}

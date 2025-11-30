@@ -1,4 +1,4 @@
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 
 const NAVBAR_HEIGHT = 80; // px
 

@@ -157,23 +157,27 @@ function ConfirmDialogContent({ dialog }) {
         )}
 
         {/* Acciones */}
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-2">
+          <Button
+            variant={config.confirmButtonVariant}
+            onClick={handleConfirm}
+            shape="pill"
+            size="sm"
+            className="w-full"
+          >
+            {dialog.confirmText || config.confirmText}
+          </Button>
           {dialog.showCancel !== false && (
             <Button
-              variant="secondary"
+              variant="ghost"
               onClick={handleCancel}
-              className="flex-1"
+              shape="pill"
+              size="sm"
+              className="w-full"
             >
               {dialog.cancelText || "Cancelar"}
             </Button>
           )}
-          <Button
-            variant={config.confirmButtonVariant}
-            onClick={handleConfirm}
-            className="flex-1"
-          >
-            {dialog.confirmText || config.confirmText}
-          </Button>
         </div>
       </div>
     </div>

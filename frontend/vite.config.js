@@ -63,6 +63,8 @@ export default defineConfig(({ mode }) => {
         '@config': path.resolve(__dirname, './src/config'),
         '@icons': path.resolve(__dirname, './src/utils/icons'),
         '@shared': path.resolve(__dirname, '../shared'),
+        // Alias para mantener compatibilidad con imports anteriores
+        '@config/react-query': path.resolve(__dirname, './src/config/query.client.config.js'),
       },
     },
     build: {
@@ -129,8 +131,6 @@ export default defineConfig(({ mode }) => {
         'react',
         'react-dom',
         'react-router-dom',
-        // Forzar pre-bundling de librería shared local usada vía alias
-        '@shared/lib/react-query-lite',
       ],
     },
   };

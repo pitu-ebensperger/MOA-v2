@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { API_PATHS } from "@/config/api-paths.js";
+import { API_PATHS } from "@/config/app.routes.js";
 
 const navItems = [
   { label: "Dashboard", to: API_PATHS.admin.dashboard },

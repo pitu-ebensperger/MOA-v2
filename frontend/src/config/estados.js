@@ -1,4 +1,6 @@
-/* PRODUCTOS */
+//STATUS MAPS
+
+//Productos
 export const PRODUCT_STATUS_MAP = {
   activo:      { variant: "success", label: "Activo" },
   sin_stock:   { variant: "warning", label: "Sin stock" },
@@ -6,7 +8,7 @@ export const PRODUCT_STATUS_MAP = {
   archivado:   { variant: "neutral", label: "Archivado" },
 };
 
-/* PEDIDOS */
+//Pedidos
 export const ORDER_STATUS_MAP = {
   fulfilled:   { variant: "success", label: "Completada" },
   pending:     { variant: "warning", label: "Pendiente" },
@@ -14,7 +16,7 @@ export const ORDER_STATUS_MAP = {
   processing:  { variant: "info",    label: "Procesando" },
 };
 
-/* PAGOS */
+//Pagos
 export const PAYMENT_STATUS_MAP = {
   captured:    { variant: "success", label: "Pagado" },
   failed:      { variant: "error",   label: "Fallido" },
@@ -22,7 +24,7 @@ export const PAYMENT_STATUS_MAP = {
   refunded:    { variant: "info",    label: "Reembolsado" },
 };
 
-/* ENVÍOS */
+//Envíos
 export const SHIPPING_STATUS_MAP = {
   delivered:   { variant: "success", label: "Entregado" },
   in_transit:  { variant: "info",    label: "En tránsito" },
@@ -32,13 +34,32 @@ export const SHIPPING_STATUS_MAP = {
   preparing:   { variant: "info",    label: "Preparando" },
 };
 
-// Backwards-compatible alias: older modules used 'SHIPMENT_STATUS_MAP'
-export const SHIPMENT_STATUS_MAP = SHIPPING_STATUS_MAP;
-
-
-/* USUARIOS */
+//Usuarios
 export const USER_STATUS_MAP = {
   activo:      { variant: "success", label: "Activo" },
   suspendido:  { variant: "error",   label: "Suspendido" },
   eliminado:   { variant: "neutral", label: "Eliminado" },
 };
+
+//STATUS OPTIONS (SELECT)
+
+function mapToOptions(statusMap, includeAll = true) {
+  const entries = Object.entries(statusMap).map(([value, config]) => ({
+    value,
+    label: config.label,
+  }));
+
+  return includeAll
+    ? [{ value: "", label: "Todos" }, ...entries]
+    : entries;
+}
+
+export const PRODUCT_STATUS_OPTIONS = mapToOptions(PRODUCT_STATUS_MAP);
+export const ORDER_STATUS_OPTIONS = mapToOptions(ORDER_STATUS_MAP);
+export const PAYMENT_STATUS_OPTIONS = mapToOptions(PAYMENT_STATUS_MAP);
+export const SHIPPING_STATUS_OPTIONS = mapToOptions(SHIPPING_STATUS_MAP);
+export const USER_STATUS_OPTIONS = mapToOptions(USER_STATUS_MAP);
+
+export function getStatusOptions(statusMap, includeAll = true) {
+  return mapToOptions(statusMap, includeAll);
+}

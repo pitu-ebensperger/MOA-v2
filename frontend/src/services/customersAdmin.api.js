@@ -1,4 +1,4 @@
-import { API_PATHS } from "@/config/api-paths.js";
+import { API_PATHS } from "@/config/app.routes.js";
 import { apiClient } from "@/services/api-client.js";
 
 const buildQueryString = (params = {}) => {
@@ -35,6 +35,11 @@ export const customersAdminApi = {
 
   update: async (id, payload = {}) => {
     const response = await apiClient.patch(API_PATHS.admin.updateCustomer(id), payload);
+    return response;
+  },
+
+  delete: async (id) => {
+    const response = await apiClient.delete(API_PATHS.admin.updateCustomer(id));
     return response;
   },
 };

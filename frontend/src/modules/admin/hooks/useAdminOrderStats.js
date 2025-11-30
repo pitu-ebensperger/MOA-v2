@@ -1,4 +1,4 @@
-import { useQuery } from "@config/react-query";
+import { useQuery } from "@/config/query.client.config.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 
 export function useAdminOrderStats(options = {}) {

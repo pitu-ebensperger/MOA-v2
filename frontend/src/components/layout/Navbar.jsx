@@ -4,7 +4,7 @@ import { ShoppingCart, LogOut, LayoutDashboard, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext.jsx';
 import { useCartContext } from '@/context/CartContext.jsx';
-import { API_PATHS } from '@/config/api-paths.js';
+import { API_PATHS } from '@/config/app.routes.js';
 
 const NAV_ITEMS = [
   { label: 'Inicio', href: API_PATHS.home.landing },

@@ -1,7 +1,5 @@
 import React from "react";
-import { InputSm } from "@/components/ui/Input.jsx"
-import { SelectSm, SelectGhost } from "@/components/ui/Select.jsx"
-import { Button, IconButton } from "@/components/ui/Button.jsx"
+import { InputSm, SelectSm, SelectGhost, Button, IconButton } from "@/components/ui"
 import { cn } from "@/utils/cn.js";
 import { Search, ListFilter, LayoutGrid, Rows, ChevronDown, Columns as ColumnsIcon, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/primitives"

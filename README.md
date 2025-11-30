@@ -16,7 +16,7 @@
    ```
 2. **Base de datos**
    ```bash
-   npm run -w backend db
+   npm run -w backend db:install  # Solo primera vez 
    npm run -w backend seed:all
    ```
 3. **Levantar**
@@ -99,7 +99,6 @@
 
 
 -----------------------------------
-
 
 ## Testing (jest)
 

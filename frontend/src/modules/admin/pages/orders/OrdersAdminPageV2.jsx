@@ -13,14 +13,9 @@ import { useAdminOrders } from '@/modules/admin/hooks/useAdminOrders.js';
 import { ordersAdminApi } from '@/services/ordersAdmin.api.js';
 import { useDebounce } from '@/hooks/useDebounce.js';
 
-import { Button, IconButton } from '@/components/ui/Button.jsx';
-import { Input } from '@/components/ui/Input.jsx';
-import { Select } from '@/components/ui/Select.jsx';
-import { StatusPill } from '@/components/ui/StatusPill.jsx';
+import { Button, IconButton, Input, Select, StatusPill, TooltipNeutral } from "@/components/ui";
 import { UnifiedDataTable } from '@/components/data-display/UnifiedDataTable.jsx';
-import { Pagination } from '@/components/ui/Pagination.jsx';
 import { TableToolbar, TableSearch } from '@/components/data-display/TableToolbar.jsx';
-import { TooltipNeutral } from '@/components/ui/Tooltip.jsx';
 import { buildOrderColumns } from '@/modules/admin/utils/ordersColumns.jsx';
 import {
   DropdownMenu,
@@ -32,11 +27,12 @@ import {
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";
 import { useErrorHandler, useFormErrorHandler } from '@/hooks/useErrorHandler.js';
 import { confirm } from '@/components/ui';
-import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/status-maps.js';
+import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/estados.js';
+import { useToast } from '@/hooks/useToast.js';
 
 // Convertir maps a arrays de opciones
-const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, label]) => ({ value, label }));
-const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, label]) => ({ value, label }));
+const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
+const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
 
 // Estados y opciones (agregar opción "Todos" a las constantes compartidas)
 const ESTADOS_PAGO = [
@@ -91,12 +87,6 @@ const EXPORT_COLUMNS = [
   { key: 'fecha_creacion', label: 'Creado en' },
   { key: 'fecha_actualizacion', label: 'Actualizado en' },
 ];
-
-const PAGE_ALERT_STYLES = {
-  success: "border-(--color-success) bg-(--color-success)/10 text-(--color-success)",
-  error: "border-(--color-error) bg-(--color-error)/10 text-(--color-error)",
-  warning: "border-(--color-warning) bg-(--color-warning)/10 text-(--color-warning)",
-};
 
 const compactFilters = (params = {}) => {
   const sanitized = {};
@@ -220,7 +210,7 @@ export default function OrdersAdminPage() {
 
   // Estados para exportación y alertas
   const [isExporting, setIsExporting] = useState(false);
-  const [pageAlert, setPageAlert] = useState(null);
+  const { success, error: showErrorToast, warning } = useToast();
   
   // Estados para edición inline
   const { handleError } = useErrorHandler({
@@ -240,12 +230,6 @@ export default function OrdersAdminPage() {
   const debouncedFilters = useMemo(() => {
     return { ...filters, search: debouncedSearch };
   }, [filters, debouncedSearch]);
-
-  useEffect(() => {
-    if (!pageAlert) return;
-    const timeoutId = setTimeout(() => setPageAlert(null), 4000);
-    return () => clearTimeout(timeoutId);
-  }, [pageAlert]);
 
   // Hooks para datos con filtros debounced
   const {
@@ -301,10 +285,6 @@ export default function OrdersAdminPage() {
     clearAllErrors();
     setFilters({ ...DEFAULT_FILTERS });
   }, [clearAllErrors]);
-
-  const showPageAlert = useCallback((message, type = 'success') => {
-    setPageAlert({ message, type });
-  }, []);
 
   const fetchOrdersForExport = useCallback(async () => {
     // Re-fetch all rows (not just current page) so los archivos incluyen filtros activos.
@@ -380,17 +360,16 @@ export default function OrdersAdminPage() {
         estado_pago: 'cancelado',
         motivo_cambio: 'Cancelado por administrador',
       });
-      showPageAlert('Orden cancelada correctamente', 'success');
+      success('Orden cancelada correctamente');
       refetch();
     } catch (error) {
-      handleError(error, 'No se pudo cancelar la orden');
-      showPageAlert('No se pudo cancelar la orden', 'error');
+      showErrorToast(error?.message || 'No se pudo cancelar la orden');
     }
-  }, [handleError, refetch, showPageAlert]);
+  }, [handleError, refetch, success, showErrorToast]);
 
   const handleExport = useCallback(async (format) => {
     if (ordersData.length === 0) {
-      showPageAlert('No hay órdenes para exportar', 'warning');
+      warning('No hay órdenes para exportar');
       return;
     }
 
@@ -399,7 +378,7 @@ export default function OrdersAdminPage() {
       const exportOrders = await fetchOrdersForExport();
 
       if (!exportOrders.length) {
-        showPageAlert('No hay datos para exportar con los filtros actuales', 'warning');
+        warning('No hay datos para exportar con los filtros actuales');
         return;
       }
 
@@ -418,14 +397,13 @@ export default function OrdersAdminPage() {
       }
 
       const formatConfig = EXPORT_FORMATS.find((item) => item.value === targetFormat);
-      showPageAlert(`${formatConfig?.label ?? targetFormat.toUpperCase()} listo para descargar`, 'success');
+      success(`${formatConfig?.label ?? targetFormat.toUpperCase()} listo para descargar`);
     } catch (error) {
-      handleError(error, 'Error al exportar pedidos');
-      showPageAlert('Error al exportar pedidos', 'error');
+      showErrorToast(error?.message || 'Error al exportar pedidos');
     } finally {
       setIsExporting(false);
     }
-  }, [fetchOrdersForExport, ordersData.length, showPageAlert, handleError]);
+  }, [fetchOrdersForExport, ordersData.length, warning, success, showErrorToast]);
 
   const toolbar = useMemo(
     () => () => (
@@ -546,17 +524,7 @@ export default function OrdersAdminPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {pageAlert && (
-        <div
-          className={`rounded-2xl border px-4 py-3 text-sm ${PAGE_ALERT_STYLES[pageAlert.type] || PAGE_ALERT_STYLES.success}`}
-        >
-          {pageAlert.message}
-        </div>
-      )}
       <AdminPageHeader title="Pedidos" />
-
-      {/* Toolbar */}
-      {toolbar(null)}
 
       {/* Filtros Avanzados */}
       {showAdvancedFilters && (
@@ -569,14 +537,10 @@ export default function OrdersAdminPage() {
               <Select
                 value={filters.estado_pago || ''}
                 onChange={(e) => handleFilterChange('estado_pago', e.target.value)}
-                className="w-full"
-              >
-                {ESTADOS_PAGO.map(estado => (
-                  <option key={estado.value} value={estado.value}>
-                    {estado.label}
-                  </option>
-                ))}
-              </Select>
+                options={ESTADOS_PAGO}
+                fullWidth
+                placeholder="Selecciona una opción"
+              />
             </div>
 
             <div className="space-y-2">
@@ -586,14 +550,10 @@ export default function OrdersAdminPage() {
               <Select
                 value={filters.estado_envio || ''}
                 onChange={(e) => handleFilterChange('estado_envio', e.target.value)}
-                className="w-full"
-              >
-                {ESTADOS_ENVIO.map(estado => (
-                  <option key={estado.value} value={estado.value}>
-                    {estado.label}
-                  </option>
-                ))}
-              </Select>
+                options={ESTADOS_ENVIO}
+                fullWidth
+                placeholder="Selecciona una opción"
+              />
             </div>
 
             <div className="space-y-2">
@@ -603,14 +563,10 @@ export default function OrdersAdminPage() {
               <Select
                 value={filters.metodo_despacho || ''}
                 onChange={(e) => handleFilterChange('metodo_despacho', e.target.value)}
-                className="w-full"
-              >
-                {METODOS_DESPACHO.map(metodo => (
-                  <option key={metodo.value} value={metodo.value}>
-                    {metodo.label}
-                  </option>
-                ))}
-              </Select>
+                options={METODOS_DESPACHO}
+                fullWidth
+                placeholder="Selecciona una opción"
+              />
             </div>
 
             <div className="space-y-2">
@@ -636,7 +592,7 @@ export default function OrdersAdminPage() {
                 className="w-full"
               />
               {fieldErrors.fecha_rango && (
-                <p className="text-xs text-(--color-error)">{fieldErrors.fecha_rango}</p>
+                <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.fecha_rango}</p>
               )}
             </div>
 
@@ -655,36 +611,19 @@ export default function OrdersAdminPage() {
         </div>
       )}
 
-      {/* Tabla Virtualizada */}
-      {isLoading ? (
-        <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-8 text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto text-neutral-400" />
-          <p className="mt-2 text-sm text-neutral-500">Cargando órdenes...</p>
-        </div>
-      ) : ordersData.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-8 text-center">
-          {emptyStateMessage}
-        </div>
-      ) : (
-        <>
-          <UnifiedDataTable
-            columns={tableColumns}
-            data={ordersData}
-          />
-          
-          {/* Paginación integrada */}
-          {ordersData.length > 0 && (
-            <div className="mt-3">
-              <Pagination
-                page={page}
-                totalPages={Math.ceil(total / pageSize)}
-                totalItems={total}
-                onPageChange={handlePageChange}
-              />
-            </div>
-          )}
-        </>
-      )}
+      <UnifiedDataTable
+        data={ordersData}
+        columns={tableColumns}
+        loading={isLoading}
+        emptyMessage={emptyStateMessage}
+        page={page}
+        pageSize={pageSize}
+        total={total}
+        onPageChange={handlePageChange}
+        toolbar={toolbar}
+        variant="card"
+        maxHeight="calc(100vh - 280px)"
+      />
 
     </div>
   );

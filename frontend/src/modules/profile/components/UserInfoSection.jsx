@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@config/react-query'
+import { useQuery, useMutation, useQueryClient } from '@/config/query.client.config.js'
 import { useAuth } from '@/context/AuthContext.jsx'
 import { authApi } from '../../../services/auth.api.js'
 import { usersApi } from '../../../services/users.api.js'
-import { IconButton } from "@/components/ui/Button.jsx";
-import { TooltipNeutral } from "@/components/ui/Tooltip.jsx";
+import { IconButton, TooltipNeutral } from "@/components/ui";
 import { Edit3 } from "lucide-react";
 
 const UserInfoSection = () => {

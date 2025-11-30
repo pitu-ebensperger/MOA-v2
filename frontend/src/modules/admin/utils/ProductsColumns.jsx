@@ -1,16 +1,15 @@
 //path/frontend/src/modules/admin/utils/productsColumns.jsx
 import { AlertTriangle, Eye, Edit3, Trash2, Filter, Check } from "lucide-react";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
-import { StatusPill } from "@/components/ui/StatusPill.jsx"
-import { LOW_STOCK_THRESHOLD } from "@/config/constants.js"
+import { StatusPill, ResponsiveRowActions } from "@/components/ui"
+import { LOW_STOCK_THRESHOLD } from "@/config/app.constants.js"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/radix/DropdownMenu.jsx";
-import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx"
+} from "@/components/ui/primitives";
 
 
 

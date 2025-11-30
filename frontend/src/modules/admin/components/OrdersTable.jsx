@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx"
-import { Pagination } from "@/components/ui/Pagination.jsx"
+import { Pagination } from "@/components/ui"
 
 export function OrdersTable({
   data,

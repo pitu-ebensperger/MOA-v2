@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@config/react-query';
+import { useQuery, useMutation, useQueryClient } from '@/config/query.client.config.js';
 import { useAuth } from '@/context/AuthContext.jsx';
 import { apiClient } from '@/services/api-client.js';
 

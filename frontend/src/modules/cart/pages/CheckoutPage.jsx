@@ -7,9 +7,9 @@ import { useAuth } from "@/context/AuthContext.jsx"
 import { useAddresses, useCreateAddress } from "@/hooks/useAddresses.query.js"
 import { useStoreConfig } from "@/hooks/useStoreConfig.js"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/primitives"
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
 import { Price } from "@/components/data-display/Price.jsx"
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 import { resolveProductPrice } from "@/modules/products/utils/products.js"
 import { METODOS_DESPACHO } from "@/utils/orderTracking.js"
 import { METODOS_PAGO, METODOS_PAGO_OPTIONS } from "../../../../../shared/constants/metodos-pago.js"
@@ -37,7 +37,7 @@ import {
   SelectValue,
   Separator,
   Textarea,
-} from "../../../components/shadcn/ui/index.js";
+} from "@/components/ui/primitives";
 
 const DEBUG_LOGS = import.meta.env?.VITE_DEBUG_LOGS === 'true';
 const debugError = (...args) => {
@@ -383,7 +383,7 @@ export const CheckoutPage = ({
                       aria-invalid={Boolean(fieldErrors.nombre)}
                     />
                     {fieldErrors.nombre && (
-                      <p className="text-xs text-(--color-error)">{fieldErrors.nombre}</p>
+                      <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.nombre}</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -397,7 +397,7 @@ export const CheckoutPage = ({
                       aria-invalid={Boolean(fieldErrors.email)}
                     />
                     {fieldErrors.email && (
-                      <p className="text-xs text-(--color-error)">{fieldErrors.email}</p>
+                      <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.email}</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -411,7 +411,7 @@ export const CheckoutPage = ({
                       aria-invalid={Boolean(fieldErrors.telefono)}
                     />
                     {fieldErrors.telefono && (
-                      <p className="text-xs text-(--color-error)">{fieldErrors.telefono}</p>
+                      <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.telefono}</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -551,10 +551,10 @@ export const CheckoutPage = ({
                             />
                           </div>
                           {fieldErrors.calle && (
-                            <p className="text-xs text-(--color-error)">{fieldErrors.calle}</p>
+                            <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.calle}</p>
                           )}
                           {fieldErrors.numero && (
-                            <p className="text-xs text-(--color-error)">{fieldErrors.numero}</p>
+                            <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.numero}</p>
                           )}
                         </div>
                         <div className="grid gap-4 md:grid-cols-3">
@@ -568,7 +568,7 @@ export const CheckoutPage = ({
                               aria-invalid={Boolean(fieldErrors.comuna)}
                             />
                             {fieldErrors.comuna && (
-                              <p className="text-xs text-(--color-error)">{fieldErrors.comuna}</p>
+                              <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.comuna}</p>
                             )}
                           </div>
                           <div className="space-y-2">
@@ -581,7 +581,7 @@ export const CheckoutPage = ({
                               aria-invalid={Boolean(fieldErrors.ciudad)}
                             />
                             {fieldErrors.ciudad && (
-                              <p className="text-xs text-(--color-error)">{fieldErrors.ciudad}</p>
+                              <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.ciudad}</p>
                             )}
                           </div>
                           <div className="space-y-2">
@@ -600,7 +600,7 @@ export const CheckoutPage = ({
                               </SelectContent>
                             </Select>
                             {fieldErrors.region && (
-                              <p className="text-xs text-(--color-error)">{fieldErrors.region}</p>
+                              <p className="text-sm text-[#cc5f49] mt-1">{fieldErrors.region}</p>
                             )}
                           </div>
                         </div>

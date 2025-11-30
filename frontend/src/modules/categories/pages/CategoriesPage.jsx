@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { CategoriesCard } from "@/modules/categories/components/CategoriesCard.jsx"
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
 
 export const CategoriesPage = () => {
   const { categories, isLoading, error } = useCategories();

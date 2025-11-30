@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { API_PATHS } from "@/config/api-paths.js";
+import { API_PATHS } from "@/config/app.routes.js";
 import { useStoreConfig } from "@/hooks/useStoreConfig.js";
 
 const LegalNoticePage = () => {

@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { X, Trash2, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/Button.jsx"
+import { Button } from "@/components/ui"
 import { Price } from "@/components/data-display/Price.jsx"
 
 import { useCartContext } from "@/context/CartContext.jsx"
 
 import { resolveProductPrice } from "@/modules/products/utils/products.js"
-import { QuantityControl } from '@/components/cart/QuantityControl.jsx'
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
-import { API_PATHS } from "@/config/api-paths.js"
+import { QuantityControl } from './QuantityControl.jsx'
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
+import { API_PATHS } from "@/config/app.routes.js"
 
 const buildItemImage = (item) =>
   item?.imgUrl ?? item?.image ?? item?.gallery?.[0] ?? DEFAULT_PLACEHOLDER_IMAGE;

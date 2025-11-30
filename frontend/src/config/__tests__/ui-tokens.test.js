@@ -10,10 +10,9 @@
 
 /* eslint-env node */
 
+import { PILL_STYLES } from "../ui/pill.tokens.js";
+import { BADGE_VARIANTS, BADGE_SIZES } from "../ui/badge.tokens.js";
 import {
-  PILL_STYLES,
-  BADGE_VARIANTS,
-  BADGE_SIZES,
   BUTTON_APPEARANCES,
   BUTTON_INTENTS,
   BUTTON_SIZES,
@@ -25,7 +24,7 @@ import {
   DEFAULT_BUTTON_OPTIONS,
   BUTTON_MOTION_EFFECTS,
   BUTTON_LEGACY_VARIANTS,
-} from "../ui-tokens.js";
+} from "../ui/button.tokens.js";
 
 function validateObject(name, obj, expectedKeys = []) {
   const errors = [];

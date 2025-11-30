@@ -4,9 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/primitives";
-import { Button } from "@/components/ui/Button.jsx";
-import { Input, Textarea } from "@/components/ui/Input.jsx";
-import { Select } from "@/components/ui/Select.jsx";
+import { Button, Input, Textarea, Select } from "@/components/ui";
 import { ProductShape, CategoryShape } from "@/utils/propTypes.js";
 import { Edit, Save, Trash2, X } from "lucide-react";
 
@@ -107,7 +105,7 @@ export function ProductDrawer({
       const dim = initial.dimensions || {};
       reset({
         ...initial,
-        fk_category_id: initial.fk_category_id ?? "",
+        fk_category_id: initial.fk_category_id ? String(initial.fk_category_id) : "",
         dimHeight: dim.height ?? "",
         dimWidth: dim.width ?? "",
         dimLength: dim.length ?? "",
@@ -167,7 +165,7 @@ export function ProductDrawer({
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <DialogContent variant="drawer" placement="right" className="max-w-2xl rounded-tl-3xl rounded-bl-3xl">
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex h-full flex-col gap-5 p-6">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex h-full flex-col gap-5 p-8">
           <DialogHeader>
             <h2 className="text-lg font-semibold text-(--text-strong)">{headerTitle}</h2>
           </DialogHeader>

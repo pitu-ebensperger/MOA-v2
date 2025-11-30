@@ -164,6 +164,88 @@ export class UserAdminController {
     }
   }
 
+  static async deleteCustomer(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      // Verificar que el usuario existe
+      const userCheck = await pool.query(
+        'SELECT usuario_id, rol_code, nombre, email FROM usuarios WHERE usuario_id = $1',
+        [id]
+      );
+
+      if (userCheck.rows.length === 0) {
+        throw new NotFoundError('Cliente');
+      }
+
+      const user = userCheck.rows[0];
+
+      // No permitir eliminar administradores
+      if (user.rol_code === 'ADMIN') {
+        throw new ForbiddenError('No se pueden eliminar usuarios administradores');
+      }
+
+      // No permitir que un admin se elimine a sí mismo
+      if (parseInt(id) === req.user.id) {
+        throw new ForbiddenError('No puedes eliminar tu propia cuenta');
+      }
+
+      // Verificar si tiene órdenes
+      const ordersCheck = await pool.query(
+        'SELECT COUNT(*) as count FROM ordenes WHERE usuario_id = $1',
+        [id]
+      );
+
+      const hasOrders = parseInt(ordersCheck.rows[0].count, 10) > 0;
+
+      if (hasOrders) {
+        // Si tiene órdenes, NO eliminar físicamente, solo desactivar
+        // Esto preserva el historial de compras y datos de auditoría
+        await pool.query(
+          `UPDATE usuarios 
+           SET status = 'inactivo',
+               email = $1,
+               nombre = $2
+           WHERE usuario_id = $3`,
+          [
+            `deleted_${Date.now()}_${user.email}`, // Anonimizar email
+            `[ELIMINADO] ${user.nombre}`,
+            id
+          ]
+        );
+
+        res.json({
+          success: true,
+          message: 'Cliente desactivado correctamente (tiene órdenes asociadas)',
+          data: { 
+            deleted: false, 
+            deactivated: true,
+            reason: 'Usuario con historial de órdenes' 
+          }
+        });
+      } else {
+        // Si NO tiene órdenes, eliminar físicamente
+        // Esto eliminará automáticamente: direcciones, wishlist, carrito (por CASCADE)
+        await pool.query(
+          'DELETE FROM usuarios WHERE usuario_id = $1',
+          [id]
+        );
+
+        res.json({
+          success: true,
+          message: 'Cliente eliminado correctamente',
+          data: { 
+            deleted: true, 
+            deactivated: false 
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error eliminando cliente:', error);
+      next(error);
+    }
+  }
+
   static async updateUserRole(req, res, next) {
     try {
       const { id } = req.params;

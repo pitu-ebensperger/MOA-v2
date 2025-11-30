@@ -1,6 +1,6 @@
 import { useOrders } from '@/modules/orders/hooks/useOrders.js';
 import OrderCard from '../components/OrderCard.jsx';
-import { Skeleton } from '@/components/ui/Skeleton.jsx';
+import { Skeleton } from "@/components/ui";
 
 export const MyOrdersPage = () => {
   const { orders = [], isLoading, error } = useOrders();

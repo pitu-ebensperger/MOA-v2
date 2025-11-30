@@ -3,15 +3,13 @@ import { memo, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
 import { Price } from "@/components/data-display/Price.jsx"
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
-import { API_PATHS } from "@/config/api-paths.js"
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
+import { API_PATHS } from "@/config/app.routes.js"
 import { useAuth } from "@/context/AuthContext.jsx"
 import { ProductShape } from "@/utils/propTypes.js"
 import { useCacheManager } from "@/hooks/useCacheManager.js"
-import { useToast } from "@/components/ui/useToast.js"
 
-import { Button } from "@/components/ui/Button.jsx"
-import Badge from "@/components/ui/Badge.jsx"
+import { Button, Badge, useToast } from "@/components/ui"
 
 const ProductCard = memo(function ProductCard({
   product = {},
@@ -193,7 +191,7 @@ const ProductCard = memo(function ProductCard({
               event.stopPropagation();
               if (isOutOfStock) return;
               if (requiresAuth) {
-                info("Debes iniciar sesión para agregar productos al carrito", { duration: 4000 });
+                info("Necesitas una cuenta para agregar productos al carrito.", { duration: 4000 });
                 return;
               }
               setCartButtonPressed(true);

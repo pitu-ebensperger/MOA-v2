@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Eye, Trash2 } from "lucide-react";
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js";
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 import { useRemoveFromWishlistMutation } from "@/modules/profile/hooks/useWishlistQuery.js";
 
@@ -9,23 +9,25 @@ const normalizeWishlistProduct = (product, index) => {
   if (!product || typeof product !== "object") {
     return {
       id: `wishlist-${index}`,
+      slug: `producto-${index}`,
       name: `Producto ${index + 1}`,
       price: 0,
       img: DEFAULT_PLACEHOLDER_IMAGE,
     };
   }
 
-  const price = Number(product.price ?? 0);
+  const price = Number(product.price ?? product.precio_cents ?? 0);
   return {
-    id: product.id ?? product.slug ?? `wishlist-${index}`,
-    name: product.name ?? product.slug ?? `Producto ${index + 1}`,
+    id: product.id ?? product.producto_id ?? `wishlist-${index}`,
+    slug: product.slug ?? `producto-${index}`,
+    name: product.name ?? product.nombre ?? product.slug ?? `Producto ${index + 1}`,
     price: Number.isFinite(price) ? price : 0,
-    img: product.img ?? product.imgUrl ?? product.gallery?.[0] ?? DEFAULT_PLACEHOLDER_IMAGE,
+    img: product.img ?? product.img_url ?? product.imgUrl ?? product.gallery?.[0] ?? DEFAULT_PLACEHOLDER_IMAGE,
   };
 };
 
 // Compact Horizontal Wishlist Card
-const WishlistCard = ({ product, onRemove }) => {
+const WishlistCard = ({ product, onRemove, onAddToCart }) => {
   const removeMutation = useRemoveFromWishlistMutation();
 
   const handleRemove = () => {
@@ -46,7 +48,7 @@ const WishlistCard = ({ product, onRemove }) => {
   return (
     <div className="group relative flex gap-4 rounded-2xl bg-white/75 p-4 transition-all hover:bg-white hover:shadow-md">
       {/* Image */}
-      <Link to={`/productos/${product.id}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
+      <Link to={`/productos/${product.slug}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
         <img
           src={product.img || DEFAULT_PLACEHOLDER_IMAGE}
           alt={product.name}
@@ -57,27 +59,25 @@ const WishlistCard = ({ product, onRemove }) => {
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div>
-          <Link to={`/productos/${product.id}`} className="block">
+          <Link to={`/productos/${product.slug}`} className="block">
             <h3 className="line-clamp-2 text-sm font-semibold text-(--text-strong) transition-colors group-hover:text-(--color-primary1)">
               {product.name}
             </h3>
           </Link>
-          <p className="mt-1 text-base font-bold text-(--color-primary1)">
-            {formatCurrencyCLP(product.price)}
-          </p>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Link
-            to={`/productos/${product.id}`}
-            className="group/btn flex h-8 w-8 items-center justify-center rounded-full bg-(--color-primary4) text-(--color-primary1) transition-all hover:bg-(--color-primary1) hover:text-white"
+            to={`/productos/${product.slug}`}
+            className="group/btn flex h-8 w-8 items-center justify-center rounded-full text-(--color-primary1) transition-all hover:text-(--color-primary2)"
             title="Ver producto"
           >
             <Eye className="h-4 w-4" />
           </Link>
           <button
-            className="group/btn flex h-8 w-8 items-center justify-center rounded-full bg-(--color-primary4) text-(--color-primary1) transition-all hover:bg-(--color-primary1) hover:text-white"
+            onClick={() => onAddToCart?.(product)}
+            className="group/btn flex h-8 w-8 items-center justify-center rounded-full text-(--color-primary1) transition-all hover:text-(--color-primary2)"
             title="Agregar al carrito"
           >
             <ShoppingCart className="h-4 w-4" />
@@ -95,7 +95,7 @@ const WishlistCard = ({ product, onRemove }) => {
   );
 };
 
-const WishlistSection = ({ products = [], isLoading = false, error = null, onRemove }) => {
+const WishlistSection = ({ products = [], isLoading = false, error = null, onRemove, onAddToCart }) => {
   const sample = (Array.isArray(products) ? products : []).slice(0, 6).map(normalizeWishlistProduct);
   const hasItems = sample.length > 0;
 
@@ -104,7 +104,7 @@ const WishlistSection = ({ products = [], isLoading = false, error = null, onRem
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-2xl text-(--text-strong)">Mis Favoritos</h2>
+          <h2 className="font-serif text-2xl text-(--text-strong)">Lista de Deseos</h2>
           <p className="text-sm text-(--text-secondary1) mt-1">Productos que te gustan</p>
         </div>
         <Link
@@ -130,7 +130,7 @@ const WishlistSection = ({ products = [], isLoading = false, error = null, onRem
         {!isLoading && !error && hasItems ? (
           <div className="space-y-3">
             {sample.map((product) => (
-              <WishlistCard key={product.id} product={product} onRemove={onRemove} />
+              <WishlistCard key={product.id} product={product} onRemove={onRemove} onAddToCart={onAddToCart} />
             ))}
           </div>
         ) : null}
@@ -151,11 +151,13 @@ const WishlistSection = ({ products = [], isLoading = false, error = null, onRem
 WishlistCard.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    slug: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     img: PropTypes.string,
   }).isRequired,
   onRemove: PropTypes.func,
+  onAddToCart: PropTypes.func,
 };
 
 WishlistSection.propTypes = {
@@ -163,6 +165,7 @@ WishlistSection.propTypes = {
   isLoading: PropTypes.bool,
   error: PropTypes.any,
   onRemove: PropTypes.func,
+  onAddToCart: PropTypes.func,
 };
 
 export default WishlistSection;

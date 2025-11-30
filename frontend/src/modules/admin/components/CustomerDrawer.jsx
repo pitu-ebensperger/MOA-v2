@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Dialog, DialogContent } from "@/components/ui/primitives"
-import { StatusPill } from "@/components/ui/StatusPill.jsx"
+import { StatusPill } from "@/components/ui"
 import { Price } from "@/components/data-display/Price.jsx"
 import { Mail, Phone, Calendar, MapPin, ShoppingBag, Package } from "lucide-react";
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"

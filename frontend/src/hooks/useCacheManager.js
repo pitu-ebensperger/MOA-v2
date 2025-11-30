@@ -1,5 +1,4 @@
-import { useQueryClient } from '@config/react-query';
-import { QUERY_KEYS } from '@config/react-query.config.js';
+import { useQueryClient, QUERY_KEYS } from '@/config/query.client.config.js';
 
 export const useCacheManager = () => {
   const queryClient = useQueryClient();

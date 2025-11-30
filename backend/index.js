@@ -99,9 +99,9 @@ app.get("/", (req, res) => {
 app.use(healthRoutes);      // Health check (no auth required)
 app.use(home);              // Rutas home (/)
 if (rateLimitEnabled) {
-  app.use(['/login', '/register'], authLimiter); // Rate limit auth endpoints
+  app.use(['/login', '/registro'], authLimiter); // Rate limit auth endpoints
 }
-app.use(authRoutes);        // Rutas de autenticación (/login, /register, etc.)
+app.use(authRoutes);        // Rutas de autenticación (/login, /registro, etc.)
 app.use(userRoutes);        // Rutas de usuario (/usuario, /auth/perfil)
 app.use(categoriesRouter);  // Rutas de categorías (/categorias)
 app.use(productsRouter);    // Rutas de productos (/productos)

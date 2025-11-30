@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs.jsx"
-import { Accordion } from "@/components/ui/Accordion.jsx"
+import { Accordion } from "@/components/ui"
 import { Price } from "@/components/data-display/Price.jsx"
 
 import { productsApi } from "@/services/products.api.js"
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 import { Minus, Plus, Recycle, ShieldCheck, Truck } from "lucide-react";
 import { useCartContext } from "@/context/CartContext.jsx"
 import { useAuth } from "@/context/AuthContext.jsx"

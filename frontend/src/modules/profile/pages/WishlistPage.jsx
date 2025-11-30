@@ -8,7 +8,7 @@ import { useWishlistQuery, useToggleWishlist, useClearWishlist } from "@/modules
 import { useCartContext } from "@/context/CartContext.jsx";
 import { Button } from "@/components/ui/primitives";
 import { EmptyPlaceholder, EmptyPlaceholderDescription, EmptyPlaceholderIcon, EmptyPlaceholderTitle } from "@/components/ui/primitives";
-import { Skeleton } from "@/components/ui/Skeleton.jsx";
+import { Skeleton } from "@/components/ui";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/primitives";
 
 // Limite ajustado a 100 (backend exige 1-100). Se filtra luego por ids en wishlist.

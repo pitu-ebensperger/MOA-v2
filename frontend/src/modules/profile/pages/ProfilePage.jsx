@@ -4,12 +4,14 @@ import WishlistSection from '../components/WishlistSection.jsx';
 import MyOrdersSection from '../components/MyOrdersSection.jsx';
 import { AddressesSection } from '../components/AddressesSection.jsx';
 import { useUserOrders } from '../../../hooks/useUserOrders.js';
-import { useQueryClient } from '@config/react-query';
+import { useQueryClient } from '@/config/query.client.config.js';
 import { useWishlistQuery } from '../hooks/useWishlistQuery.js';
 import { useErrorHandler } from '@/hooks/useErrorHandler.js';
+import { useCartContext } from '@/context/CartContext.jsx';
 
 export const ProfilePage = () => {
   const queryClient = useQueryClient();
+  const { addToCart } = useCartContext();
   const { items: wishlistItems, isLoading: isLoadingWishlist, error: wishlistError } = useWishlistQuery();
   const [activeTab, setActiveTab] = useState('overview'); // overview, addresses
   const { handleError } = useErrorHandler({
@@ -88,6 +90,7 @@ export const ProfilePage = () => {
               isLoading={isLoadingWishlist} 
               error={wishlistError}
               onRemove={handleRemoveFromWishlist}
+              onAddToCart={addToCart}
             />
 
             <MyOrdersSection 

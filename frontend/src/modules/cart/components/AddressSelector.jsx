@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAddresses, useCreateAddress } from '@/hooks/useAddresses.query';
 import { useAuth } from '@/context/AuthContext.jsx';
-import { Input, Textarea } from '@/components/ui/Input.jsx';
+import { Input, Textarea } from "@/components/ui";
 import { Card, CardContent } from '@/components/ui/primitives';
 import { Label } from '@/components/ui/primitives';
 import { buttonClasses } from '@/components/ui/primitives/button-classes.js';
@@ -87,7 +87,7 @@ export function AddressSelector({ onSelect, className = '' }) {
       <Card className="bg-(--color-lightest)/60">
         <CardContent className="p-4">
           {loading && <p className="text-xs text-(--color-text-muted)">Cargando direcciones…</p>}
-          {error && <p className="text-xs text-(--color-error)">{error}</p>}
+          {error && <p className="text-sm text-[#cc5f49] mt-1">{error}</p>}
 
           {!loading && mode === 'lista' && (
             <div className="space-y-2">

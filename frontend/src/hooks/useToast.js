@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { toast } from "./toastService.js";
+import { toast } from "@/services/toastService.js";
 
 export function useToast() {
   return useMemo(() => ({

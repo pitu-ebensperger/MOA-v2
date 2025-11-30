@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQuery } from "@config/react-query";
+import { useQuery } from "@/config/query.client.config.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js"
 
 const buildAdminParams = ({ 

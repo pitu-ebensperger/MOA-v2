@@ -1,6 +1,6 @@
-import { useQuery } from '@config/react-query';
+import { useQuery } from '@/config/query.client.config.js';
 import { apiClient } from '@/services/api-client';
-import { env } from '@/config/env.js';
+import { env } from '@/config/app.env.js';
 
 const extractPayload = (response) => {
   if (response && typeof response === 'object' && 'data' in response) {

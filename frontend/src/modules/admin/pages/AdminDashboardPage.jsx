@@ -24,15 +24,13 @@ import {
 } from "lucide-react";
 
 import { useAdminDashboard } from "@/modules/admin/hooks/useAdminDashboard.js";
-import { Button } from "@/components/ui/Button.jsx";
-import { StatusPill } from "@/components/ui/StatusPill.jsx";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs.jsx";
-import { BarChart } from "@/components/charts/BarChart.jsx";
-import { AreaChart } from "@/components/charts/AreaChart.jsx";
-import { PieChart } from "@/components/charts/PieChart.jsx";
-import { AnimatedKPICard } from "@/components/charts/AnimatedKPICard.jsx";
-import { ProgressRing } from "@/components/charts/ProgressRing.jsx";
-import { ComparisonCard } from "@/components/charts/ComparisonCard.jsx";
+import { Button, StatusPill, Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui";
+import { BarChart } from "@/modules/admin/components/charts/BarChart.jsx";
+import { AreaChart } from "@/modules/admin/components/charts/AreaChart.jsx";
+import { PieChart } from "@/modules/admin/components/charts/PieChart.jsx";
+import { AnimatedKPICard } from "@/modules/admin/components/charts/AnimatedKPICard.jsx";
+import { ProgressRing } from "@/modules/admin/components/charts/ProgressRing.jsx";
+import { ComparisonCard } from "@/modules/admin/components/charts/ComparisonCard.jsx";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js";
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";

@@ -1,6 +1,6 @@
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { API_PATHS } from "@/config/api-paths.js";
+import { API_PATHS } from "@/config/app.routes.js";
 import { useStoreConfig } from "@/hooks/useStoreConfig.js";
 
 const HELP_LINKS = [
@@ -12,7 +12,7 @@ const HELP_LINKS = [
 const LEGAL_LINKS = [
   { label: "Política de privacidad", href: API_PATHS.support.privacy },
   { label: "Términos y condiciones", href: API_PATHS.support.terms },
-  { label: "Aviso legal & GDPR", href: API_PATHS.support.legalNotice },
+  { label: "Aviso legal", href: API_PATHS.support.legalNotice },
 ];
 
 export const Footer = () => {

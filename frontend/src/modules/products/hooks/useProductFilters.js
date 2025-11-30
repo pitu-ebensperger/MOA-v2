@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { ALL_CATEGORY_ID, DEFAULT_PAGE_SIZE } from "@/config/constants.js"
+import { ALL_CATEGORY_ID, DEFAULT_PAGE_SIZE } from "@/config/app.constants.js"
 import { ensureNumber } from "@/utils/formatters/numbers.js"
 import { clamp } from "@/utils/formatters/numbers.js"
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js"

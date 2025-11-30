@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { motion as Motion } from 'framer-motion';
 import { CreditCard, Banknote, Smartphone, Wallet, MessageSquareHeart, CircleDollarSign, TrendingUp } from 'lucide-react';
-import { PieChart } from '@/components/charts/PieChart.jsx';
+import { PieChart } from '@/modules/admin/components/charts/PieChart.jsx';
 import { Price } from '@/components/data-display/Price.jsx';
 import { usePaymentMethodStats } from '@/modules/admin/hooks/useDashboardStats.js';
 

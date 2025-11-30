@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Pill from "@/components/ui/Pill.jsx"
+import { Pill } from "@/components/ui"
 import {
   PRODUCT_STATUS_MAP,
   ORDER_STATUS_MAP,
   PAYMENT_STATUS_MAP,
   SHIPPING_STATUS_MAP,
   USER_STATUS_MAP,
-} from "../../config/status-maps.js";
+} from "../../config/estados.js";
 
 // domain = "product" | "order" | "payment" | "shipment" | "user" 
 const DOMAIN_MAP = {

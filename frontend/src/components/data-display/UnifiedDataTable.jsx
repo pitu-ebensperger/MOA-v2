@@ -10,10 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowUpDown, ChevronUp, ChevronDown, ListFilter, Pencil, Check, X } from "lucide-react";
-import { Pagination } from "@/components/ui/Pagination.jsx";
-import { IconButton } from "@/components/ui/Button.jsx";
-import { InputSm } from "@/components/ui/Input.jsx";
-import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx";
+import { Pagination, IconButton, InputSm, ResponsiveRowActions } from "@/components/ui";
 
 export function UnifiedDataTable({
   // Data & Columns
@@ -264,7 +261,7 @@ export function UnifiedDataTable({
   // Container styles
   const containerClasses =
     variant === "card"
-      ? "rounded-3xl border border-(--color-border) bg-white/95 shadow-sm"
+      ? "rounded-3xl border border-(--color-border) bg-white/95 shadow-sm overflow-hidden"
       : "border border-(--color-border) rounded-xl overflow-hidden";
 
   const tableScrollStyle = maxHeight
@@ -294,7 +291,7 @@ export function UnifiedDataTable({
         key={header.id}
         colSpan={header.colSpan}
         style={{ width: header.getSize() }}
-        className={`px-3 py-2 font-semibold ${align}`}
+        className={`px-6 py-2 font-semibold ${align}`}
       >
         {header.isPlaceholder ? null : (
           <div
@@ -353,7 +350,7 @@ export function UnifiedDataTable({
     const isActionsCell = cell.column.id === "_actions";
 
     return (
-      <td key={cell.id} className={`px-3 ${paddingYClass} ${isActionsCell ? "" : align}`}>
+      <td key={cell.id} className={`px-6 ${paddingYClass} ${isActionsCell ? "" : align}`}>
         {isActionsCell ? (
           <div className="flex justify-end">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -454,7 +451,7 @@ export function UnifiedDataTable({
         >
           <table className="min-w-full text-sm">
             {/* Header */}
-            <thead className="sticky top-0 z-10 bg-white text-(--color-secondary2)">
+            <thead className="sticky top-0 z-10 bg-white text-(--color-secondary2) after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-(--color-border)">
               {table.getHeaderGroups().map((hg) => (
                 <tr key={hg.id}>{hg.headers.map(renderHeaderCell)}</tr>
               ))}
@@ -465,7 +462,7 @@ export function UnifiedDataTable({
               {/* Loading State */}
               {loading && (
                 <tr>
-                  <td colSpan={table.getHeaderGroups()[0]?.headers.length || 1} className="px-3 py-6">
+                  <td colSpan={table.getHeaderGroups()[0]?.headers.length || 1} className="px-6 py-6">
                     <div className="animate-pulse space-y-2">
                       <div className="h-3 w-1/3 rounded bg-(--color-neutral3)" />
                       <div className="h-3 w-2/3 rounded bg-(--color-neutral3)" />
@@ -480,7 +477,7 @@ export function UnifiedDataTable({
                 <tr>
                   <td
                     colSpan={table.getHeaderGroups()[0]?.headers.length || 1}
-                    className="px-3 py-8 text-center text-(--color-text-muted)"
+                    className="px-6 py-8 text-center text-(--color-text-muted)"
                   >
                     {emptyMessage}
                   </td>

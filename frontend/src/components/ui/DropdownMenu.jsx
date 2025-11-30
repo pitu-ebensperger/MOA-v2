@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/Button"
+import { Button } from "./Button.jsx"
 import { cn } from "@/utils/cn.js";
 
 

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@config/react-query';
+import { useQuery, useMutation, useQueryClient } from '@/config/query.client.config.js';
 import { getUserOrders, getOrderById, createOrder, cancelOrder } from '@/services/checkout.api.js';
 
 const ORDERS_QUERY_KEY = ['orders'];

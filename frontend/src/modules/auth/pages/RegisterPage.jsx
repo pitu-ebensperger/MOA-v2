@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User as UserIcon, Phone } from "lucide-react";
 import { useAuth } from '@/context/AuthContext.jsx';
-import { Button } from '@/components/ui/Button.jsx';
+import { Button } from "@/components/ui";
 import { 
   validateEmail, 
   validatePassword, 

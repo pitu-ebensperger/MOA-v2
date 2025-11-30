@@ -1,25 +1,18 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { useQuery } from "@config/react-query";
-import { Mail, Phone, Calendar, RefreshCw, UserPlus, MoreHorizontal, Eye, Edit3, ShoppingBag, LayoutGrid, Rows } from "lucide-react";
-import { toast } from '@/components/ui';
+import { useQuery } from "@/config/query.client.config.js";
+import { Mail, Phone, Calendar, RefreshCw, UserPlus, MoreHorizontal, Eye, Edit3, ShoppingBag, LayoutGrid, Rows, Trash2 } from "lucide-react";
+import { toast, Button, IconButton, StatusPill, TooltipNeutral, Input, Select, confirm } from '@/components/ui';
 import { useDebounce } from '@/hooks/useDebounce.js';
 import CustomerDrawer from "@/modules/admin/components/CustomerDrawer.jsx"
 import OrdersDrawer from "@/modules/admin/components/OrdersDrawer.jsx"
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx";
 import { TableToolbar, TableSearch } from "@/components/data-display/TableToolbar.jsx";
-import { Button, IconButton } from "@/components/ui/Button.jsx"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/primitives";
-import { USER_STATUS_MAP } from "@/config/status-maps.js";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/primitives";
+import { USER_STATUS_MAP } from "@/config/estados.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js"
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js"
-import { StatusPill } from "@/components/ui/StatusPill.jsx"
-import { TooltipNeutral } from "@/components/ui/Tooltip.jsx";
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/primitives";
-import { Input } from "@/components/ui/Input.jsx";
-import { Select } from "@/components/ui/Select.jsx";
 import { customersAdminApi } from "@/services/customersAdmin.api.js";
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";
-import { ResponsiveRowActions } from "@/components/ui/ResponsiveRowActions.jsx";
 
 const USER_STATUS_OPTIONS = [
   { value: "", label: "Todos los estados" },
@@ -159,6 +152,37 @@ export default function CustomersPage() {
   const handleRefresh = useCallback(() => {
     refetchCustomers();
   }, [refetchCustomers]);
+
+  const handleViewCustomer = useCallback((customer) => {
+    setSelectedCustomer(customer);
+  }, []);
+
+  const handleDeleteCustomer = useCallback(
+    async (customer) => {
+      if (!customer?.id) return;
+
+      const label = customer.nombre || customer.email || "este cliente";
+      const confirmed = await confirm.delete(
+        `¿Eliminar "${label}"?`,
+        "Esta acción no se puede deshacer"
+      );
+
+      if (!confirmed) return;
+
+      try {
+        await customersAdminApi.delete(customer.id);
+        if (selectedCustomer?.id === customer.id) {
+          setSelectedCustomer(null);
+        }
+        toast.success("Cliente eliminado correctamente");
+        refetchCustomers();
+      } catch (error) {
+        console.error("Error eliminando cliente:", error);
+        toast.error(error?.message ?? "No se pudo eliminar el cliente");
+      }
+    },
+    [refetchCustomers, selectedCustomer?.id, setSelectedCustomer]
+  );
 
   const handleViewOrder = async (order, onOrderUpdateCb) => {
     const customer = selectedCustomer;
@@ -402,74 +426,76 @@ export default function CustomersPage() {
               aria-label="Refrescar clientes"
             />
           </TooltipNeutral>
-          <Button
-            appearance="solid"
-            intent="primary"
-            size="sm"
-            leadingIcon={<UserPlus className="h-4 w-4" />}
-            onClick={() => setIsCreatingCustomer(true)}
-          >
-            Nuevo cliente
-          </Button>
         </div>
       </TableToolbar>
     ),
     [search, statusFilter, viewMode, handleRefresh, handleStatusFilter]
   );
 
+  const rowActions = useMemo(
+    () => [
+      {
+        key: "view",
+        label: "Ver perfil",
+        icon: Eye,
+        onAction: handleViewCustomer,
+      },
+      {
+        key: "edit",
+        label: "Editar",
+        icon: Edit3,
+        onAction: handleOpenEditDialog,
+      },
+      {
+        key: "delete",
+        label: "Eliminar",
+        icon: Trash2,
+        intent: "danger",
+        danger: true,
+        onAction: handleDeleteCustomer,
+      },
+    ],
+    [handleDeleteCustomer, handleOpenEditDialog, handleViewCustomer]
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <AdminPageHeader
         title="Clientes"
+        actions={
+          <Button
+            size="sm"
+            appearance="solid"
+            intent="primary"
+            leadingIcon={<UserPlus className="h-4 w-4" />}
+            onClick={() => setIsCreatingCustomer(true)}
+          >
+            Nuevo Cliente
+          </Button>
+        }
       />
 
       {/* Tabla con toolbar integrado */}
       {viewMode === "list" ? (
-        <div>
-          {/* Toolbar */}
-          {toolbar(null)}
-          
-          <UnifiedDataTable
-            data={filteredCustomers}
-            columns={customerColumns}
-            loading={isLoadingCustomers}
-            emptyMessage="No se encontraron clientes"
-            className="mt-4"
-          />
-          
-          {/* Paginación */}
-          {totalCustomers > pageSize && !isLoadingCustomers && filteredCustomers.length > 0 && (
-            <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-neutral-600">
-                  Mostrando {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalCustomers)} de {totalCustomers} clientes
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    appearance="outline"
-                    size="sm"
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                  >
-                    Anterior
-                  </Button>
-                  <Button
-                    appearance="outline"
-                    size="sm"
-                    disabled={page >= pageCount}
-                    onClick={() => setPage(page + 1)}
-                  >
-                    Siguiente
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <UnifiedDataTable
+          data={filteredCustomers}
+          columns={customerColumns}
+          loading={isLoadingCustomers}
+          emptyMessage="No se encontraron clientes"
+          page={page}
+          pageSize={pageSize}
+          total={totalCustomers}
+          onPageChange={setPage}
+          toolbar={toolbar}
+          rowActions={rowActions}
+          variant="card"
+          maxHeight="calc(100vh - 260px)"
+        />
       ) : (
         <div>
-          {/* Toolbar */}
-          {toolbar(null)}
+          <div className="mb-4">
+            {toolbar()}
+          </div>
           
           {/* Grid View */}
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -497,13 +523,20 @@ export default function CustomersPage() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => setSelectedCustomer(customer)}>
+                        <DropdownMenuItem onSelect={() => handleViewCustomer(customer)}>
                           <Eye className="mr-2 h-4 w-4" />
                           Ver perfil
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => handleOpenEditDialog(customer)}>
                           <Edit3 className="mr-2 h-4 w-4" />
                           Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onSelect={() => handleDeleteCustomer(customer)}
+                          className="text-(--color-error)"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

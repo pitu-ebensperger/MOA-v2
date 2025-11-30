@@ -1,5 +1,5 @@
 import { toNum } from "@/utils/formatters/numbers.js"
-import { ALL_CATEGORY_ID } from "@/config/constants.js"
+import { ALL_CATEGORY_ID } from "@/config/app.constants.js"
 
 export const normalizeProduct = (p = {}) => {
   const id = p.id ?? p.producto_id ?? null;

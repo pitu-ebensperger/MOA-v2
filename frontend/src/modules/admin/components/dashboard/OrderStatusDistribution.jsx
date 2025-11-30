@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { PieChart } from '@/components/charts/PieChart.jsx';
+import { PieChart } from '@/modules/admin/components/charts/PieChart.jsx';
 import { Package, Truck, CheckCircle } from 'lucide-react';
 import { useOrdersByStatus } from '@/modules/admin/hooks/useDashboardStats';
 import ChartCard from './ChartCard';

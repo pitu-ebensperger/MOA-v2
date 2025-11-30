@@ -4,7 +4,7 @@ import { WifiOff } from 'lucide-react'
 
 import { Navbar } from '@/components/layout/Navbar.jsx'
 import { Footer } from '@/components/layout/Footer.jsx'
-import { API_PATHS } from '@/config/api-paths.js'
+import { API_PATHS } from '@/config/app.routes.js'
 import { AddressProvider } from '@/context/AddressContext.jsx'
 import ErrorBoundary from '@/components/error/ErrorBoundary.jsx'
 import { ScrollToTop } from '@/components/layout/ScrollToTop.jsx'

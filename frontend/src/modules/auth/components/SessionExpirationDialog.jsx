@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from '@/components/ui/Dialog.jsx';
-import { Button } from '@/components/ui/Button.jsx';
+  Button
+} from "@/components/ui";
 
 export const SessionExpirationDialog = ({ 
   open, 

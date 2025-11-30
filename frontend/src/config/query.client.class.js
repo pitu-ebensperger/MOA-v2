@@ -1,4 +1,4 @@
-import { hashQueryKey, queryKeyMatches, toArrayKey } from "./key-utils.js";
+import { hashQueryKey, queryKeyMatches, toArrayKey } from "@/utils/query-key-utils.js";
 
 const DEFAULT_STATE = {
   status: "idle",

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { confirm } from "./ConfirmDialog.jsx";
+import { confirm } from "@/components/ui/ConfirmDialog.jsx";
 
 export function useConfirm() {
   return useMemo(() => ({

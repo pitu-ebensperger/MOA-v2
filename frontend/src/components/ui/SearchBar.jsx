@@ -1,7 +1,7 @@
 import { Search, X } from "lucide-react";
 import { createPortal } from 'react-dom';
 import { useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/Button.jsx'
+import { Button } from "@/components/ui"
 
 export function SearchBar({
   isOpen,

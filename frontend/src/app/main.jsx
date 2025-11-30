@@ -1,8 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { QueryClient } from '@shared/lib/react-query-lite'
-import { QueryClientProvider } from '@config/react-query'
+import { QueryClient, QueryClientProvider } from '@/config/query.client.config.js'
 import { handleAuthError } from '@/utils/handleAuthError.js'
 import { AuthProvider } from "@/context/AuthContext.jsx"
 import { CartProvider } from "@/context/CartContext.jsx"
@@ -56,10 +55,10 @@ const queryClient = new QueryClient({
       refetchOnReconnect: true, // Sí refetch al reconectar
       refetchOnMount: true, // Refetch al montar componente
       // Performance
-      keepPreviousData: true, // Mantener datos previos mientras carga nuevos
+      keepPreviousData: true,
     },
     mutations: {
-      retry: false, // No reintentar mutations
+      retry: false, 
       onError: (error) => {
         console.error('[React Query - Mutation Error]', error);
         // En producción, enviar a servicio de logging
@@ -91,7 +90,7 @@ if (typeof globalThis.window !== 'undefined') {
   });
 }
 
-// Debug helpers (dev only) - exponer funciones para inspeccionar queries desde la consola
+// Debug helpers (dev only) > exponer funciones para inspeccionar queries desde la consola
 if (import.meta.env.DEV && typeof globalThis.window !== 'undefined') {
   window.__MOA_QUERY_DUMP = () => {
     try {

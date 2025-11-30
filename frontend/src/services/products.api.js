@@ -1,4 +1,4 @@
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 import { apiClient } from "@/services/api-client.js"
 import { normalizeCategoryList, normalizeProduct } from "@/utils/normalizers.js"
 

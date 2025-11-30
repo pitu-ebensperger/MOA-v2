@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQueries } from "@config/react-query";
+import { useQueries } from "@/config/query.client.config.js";
 import { analyticsApi } from "@/services/analytics.api.js";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 

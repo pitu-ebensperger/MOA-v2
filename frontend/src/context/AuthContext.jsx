@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useLayoutEffect, useRef } from "react";
-import { useQueryClient } from '@config/react-query';
+import { useQueryClient } from '@/config/query.client.config.js';
 import PropTypes from "prop-types";
 import { setOnUnauthorized, setTokenGetter } from "@/services/api-client.js"
 import { authApi } from "@/services/auth.api.js"
@@ -8,8 +8,8 @@ import { usePersistentState } from "@/hooks/usePersistentState.js"
 import { useNavigate } from "react-router-dom";
 import { observability } from '@/services/observability.js';
 import { useSessionMonitor } from "@/hooks/useSessionMonitor.js";
-import { SessionExpirationDialog } from "@/components/auth/SessionExpirationDialog.jsx";
-import { Alert } from "@/components/ui/Alert.jsx";
+import { SessionExpirationDialog } from "@/modules/auth/components/SessionExpirationDialog.jsx";
+import { Alert } from "@/components/ui";
 
 // Contexto estricto inline
 const CONTEXT_NOT_SET = Symbol("STRICT_CONTEXT_NOT_SET");

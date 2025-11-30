@@ -4,18 +4,17 @@ import { Plus, Package, X, AlertCircle, Download, FileText, ChevronDown } from "
 import ProductDrawer from "@/modules/admin/components/ProductDrawer.jsx"
 
 import { UnifiedDataTable } from "@/components/data-display/UnifiedDataTable.jsx"
-import { Button } from "@/components/ui/Button.jsx"
-import { Badge } from "@/components/ui/Badge.jsx"
+import { Button, Badge, confirm } from "@/components/ui"
 import { productsApi } from "@/services/products.api.js"
-import { confirm } from "@/components/ui";
 
 import { useAdminProducts } from "@/modules/admin/hooks/useAdminProducts.js"
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
 import { buildProductColumns } from "@/modules/admin/utils/ProductsColumns.jsx"
-import { DEFAULT_PAGE_SIZE } from "@/config/constants.js"
-import { PRODUCT_STATUS_OPTIONS } from "@/config/status-options.js"
+import { DEFAULT_PAGE_SIZE } from "@/config/app.constants.js"
+import { PRODUCT_STATUS_OPTIONS } from "@/config/estados.js"
 import AdminPageHeader from "@/modules/admin/components/AdminPageHeader.jsx";
 import { useErrorHandler } from '@/hooks/useErrorHandler.js';
+import { useToast } from '@/hooks/useToast.js';
 
 export default function AdminProductsPage() {
   const location = useLocation();
@@ -45,6 +44,7 @@ export default function AdminProductsPage() {
     showAlert: false,
     defaultMessage: 'Ocurrió un problema al gestionar los productos',
   });
+  const { success, error: showErrorToast } = useToast();
   const lastProductsErrorRef = useRef(null);
 
   // Inicializar filtro desde query string
@@ -350,9 +350,10 @@ export default function AdminProductsPage() {
           try {
             await productsApi.create(payload);
             setCreatingNewProduct(false);
+            success('Producto creado exitosamente');
             refetch();
           } catch (error) {
-            handleError(error, 'No se pudo crear el producto');
+            showErrorToast(error?.message || 'No se pudo crear el producto');
           }
         }}
       />
@@ -367,9 +368,10 @@ export default function AdminProductsPage() {
           try {
             await productsApi.update(payload.id, payload);
             setSelectedProductEdit(null);
+            success('Producto actualizado exitosamente');
             refetch();
           } catch (error) {
-            handleError(error, 'No se pudo actualizar el producto');
+            showErrorToast(error?.message || 'No se pudo actualizar el producto');
           }
         }}
         onDelete={async (product) => {
@@ -377,9 +379,10 @@ export default function AdminProductsPage() {
             try {
               await productsApi.remove(product.id);
               setSelectedProductEdit(null);
+              success('Producto eliminado exitosamente');
               refetch();
             } catch (error) {
-              handleError(error, 'No se pudo eliminar el producto');
+              showErrorToast(error?.message || 'No se pudo eliminar el producto');
             }
           }
         }}

@@ -1,4 +1,4 @@
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js";
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js";
 
 export function buildCategoryColumns({
   placeholderImage = DEFAULT_PLACEHOLDER_IMAGE,

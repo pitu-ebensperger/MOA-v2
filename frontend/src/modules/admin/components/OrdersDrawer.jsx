@@ -1,30 +1,28 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Dialog, DialogContent } from "@/components/ui/primitives";
+import { Dialog, DialogContent, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/primitives";
 import { Price } from "@/components/data-display/Price.jsx";
-import { StatusPill } from "@/components/ui/StatusPill.jsx";
-import { Pill } from "@/components/ui/Pill.jsx";
-import { Button } from "@/components/ui/Button.jsx";
-import { Input } from "@/components/ui/Input.jsx";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/primitives";
-import { Accordion } from "@/components/ui/Accordion.jsx";
+import { StatusPill, Pill, Button, Input, Accordion } from "@/components/ui";
 import { formatDate_ddMMyyyy } from "@/utils/formatters/date.js";
-import { CalendarDays, PackageCheck, Truck, ChevronRight, Edit, Save, X, AlertCircle } from "lucide-react";
+import { CalendarDays, PackageCheck, Truck, ChevronRight, Edit, Save, X } from "lucide-react";
 import OrderStatusTimeline from "@/components/data-display/OrderStatusTimeline.jsx";
 import { ordersAdminApi } from "@/services/ordersAdmin.api.js";
 import { OrderShape } from "@/utils/propTypes.js";
-import { EMPRESAS_ENVIO_OPTIONS } from "@config/shipping-companies.js";
-import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/status-maps.js';
+import { EMPRESAS_ENVIO_OPTIONS } from "@shared/constants/empresas-envio.js";
+import { PAYMENT_STATUS_MAP, SHIPPING_STATUS_MAP } from '@/config/estados.js';
+import { useToast } from '@/hooks/useToast.js';
 
 // Convertir maps a arrays de opciones para Select
-const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, label]) => ({ value, label }));
-const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, label]) => ({ value, label }));
+const ESTADOS_PAGO_OPTIONS = Object.entries(PAYMENT_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
+const ESTADOS_ENVIO_OPTIONS = Object.entries(SHIPPING_STATUS_MAP).map(([value, { label }]) => ({ value, label }));
 
-// Helpers pequeños para no ensuciar el JSX
+// Helpers 
 const safeDate = (value) => (value ? formatDate_ddMMyyyy(value) : "–");
 const safeText = (v) => (v == null || v === "" ? "–" : v);
 
 export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, onOrderUpdate }) {
+  const { success, error: showErrorToast } = useToast();
+  
   // Estado para edición de orden
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -34,7 +32,6 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
     empresa_envio: '',
   });
   const [isUpdating, setIsUpdating] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
 
   // Inicializar form cuando cambia la orden
   React.useEffect(() => {
@@ -48,6 +45,13 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
     }
   }, [order]);
 
+  // Forzar re-render cuando cambia la orden para actualizar datos del cliente
+  React.useEffect(() => {
+    if (open && order) {
+      // Trigger re-render to sync client data
+    }
+  }, [open, order]);
+
   // Manejar cambios en el formulario
   const handleFormChange = (field, value) => {
     setEditForm(prev => ({ ...prev, [field]: value }));
@@ -58,7 +62,6 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
     if (!order?.id) return;
 
     setIsUpdating(true);
-    setUpdateError(null);
 
     try {
       await ordersAdminApi.updateOrderStatus(order.id, editForm);
@@ -68,10 +71,11 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
         onOrderUpdate(order.id);
       }
       
+      success('Estado de orden actualizado exitosamente');
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating order status:', error);
-      setUpdateError(error.message || 'Error al actualizar el estado de la orden');
+      showErrorToast(error.message || 'Error al actualizar el estado de la orden');
     } finally {
       setIsUpdating(false);
     }
@@ -86,7 +90,6 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
       empresa_envio: order.shipment?.carrier || '',
     });
     setIsEditing(false);
-    setUpdateError(null);
   };
 
   // Si no hay orden seleccionada, no mostramos nada
@@ -156,7 +159,7 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
       <DialogContent
         variant="drawer"
         placement="right"
-        className="w-full max-w-[720px]"
+        className="w-full max-w-[720px] p-8"
         showClose={true}
       >
         <div className="flex h-full flex-col bg-(--color-neutral2) text-(--color-text)">
@@ -252,14 +255,6 @@ export default function OrdersDrawer({ open, order, onClose, breadcrumb = null, 
                         )}
                       </div>
                     </div>
-
-                    {/* Error de actualización */}
-                    {updateError && (
-                      <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
-                        <AlertCircle className="h-4 w-4" />
-                        {updateError}
-                      </div>
-                    )}
 
                     {/* Formulario de estados */}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

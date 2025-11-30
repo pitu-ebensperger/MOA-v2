@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs.jsx"
 import ProductCard from "@/modules/products/components/ProductCard.jsx"
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 
 const SAMPLE_PRODUCT = {
   id: "sample-1",

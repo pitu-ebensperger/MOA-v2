@@ -1,4 +1,4 @@
-import { Accordion } from "@/components/ui/Accordion.jsx"
+import { Accordion } from "@/components/ui"
 
 const FAQs = [
   {

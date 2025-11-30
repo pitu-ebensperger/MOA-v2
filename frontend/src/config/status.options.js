@@ -4,7 +4,7 @@ import {
   PAYMENT_STATUS_MAP,
   SHIPPING_STATUS_MAP,
   USER_STATUS_MAP,
-} from "./status-maps.js";
+} from "./status.maps.js";
 
 function mapToOptions(statusMap, includeAll = true) {
   const entries = Object.entries(statusMap).map(([value, config]) => ({

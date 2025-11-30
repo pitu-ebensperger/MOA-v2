@@ -1,4 +1,11 @@
-// Centralized query configuration for the app
+// Re-exports
+export { QueryClient } from './query.client.class.js';
+export { QueryClientProvider, useQueryClient } from '@context/QueryClientContext.jsx';
+export { useQuery } from '@/hooks/useQuery.js';
+export { useMutation } from '@/hooks/useMutation.js';
+export { useQueries } from '@/hooks/useQueries.js';
+
+// Query Keys
 export const QUERY_KEYS = {
   products: ['products'],
   productsList: (filters) => ['products', filters],
@@ -60,4 +67,3 @@ export const PREFETCH_CONFIG = {
   productDetailsOnHover: true,
   relatedProducts: true,
 };
-

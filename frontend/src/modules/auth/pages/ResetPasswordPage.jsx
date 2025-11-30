@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Lock } from "lucide-react"
 import { resetPassword } from '@/services/auth.api.js'
-import { API_PATHS } from '@/config/api-paths.js'
+import { API_PATHS } from '@/config/app.routes.js'
 import { toast, confirm } from '@/components/ui'
 import { validatePassword, validatePasswordMatch } from '@/utils/validation';
 

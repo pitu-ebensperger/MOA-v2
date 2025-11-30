@@ -23,10 +23,11 @@ async function seedCategorias() {
       );
     }
     console.log("Categorías insertadas/actualizadas correctamente");
-    process.exit(0);
   } catch (error) {
     console.error("Error al insertar categorías:", error);
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await pool.end();
   }
 }
 

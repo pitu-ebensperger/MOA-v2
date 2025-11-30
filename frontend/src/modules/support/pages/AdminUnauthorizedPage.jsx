@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/Button.jsx";
-import { API_PATHS } from "@/config/api-paths.js";
+import { Button } from "@/components/ui";
+import { API_PATHS } from "@/config/app.routes.js";
 
 const MESSAGES = {
   auth: {

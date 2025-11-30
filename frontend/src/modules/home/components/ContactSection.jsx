@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 
 const backgroundImageUrl =
   "https://images.unsplash.com/photo-1650370363832-c6a735a7abf0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop";

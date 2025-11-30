@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Save, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Save, RefreshCw } from "lucide-react";
 import { getStoreConfig, updateStoreConfig } from '@/services/config.api.js';
-import { Button } from '@/components/ui/Button.jsx';
-import { Input } from '@/components/ui/Input.jsx';
+import { Button, Input, useToast } from "@/components/ui";
 import { Textarea } from '@/components/ui/primitives';
 import AdminPageHeader from '@/modules/admin/components/AdminPageHeader.jsx';
 
 const StoreSettingsPage = () => {
+  const { success, error } = useToast();
+  
   const [config, setConfig] = useState({
     nombre_tienda: '',
     descripcion: '',
@@ -20,8 +21,6 @@ const StoreSettingsPage = () => {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     loadConfig();
@@ -30,13 +29,12 @@ const StoreSettingsPage = () => {
   const loadConfig = async () => {
     try {
       setLoading(true);
-      setError(null);
       const response = await getStoreConfig();
       const configPayload = response?.data ?? response;
       setConfig(configPayload);
     } catch (err) {
       console.error('Error al cargar configuración:', err);
-      setError('Error al cargar la configuración. Por favor, intenta de nuevo.');
+      error('Error al cargar la configuración. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -48,7 +46,6 @@ const StoreSettingsPage = () => {
       ...prev,
       [name]: value
     }));
-    setSuccess(false);
   };
 
   const handleSubmit = async (e) => {
@@ -56,16 +53,13 @@ const StoreSettingsPage = () => {
     
     try {
       setSaving(true);
-      setError(null);
-      setSuccess(false);
       
       await updateStoreConfig(config);
       
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      success('Los cambios se guardaron correctamente.');
     } catch (err) {
       console.error('Error al guardar configuración:', err);
-      setError(err.response?.data?.message || 'Error al guardar los cambios. Por favor, intenta de nuevo.');
+      error(err.response?.data?.message || 'Error al guardar los cambios. Por favor, intenta de nuevo.');
     } finally {
       setSaving(false);
     }
@@ -87,35 +81,6 @@ const StoreSettingsPage = () => {
       <AdminPageHeader
         title="Configuración de la Tienda"
       />
-
-      {error && (
-        <div className="space-y-2">
-          <div className="flex items-start gap-2 text-(--color-error)">
-            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
-            <div>
-              <h3 className="font-semibold leading-tight">¡Ups! Algo salió mal</h3>
-              <p className="text-sm leading-relaxed">
-                Ha ocurrido un error inesperado en la aplicación.
-              </p>
-            </div>
-          </div>
-          {typeof error === 'string' && (
-            <p className="text-xs text-(--color-text-muted)">
-              {error}
-            </p>
-          )}
-        </div>
-      )}
-
-      {success && (
-        <div className="flex items-start gap-3 rounded-2xl border border-(--color-success) bg-(--color-success)/10 p-4 text-(--color-success)">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
-          <div className="flex-1">
-            <h3 className="font-semibold">¡Éxito!</h3>
-            <p className="text-sm">Los cambios se guardaron correctamente.</p>
-          </div>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información Básica */}

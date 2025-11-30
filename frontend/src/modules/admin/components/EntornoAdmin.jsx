@@ -14,7 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { API_PATHS } from "@config/api-paths.js";
+import { API_PATHS } from "@/config/app.routes.js";
 
 const navItems = [
   { label: "Pedidos", to: API_PATHS.admin.orders, icon: Package },

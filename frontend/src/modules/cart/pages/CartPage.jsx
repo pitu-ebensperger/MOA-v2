@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import { useCartContext } from "@/context/CartContext.jsx"
 import { Price } from "@/components/data-display/Price.jsx"
-import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/constants.js"
+import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js"
 import { resolveProductPrice } from "@/modules/products/utils/products.js"
-import { API_PATHS } from "@/config/api-paths.js"
+import { API_PATHS } from "@/config/app.routes.js"
 import {
   buttonClasses,
   Card,
@@ -18,9 +18,9 @@ import {
   CardHeader,
   CardTitle,
   Separator,
-} from "../../../components/shadcn/ui/index.js";
+} from "@/components/ui/primitives";
 // Despacho y dirección ahora gestionados sólo en Checkout
-import { QuantityControl } from '@/components/cart/QuantityControl.jsx'
+import { QuantityControl } from '@/modules/cart/components/QuantityControl.jsx'
 
 const buildItemImage = (item) =>
   item?.imgUrl ?? item?.image ?? item?.gallery?.[0] ?? DEFAULT_PLACEHOLDER_IMAGE;
@@ -47,7 +47,7 @@ export const CartPage = () => {
     <main className="page container-px mx-auto max-w-6xl py-12">
       <header className="mb-10 space-y-3">
         <h1 className="title-serif text-4xl text-(--color-primary1)">
-          {hasItems ? "Carro de compra" : "Tu carrito aún no tiene tesoros"}
+          Carro de compra
         </h1>
         {/* Métricas removidas según solicitud: tipos, unidades y total inline */}
       </header>

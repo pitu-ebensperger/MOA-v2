@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Mail, Lock, X, Clock, ShoppingCart, PartyPopper, AlarmClock } from "lucide-react";
+import { Mail, Lock, X, Clock, PartyPopper, AlarmClock } from "lucide-react";
 import { useAuth, isAdminRole } from '@/context/AuthContext.jsx'
 import { useRedirectAfterAuth } from '@/modules/auth/hooks/useRedirectAuth.jsx'
-import { Button } from '@/components/ui/Button.jsx'
-import { API_PATHS } from '@/config/api-paths.js'
+import { Button, useToast } from "@/components/ui"
+import { API_PATHS } from '@/config/app.routes.js'
 import { validateEmail, validatePassword } from '@/utils/validation';
 
 
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const redirect = useRedirectAfterAuth();
+  const { info } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,16 +24,23 @@ export default function LoginPage() {
   
   // Estados de modales independientes (NO dependen de location.state)
   const [showExpiredModal, setShowExpiredModal] = useState(false);
-  const [showAuthRequiredBanner, setShowAuthRequiredBanner] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [welcomeUserName, setWelcomeUserName] = useState('');
   const [expiredFromPath, setExpiredFromPath] = useState('');
+  
+  // Ref para evitar múltiples ejecuciones del efecto (React 18 StrictMode)
+  const hasProcessedState = useRef(false);
 
   // Detectar estados SOLO UNA VEZ al montar y limpiar inmediatamente
   useEffect(() => {
+    // Evitar ejecución múltiple en StrictMode
+    if (hasProcessedState.current) return;
+    
     // Capturar los estados inmediatamente para evitar que cambien
     const hasState = location.state && Object.keys(location.state).length > 0;
     if (!hasState) return; // No hay nada que procesar
+    
+    hasProcessedState.current = true;
     
     const sessionExpired = location.state?.expired;
     const authRequired = location.state?.authRequired;
@@ -47,13 +55,11 @@ export default function LoginPage() {
     }
     
     if (authRequired) {
-      setShowAuthRequiredBanner(true);
-      const timer = setTimeout(() => setShowAuthRequiredBanner(false), 8000);
+      info("Necesitas una cuenta para agregar productos al carrito.", { duration: 4000 });
       // Limpiar state después de procesarlo
       setTimeout(() => {
         navigate(location.pathname, { replace: true, state: {} });
       }, 100);
-      return () => clearTimeout(timer);
     }
     
     if (registered) {
@@ -299,34 +305,6 @@ export default function LoginPage() {
 
     <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md animate-fade-in-up">
-        
-        {/* Banner superior: Auth requerido */}
-        {showAuthRequiredBanner && (
-          <div className="mb-6 relative animate-fade-in">
-            <div className="bg-amber-50/90 backdrop-blur-sm border-l-4 border-[#D4704B] rounded-lg p-4 pr-10 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#D4704B]/10 flex items-center justify-center">
-                  <ShoppingCart className="h-4 w-4 text-[#D4704B]" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-[#8B4513]">
-                    Para comprar, inicia sesión primero
-                  </p>
-                  <p className="text-xs text-[#A0522D]/90 mt-1 leading-relaxed">
-                    Necesitas una cuenta para agregar productos al carrito y guardar tus favoritos.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowAuthRequiredBanner(false)}
-                className="absolute top-3 right-3 p-1 rounded-lg hover:bg-[#D4704B]/10 text-[#D4704B]/60 hover:text-[#D4704B] transition-colors"
-                aria-label="Cerrar"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className="bg-white/75 backdrop-blur rounded-xl shadow-sm p-6 md:p-8">
           <header className="text-center mb-6">

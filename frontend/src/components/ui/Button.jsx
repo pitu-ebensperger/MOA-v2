@@ -11,7 +11,7 @@ import {
   BUTTON_ICON_PLACEMENTS,
   DEFAULT_BUTTON_OPTIONS,
   BUTTON_LEGACY_VARIANTS,
-} from "../../config/ui-tokens.js";
+} from "../../config/ui.button.tokens.js";
 
 /* -------------------------------------------------------------------------- */
 /* Configuración y constantes                                                 */

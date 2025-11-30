@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@config/react-query';
+import { useMutation, useQueryClient } from '@/config/query.client.config.js';
 import { createOrder as createOrderService } from '@/services/checkout.api.js';
 
 export const useCreateOrder = () => {

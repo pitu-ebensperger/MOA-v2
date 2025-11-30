@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { cn } from "@/utils/cn.js";
-import { PILL_STYLES } from "@/config/ui-tokens.js"
+import { PILL_STYLES } from "@/config/ui.pill.tokens.js"
 
 const PILL_SIZES = {
   sm: "px-2 py-[3px] text-[11px]",

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@config/react-query';
+import { useQuery, useMutation, useQueryClient } from '@/config/query.client.config.js';
 import { wishlistApi } from '@/services/wishlist.api.js';
 import { toast } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext.jsx';

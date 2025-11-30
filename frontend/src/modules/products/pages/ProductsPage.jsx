@@ -2,13 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs.jsx"
-import { Pagination } from "@/components/ui/Pagination.jsx"
-import { API_PATHS } from "@/config/api-paths.js"
+import { Pagination, Skeleton } from "@/components/ui"
+import { API_PATHS } from "@/config/app.routes.js"
 
 import ProductGallery from "@/modules/products/components/ProductGallery.jsx"
 import { ProductSidebar } from "@/modules/products/components/ProductSidebar.jsx"
 import { ProductFiltersDrawer } from "@/modules/products/components/ProductFiltersDrawer.jsx"
-import { Skeleton } from "@/components/ui/Skeleton.jsx"
 
 import { useCategories } from "@/modules/products/hooks/useCategories.js"
 import { useProducts } from "@/modules/products/hooks/useProducts.js"

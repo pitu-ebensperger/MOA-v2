@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { useQueryClient } from "@hooks/useQueryClient.js";
+import { useQueryClient } from "@/config/query.client.config.js";
 
 const defaultState = {
   status: "idle",

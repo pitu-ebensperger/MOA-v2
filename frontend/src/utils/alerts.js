@@ -122,3 +122,30 @@ export const handleApiError = (error, customMessage = null) => {
   
   return alerts.error(customMessage || 'Error', message || 'Intenta nuevamente.');
 };
+
+export const alertOrderSuccess = (orderCode) => {
+  return moaSwal.fire({
+    icon: 'success',
+    title: '¡Orden confirmada!',
+    html: `Tu orden <strong>#${orderCode}</strong> ha sido creada exitosamente.<br>Recibirás un correo de confirmación.`,
+    confirmButtonText: 'Ver mis órdenes',
+  });
+};
+
+export const alertOrderError = (message, supportEmail = 'soporte@moa.cl') => {
+  return moaSwal.fire({
+    icon: 'error',
+    title: 'Error al procesar la orden',
+    html: `${message}<br><br>Si el problema persiste, contacta a <a href="mailto:${supportEmail}">${supportEmail}</a>`,
+    confirmButtonText: 'Entendido',
+  });
+};
+
+export const alertGlobalError = () => {
+  return moaSwal.fire({
+    icon: 'error',
+    title: 'Error inesperado',
+    text: 'Ocurrió un problema al procesar tu solicitud. Por favor, intenta nuevamente más tarde.',
+    confirmButtonText: 'Entendido',
+  });
+};

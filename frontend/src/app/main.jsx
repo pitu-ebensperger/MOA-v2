@@ -7,7 +7,6 @@ import { AuthProvider } from "@/context/AuthContext.jsx"
 import { CartProvider } from "@/context/CartContext.jsx"
 import { App } from '@/app/App.jsx'
 import { MessageProvider } from '@/components/ui'
-import { observability } from '@/services/observability.js'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 
 import '../styles/global.css'
@@ -32,18 +31,12 @@ const queryClient = new QueryClient({
       },
       onError: (error) => {
         console.error('[React Query Error]', error)
-        if (import.meta.env.PROD) {
-          observability.captureException(error, { source: 'react-query' })
-        }
       },
     },
     mutations: {
       retry: false,
       onError: (error) => {
         console.error('[Mutation Error]', error)
-        if (import.meta.env.PROD) {
-          observability.captureException(error, { source: 'mutation' })
-        }
       },
     },
   },

@@ -6,7 +6,6 @@ import { setOnUnauthorized, setTokenGetter } from "@/services/api-client.js"
 import { authApi } from "@/services/auth.api.js"
 import { usePersistentState } from "@/hooks/usePersistentState.js"
 import { useNavigate } from "react-router-dom";
-import { observability } from '@/services/observability.js';
 import { useSessionMonitor } from "@/hooks/useSessionMonitor.js";
 import { SessionExpirationDialog } from "@/modules/auth/components/SessionExpirationDialog.jsx";
 import { Alert } from "@/components/ui";
@@ -179,14 +178,6 @@ export const AuthProvider = ({ children }) => {
     setTokenGetter(() => token);
     setOnUnauthorized(() => logout);
   }, [token, logout]);
-
-  useEffect(() => {
-    if (status === STATUS.AUTH && user && token) {
-      observability.identifyUser(user);
-    } else if (!token) {
-      observability.clearUser();
-    }
-  }, [status, user, token]);
 
   const hasAttemptedProfileLoad = useRef(false);
   

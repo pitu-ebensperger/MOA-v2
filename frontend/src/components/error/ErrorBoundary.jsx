@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react";
 import { alerts } from '@/utils/alerts.js';
-import { observability } from '@/services/observability.js';
 
 
 const safeSerializeError = (err) => {
@@ -66,15 +65,12 @@ class ErrorBoundary extends Component {
   }
 
   logErrorToService = (error, errorInfo) => {
-    // Aquí podrías enviar el error a un servicio como Sentry, LogRocket, etc.
-    const isDevelopment = import.meta.env.DEV;
-    
-    if (!isDevelopment) {
-      observability.captureException(error, {
-        componentStack: errorInfo.componentStack,
-        errorId: this.state.errorId,
-      });
-    }
+    // Log simple - puedes añadir servicios externos en el futuro
+    console.error('[ErrorBoundary]', {
+      error,
+      componentStack: errorInfo.componentStack,
+      errorId: this.state.errorId,
+    });
   };
 
   handleReload = () => {

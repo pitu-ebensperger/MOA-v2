@@ -9,7 +9,6 @@ import { AddressProvider } from '@/context/AddressContext.jsx'
 import ErrorBoundary from '@/components/error/ErrorBoundary.jsx'
 import { ScrollToTop } from '@/components/layout/ScrollToTop.jsx'
 import { AdminRoute, ProtectedRoute } from '@/modules/auth/hooks/useAuth.jsx'
-import { observability } from '@/services/observability.js';
 
 import { HomePage } from '@/modules/home/pages/HomePage.jsx'
 import { CartDrawer } from '@/modules/cart/components/CartDrawer.jsx'
@@ -105,16 +104,10 @@ export const App = () => {
   useEffect(() => {
     const handleError = (event) => {
       console.error('[Global Error]', event.message, event.error);
-      if (import.meta.env.PROD) {
-        observability.captureException(event.error || event.message);
-      }
     };
 
     const handleUnhandledRejection = (event) => {
       console.error('[Unhandled Rejection]', event.reason);
-      if (import.meta.env.PROD) {
-        observability.captureException(event.reason);
-      }
       event.preventDefault();
     };
 

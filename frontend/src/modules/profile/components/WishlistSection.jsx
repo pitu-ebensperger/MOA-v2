@@ -4,6 +4,7 @@ import { Heart, ShoppingCart, Eye, Trash2 } from "lucide-react";
 import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js";
 import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 import { useRemoveFromWishlistMutation } from "@/modules/profile/hooks/useWishlistQuery.js";
+import { ROUTES } from "@/routes/routes.js";
 
 const normalizeWishlistProduct = (product, index) => {
   if (!product || typeof product !== "object") {
@@ -48,7 +49,7 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
   return (
     <div className="group relative flex gap-4 rounded-2xl bg-white/75 p-4 transition-all hover:bg-white hover:shadow-md">
       {/* Image */}
-      <Link to={`/productos/${product.slug}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
+      <Link to={ROUTES.productDetail(product.slug)} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
         <img
           src={product.img || DEFAULT_PLACEHOLDER_IMAGE}
           alt={product.name}
@@ -59,7 +60,7 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
       {/* Content */}
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div>
-          <Link to={`/productos/${product.slug}`} className="block">
+          <Link to={ROUTES.productDetail(product.slug)} className="block">
             <h3 className="line-clamp-2 text-sm font-semibold text-(--text-strong) transition-colors group-hover:text-(--color-primary1)">
               {product.name}
             </h3>
@@ -69,7 +70,7 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Link
-            to={`/productos/${product.slug}`}
+            to={ROUTES.productDetail(product.slug)}
             className="group/btn flex h-8 w-8 items-center justify-center rounded-full text-(--color-primary1) transition-all hover:text-(--color-primary2)"
             title="Ver producto"
           >

@@ -8,6 +8,7 @@ import { formatCurrencyCLP } from "@/utils/formatters/currency.js"
 import { buildCategoriesWithAll } from "@/utils/normalizers.js"
 import { createCategoryMatcher, resolveProductPrice } from "@/modules/products/utils/products.js"
 import { matchesText } from "@/modules/products/utils/productsFilter.js"
+import { paginate } from "@/utils/pagination.js"
 
 const resolveCategoryFromQuery = (categoryQuery, categories) => {
   if (!categoryQuery) return ALL_CATEGORY_ID;
@@ -179,11 +180,12 @@ export const useProductFilters = ({
     const totalItems = totalResults;
     const totalPages = Math.max(1, Math.ceil(totalItems / safeLimit));
     const safePage = clamp(ensureNumber(currentPage, 1), 1, totalPages);
+    const items = paginate(sortedProducts, { page: safePage, limit: safeLimit });
     const startIndex = (safePage - 1) * safeLimit;
     const endIndex = Math.min(startIndex + safeLimit, totalItems);
 
     return {
-      items: sortedProducts.slice(startIndex, endIndex),
+      items,
       page: safePage,
       totalPages,
       totalItems,

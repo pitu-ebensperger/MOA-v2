@@ -14,7 +14,7 @@ const _sanitizeSlug = (value = "") =>
 
 const remoteCategoriesApi = {
   async list() {
-    const data = await apiClient.get(API_PATHS.products.categories);
+    const data = await apiClient.get(API_PATHS.products.apiCategories);
     return normalizeCategoryList(data);
   },
   async create(payload = {}) {

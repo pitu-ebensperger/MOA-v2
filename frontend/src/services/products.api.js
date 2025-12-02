@@ -46,24 +46,24 @@ const normalizeListResponse = (payload = {}) => {
 const remoteProductsApi = {
   async list(params = {}) {
     const query = buildQueryString(params);
-    const data = await apiClient.public.get(`${API_PATHS.products.products}${query}`);
+    const data = await apiClient.public.get(`${API_PATHS.products.apiProducts}${query}`);
     return normalizeListResponse(data);
   },
   async getById(id) {
     if (id == null) throw new Error("product id is required");
-    const response = await apiClient.public.get(`/api/productos/${id}`);
+    const response = await apiClient.public.get(API_PATHS.products.apiProductById(id));
     const data = response?.data ?? response;
     return normalizeProduct(data);
   },
   async getBySlug(slug) {
     if (!slug) throw new Error("product slug is required");
-    const response = await apiClient.public.get(`/api/producto/${slug}`);
+    const response = await apiClient.public.get(API_PATHS.products.apiProductBySlug(slug));
     const data = response?.data ?? response;
     return normalizeProduct(data);
   },
   async listCategories(params = {}) {
     const query = buildQueryString(params);
-    const data = await apiClient.public.get(`${API_PATHS.products.categories}${query}`);
+    const data = await apiClient.public.get(`${API_PATHS.products.apiCategories}${query}`);
     return normalizeCategoryList(data);
   },
   async create(payload = {}) {

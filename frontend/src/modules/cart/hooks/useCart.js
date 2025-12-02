@@ -48,6 +48,8 @@ export const useCart = () => {
 
     try {
       await addMutation.mutateAsync({ productId, quantity: 1 });
+      const productName = product?.name || product?.nombre || 'Producto';
+      alerts.success('Producto agregado', `${productName} se agregó al carrito`);
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err?.message || 'No se pudo agregar el producto al carrito';
       alerts.error('Error al agregar producto', errorMsg);

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@config/react-query'
+import { QueryClient, QueryClientProvider } from '@config/query.client.config.js'
 import { handleAuthError } from '@/utils/handleAuthError.js'
 import { AuthProvider } from "@/context/AuthContext.jsx"
 import { CartProvider } from "@/context/CartContext.jsx"

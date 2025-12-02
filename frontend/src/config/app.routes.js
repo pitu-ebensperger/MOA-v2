@@ -12,9 +12,13 @@ export const API_PATHS = {
     resetPassword: "/api/auth/reset-password",
   },
   products: {
-    products: "/api/productos",
-    productDetail: (id) => `/api/producto/${id}`,
+    products: "/productos",
+    productDetail: (id) => `/producto/${id}`,
     categories: "/categorias",
+    apiProducts: "/api/productos",
+    apiProductById: (id) => `/api/productos/${id}`,
+    apiProductBySlug: (slug) => `/api/producto/${slug}`,
+    apiCategories: "/categorias",
   },
   cart: {
     root: (userId) => `/${userId}/cart`,

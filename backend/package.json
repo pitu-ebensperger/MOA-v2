@@ -12,6 +12,7 @@
     "db:install": "./scripts/db_install.sh",
     "db:reset": "./scripts/db_rebuild.sh --no-backup",
     "db:rebuild": "./scripts/db_rebuild.sh",
+    "seed:config": "node database/seed/configSeed.js",
     "seed:users": "node database/seed/usersSeed.js",
     "seed:clients": "node database/seed/clientsSeed.js",
     "seed:categories": "node database/seed/categoriesSeed.js",
@@ -21,7 +22,7 @@
     "seed:orders": "node database/seed/ordersSeed.js",
     "seed:carts": "node database/seed/cartsSeed.js",
     "seed:wishlists": "node database/seed/wishlistsSeed.js",
-    "seed:all": "npm run seed:users && npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
+    "seed:all": "npm run seed:config && npm run seed:users && npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
     "seed:append": "npm run seed:clients && npm run seed:categories && npm run seed:products && npm run seed:addresses && npm run seed:orders && npm run seed:carts && npm run seed:wishlists && npm run seed:verify",
     "seed:clients:append": "npm run seed:clients && npm run seed:orders && npm run seed:verify"
   },

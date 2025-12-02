@@ -1,10 +1,10 @@
 // Shadcn/Radix primitives
-export { Button } from './Button.jsx';
-export { Input } from './Input.jsx';
-export { Textarea } from './Textarea.jsx';
-export { Label } from './Label.jsx';
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card.jsx';
-export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from './Select.jsx';
+export { Button } from './button.jsx';
+export { Input } from './input.jsx';
+export { Textarea } from './textarea.jsx';
+export { Label } from './label.jsx';
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card.jsx';
+export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from './select.jsx';
 export { EmptyPlaceholder, EmptyPlaceholderIcon, EmptyPlaceholderTitle, EmptyPlaceholderDescription } from './EmptyState.jsx';
 export { buttonClasses } from './button-classes.js';
 export { Separator } from './separator.jsx';

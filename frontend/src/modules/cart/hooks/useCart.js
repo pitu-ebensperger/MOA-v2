@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext.jsx";
 import { API_PATHS } from "@/config/app.routes.js";
-import { alerts } from '@/utils/alerts.js';
+import { toast } from '@/services/toastService.js';
 import {
   useCartQuery,
   useAddToCart,
@@ -49,10 +49,10 @@ export const useCart = () => {
     try {
       await addMutation.mutateAsync({ productId, quantity: 1 });
       const productName = product?.name || product?.nombre || 'Producto';
-      alerts.success('Producto agregado', `${productName} se agregó al carrito`);
+      toast.success(`${productName} agregado al carrito`);
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err?.message || 'No se pudo agregar el producto al carrito';
-      alerts.error('Error al agregar producto', errorMsg);
+      toast.error(errorMsg);
       throw err;
     }
   };

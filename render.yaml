@@ -20,7 +20,7 @@ services:
     region: oregon
     plan: free
     rootDirectory: backend
-    buildCommand: npm install && npm run seed:all
+    buildCommand: npm install && npm run seed:config
     startCommand: npm start
     envVars:
       - key: NODE_ENV

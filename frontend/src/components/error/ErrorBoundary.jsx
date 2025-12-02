@@ -11,24 +11,12 @@ const safeSerializeError = (err) => {
       name: err.name,
       message: err.message,
       stack: err.stack,
-      cause: err.cause && typeof err.cause === 'object' ? safeSerializeError(err.cause) : err.cause || null,
     };
   }
-  if (typeof err === 'object') {
-    try {
-      return JSON.parse(JSON.stringify(err));
-    } catch {
-      try {
-        return { stringified: String(err) };
-      } catch {
-        return { stringified: '[Unserializable Error Object]' };
-      }
-    }
-  }
   try {
-    return { value: String(err) };
+    return JSON.stringify(err);
   } catch {
-    return { value: '[Unserializable]' };
+    return String(err);
   }
 };
 

@@ -103,69 +103,18 @@ export const App = () => {
 
   // Global error handlers
   useEffect(() => {
-    // Some error objects (e.g. Vite dynamic import failures or 3rd party proxies)
-    // can throw again when the DevTools extension tries to coerce them to string.
-    // We defensively serialize to plain data before logging to avoid triggering
-    // "Cannot convert object to primitive value" inside react-devtools' installHook.
-    const safeSerialize = (err) => {
-      if (!err) return null;
-      if (err instanceof Error) {
-        return {
-          name: err.name,
-          message: err.message,
-          stack: err.stack,
-        };
-      }
-      try {
-        // Attempt structured clone via JSON.
-        return JSON.parse(JSON.stringify(err));
-      } catch {
-        try {
-          return String(err);
-        } catch {
-          return '[Unserializable Error]';
-        }
-      }
-    };
-    // Captura errores síncronos no manejados (window.onerror)
     const handleError = (event) => {
-      console.error('[Global Error Handler]', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: safeSerialize(event.error),
-      });
-
-      // Enviar a servicio de logging en producción
+      console.error('[Global Error]', event.message, event.error);
       if (import.meta.env.PROD) {
-        observability.captureException(event.error || event.message, {
-          filename: event.filename,
-          lineno: event.lineno,
-          colno: event.colno,
-        });
+        observability.captureException(event.error || event.message);
       }
-
-      // No prevenir el comportamiento por defecto para que ErrorBoundary lo capture
-      // return true; // Esto evitaría que se propague
     };
 
-    // Captura promesas rechazadas sin .catch() (unhandledrejection)
     const handleUnhandledRejection = (event) => {
-      console.error('[Unhandled Promise Rejection]', {
-        reason: safeSerialize(event.reason),
-        // Do not attempt to log the raw promise (devtools will coerce it); just note its presence.
-        promise: '[Promise]',
-      });
-
-      // Enviar a servicio de logging en producción
+      console.error('[Unhandled Rejection]', event.reason);
       if (import.meta.env.PROD) {
-        observability.captureException(event.reason, {
-          type: 'unhandledrejection',
-        });
+        observability.captureException(event.reason);
       }
-
-      // Prevenir que el error se muestre en consola por defecto
       event.preventDefault();
     };
 

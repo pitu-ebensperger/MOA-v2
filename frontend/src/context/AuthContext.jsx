@@ -63,47 +63,6 @@ const DEBUG_LOGS = import.meta.env?.VITE_DEBUG_LOGS === 'true';
 const debugWarn = (...args) => { if (DEBUG_LOGS) console.warn(...args); };
 const debugError = (...args) => { if (DEBUG_LOGS) console.error(...args); };
 
-// ---- Utilidades de limpieza de UI -----------------------------
-const cleanupBodyOverflow = () => {
-  if (typeof document !== 'undefined' && document.body) {
-    document.body.style.overflow = '';
-    document.body.style.removeProperty('overflow');
-    document.body.classList.remove('overflow-hidden');
-  }
-};
-
-const removeRadixPortals = () => {
-  const radixPortals = document.querySelectorAll('[data-radix-portal]');
-  for (const portal of radixPortals) {
-    if (portal?.parentNode) {
-      portal.remove();
-    }
-  }
-};
-
-const removeRadixOverlays = () => {
-  const overlays = document.querySelectorAll('[data-radix-dialog-overlay], [data-radix-sheet-overlay]');
-  for (const overlay of overlays) {
-    if (overlay?.parentNode) {
-      overlay.remove();
-    }
-  }
-};
-
-const removeSuspiciousOverlays = () => {
-  const suspiciousOverlays = document.querySelectorAll('div[class*="fixed"][class*="inset-0"][class*="z-"]');
-  for (const overlay of suspiciousOverlays) {
-    const classList = Array.from(overlay.classList);
-    const hasHighZIndex = classList.some(cls => /z-\d{2,}/.test(cls) || /z-50/.test(cls));
-    const hasOverlay = classList.some(cls => /bg-black|overlay|backdrop/.test(cls));
-    
-    if (hasHighZIndex && hasOverlay) {
-      debugWarn('[AuthContext] Removiendo overlay sospechoso:', overlay.className);
-      overlay.remove();
-    }
-  }
-};
-
 // PROVIDER
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
@@ -149,10 +108,6 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     const storedUser = localStorage.getItem(USER_KEY);
 
-    if (typeof document !== 'undefined' && document.body) {
-      document.body.style.overflow = '';
-    }
-
     let cleanupTimer = null;
     if (storedToken && !storedUser) {
       if (pendingLoginRef.current) {
@@ -190,11 +145,6 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     setShowExpirationDialog(false);
     
-    if (typeof document !== 'undefined' && document.body) {
-      document.body.style.overflow = '';
-      document.body.style.removeProperty('overflow');
-    }
-    
     try {
       localStorage.removeItem('cart');
       localStorage.removeItem('wishlist');
@@ -229,15 +179,6 @@ export const AuthProvider = ({ children }) => {
     setTokenGetter(() => token);
     setOnUnauthorized(() => logout);
   }, [token, logout]);
-
-  useEffect(() => {
-    if (status === STATUS.IDLE && typeof document !== 'undefined') {
-      cleanupBodyOverflow();
-      removeRadixPortals();
-      removeRadixOverlays();
-      removeSuspiciousOverlays();
-    }
-  }, [status]);
 
   useEffect(() => {
     if (status === STATUS.AUTH && user && token) {

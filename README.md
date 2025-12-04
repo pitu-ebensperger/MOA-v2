@@ -104,4 +104,4 @@
 
 Correr tests:
 **Frontend** cd frontend && npm test
-**Backend** cd backend && npm test
+**Backend** cd backend && npm tests

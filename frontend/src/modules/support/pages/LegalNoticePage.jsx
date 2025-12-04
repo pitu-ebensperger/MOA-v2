@@ -13,7 +13,7 @@ const LegalNoticePage = () => {
     <main className="bg-[#E6E0D8] min-h-screen px-8 py-50 text-[#453F34]">
       <section className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-[#443114] mb-6 text-center">
-          Aviso Legal y Cumplimiento GDPR
+          Aviso Legal
         </h1>
 
         <p className="text-sm text-[#A69F91] mb-8 text-center">

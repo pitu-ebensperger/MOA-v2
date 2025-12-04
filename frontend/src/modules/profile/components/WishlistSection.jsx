@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Eye, Trash2 } from "lucide-react";
 import { DEFAULT_PLACEHOLDER_IMAGE } from "@/config/app.constants.js";
-import { formatCurrencyCLP } from "@/utils/formatters/currency.js";
 import { useRemoveFromWishlistMutation } from "@/modules/profile/hooks/useWishlistQuery.js";
 import { ROUTES } from "@/routes/routes.js";
 

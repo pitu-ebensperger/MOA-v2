@@ -13,32 +13,43 @@ const buildQueryString = (params = {}) => {
   return query ? `?${query}` : '';
 };
 
-const normalizeListResponse = (payload = {}) => {
-  const src = Array.isArray(payload.items)
-    ? payload.items
-    : Array.isArray(payload.products)
-    ? payload.products
-    : Array.isArray(payload.data)
-    ? payload.data
-    : [];
-  const items = src.map(normalizeProduct);
-  const total = Number.isFinite(payload.total) 
-    ? payload.total 
-    : Number.isFinite(payload.pagination?.total)
-    ? payload.pagination.total
-    : items.length;
+const extractSourceArray = (payload) => {
+  if (Array.isArray(payload.items)) return payload.items;
+  if (Array.isArray(payload.products)) return payload.products;
+  if (Array.isArray(payload.data)) return payload.data;
+  return [];
+};
 
-  const page = payload.page && typeof payload.page === "object"
-    ? {
-        offset: Number.isFinite(Number(payload.page.offset)) ? Number(payload.page.offset) : 0,
-        limit: Number.isFinite(Number(payload.page.limit)) ? Number(payload.page.limit) : items.length,
-      }
-    : payload.pagination && typeof payload.pagination === "object"
-    ? {
-        offset: ((payload.pagination.page || 1) - 1) * (payload.pagination.limit || items.length),
-        limit: payload.pagination.limit || items.length,
-      }
-    : { offset: 0, limit: items.length };
+const extractTotal = (payload, itemsLength) => {
+  if (Number.isFinite(payload.total)) return payload.total;
+  if (Number.isFinite(payload.pagination?.total)) return payload.pagination.total;
+  return itemsLength;
+};
+
+const extractPageInfo = (payload, itemsLength) => {
+  if (payload.page && typeof payload.page === "object") {
+    return {
+      offset: Number.isFinite(Number(payload.page.offset)) ? Number(payload.page.offset) : 0,
+      limit: Number.isFinite(Number(payload.page.limit)) ? Number(payload.page.limit) : itemsLength,
+    };
+  }
+  
+  if (payload.pagination && typeof payload.pagination === "object") {
+    const { page = 1, limit = itemsLength } = payload.pagination;
+    return {
+      offset: (page - 1) * limit,
+      limit,
+    };
+  }
+  
+  return { offset: 0, limit: itemsLength };
+};
+
+const normalizeListResponse = (payload = {}) => {
+  const src = extractSourceArray(payload);
+  const items = src.map(normalizeProduct);
+  const total = extractTotal(payload, items.length);
+  const page = extractPageInfo(payload, items.length);
 
   return { items, total, page };
 };
